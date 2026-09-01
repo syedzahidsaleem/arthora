@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 236 34% 7%; /* #0D0E1A */
+    --foreground: 240 33% 96%; /* #F0F0FA */
+
+    --card: 237 24% 10%; /* #13141F */
+    --card-foreground: 240 33% 96%;
+
+    --popover: 237 24% 10%;
+    --popover-foreground: 240 33% 96%;
+
+    --primary: 244 100% 69%; /* #6C63FF */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 191 100% 50%; /* #00D2FF */
+    --secondary-foreground: 236 34% 7%;
+
+    --muted: 237 27% 14%; /* #1A1B2E */
+    --muted-foreground: 240 14% 66%; /* #9B9BB4 */
+
+    --accent: 359 100% 71%; /* #FF6B6B */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 349 100% 65%; /* #FF4D6D */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 237 25% 18%; /* #22233A */
+    --input: 237 25% 18%;
+    --ring: 244 100% 69%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-surface-1 text-content-primary font-sans antialiased selection:bg-brand-primary/30 selection:text-brand-secondary;
+    min-height: 100vh;
+    background-color: #0D0E1A;
+    color: #F0F0FA;
+  }
+}
+
+/* Custom shimmer animation utility */
+.shimmer-bg {
+  background: linear-gradient(90deg, #13141F 0%, #22233A 50%, #13141F 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glassmorphic card styling */
+.glass-panel {
+  background: rgba(19, 20, 31, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

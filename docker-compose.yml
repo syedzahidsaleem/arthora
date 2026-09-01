@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: arthora-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: arthora
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - arthora-network
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: arthora-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - arthora-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    container_name: arthora-api
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      MONGODB_URI: mongodb://mongodb:27017/arthora
+      REDIS_URL: redis://redis:6379
+      ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      JWT_SECRET: dev_jwt_secret_key_at_least_32_characters_123
+      JWT_REFRESH_SECRET: dev_jwt_refresh_secret_at_least_32_chars_123
+      FIREBASE_PROJECT_ID: arthora-dev
+      FIREBASE_CLIENT_EMAIL: firebase-adminsdk@arthora-dev.iam.gserviceaccount.com
+      FIREBASE_PRIVATE_KEY: ""
+      GEMINI_API_KEY: fake_dev_key
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/shared/node_modules
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - arthora-network
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    container_name: arthora-web
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NEXT_PUBLIC_FIREBASE_API_KEY: dev_key
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: arthora-dev.firebaseapp.com
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: arthora-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/shared/node_modules
+    depends_on:
+      - api
+    networks:
+      - arthora-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  arthora-network:
+    driver: bridge

@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+out/
+.next/
+build/
+
+# Environment files
+.env
+.env.local
+.env.production
+apps/api/.env
+apps/web/.env.local
+!.env.example
+!apps/api/.env.example
+!apps/web/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+.vitest/
+
+# Docker
+.dockerignore
+
+# Temporary
+tmp/
+temp/
+/tmp/reports/
+
+# Flutter
+arthora_mobile/.dart_tool/
+arthora_mobile/.flutter-plugins
+arthora_mobile/.flutter-plugins-dependencies
+arthora_mobile/build/
+arthora_mobile/.packages
+arthora_mobile/pubspec.lock
+arthora_mobile/android/.gradle/
+arthora_mobile/android/local.properties
+arthora_mobile/ios/Pods/
+arthora_mobile/ios/.symlinks/
+arthora_mobile/ios/Flutter/Flutter.framework
+arthora_mobile/ios/Flutter/Flutter.podspec
+
+# Sentry
+.sentryclirc

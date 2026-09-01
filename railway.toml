@@ -1,0 +1,20 @@
+[build]
+  builder = "DOCKERFILE"
+  dockerfilePath = "apps/api/Dockerfile"
+
+[deploy]
+  restartPolicyType = "ON_FAILURE"
+  restartPolicyMaxRetries = 3
+  healthcheckPath = "/api/v1/health"
+  healthcheckTimeout = 10
+
+[[services]]
+  name = "api"
+  [services.deploy]
+    startCommand = "node dist/main.js"
+
+[[services]]
+  name = "worker"  
+  [services.deploy]
+    startCommand = "node dist/worker.js"
+    dockerfilePath = "apps/api/Dockerfile.worker"
