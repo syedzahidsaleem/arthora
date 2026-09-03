@@ -45,7 +45,8 @@ export async function searchFunds(
   const filterQuery: Record<string, unknown> = { isActive: true };
 
   if (query && query.trim().length > 0) {
-    filterQuery.$text = { $search: query.trim() };
+    const safeRegex = new RegExp(query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    filterQuery.schemeName = safeRegex;
   }
 
   if (filters.category && filters.category !== 'all') {
@@ -56,9 +57,7 @@ export async function searchFunds(
     filterQuery.fundHouse = { $regex: new RegExp(filters.fundHouse, 'i') };
   }
 
-  const sortOptions = query && query.trim().length > 0
-    ? { score: { $meta: 'textScore' } }
-    : { schemeName: 1 };
+  const sortOptions = { schemeName: 1 as const };
 
   const [items, total] = await Promise.all([
     FundMetadata.find(

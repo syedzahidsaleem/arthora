@@ -47,10 +47,10 @@ export async function searchStocks(
   const filterQuery: Record<string, unknown> = { isActive: true };
 
   if (query && query.trim().length > 0) {
+    const safeRegex = new RegExp(query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
     filterQuery.$or = [
-      { $text: { $search: query.trim() } },
-      { symbol: { $regex: new RegExp(`^${query.trim()}`, 'i') } },
-      { companyName: { $regex: new RegExp(query.trim(), 'i') } },
+      { symbol: safeRegex },
+      { companyName: safeRegex },
     ];
   }
 
