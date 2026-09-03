@@ -8,6 +8,8 @@ dist/
 out/
 .next/
 build/
+*.tsbuildinfo
+.vercel/
 
 # Environment files
 .env

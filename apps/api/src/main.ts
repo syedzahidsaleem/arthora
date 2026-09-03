@@ -27,6 +27,7 @@ if (process.env.SENTRY_DSN) {
 }
 
 const app: Express = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 4000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
