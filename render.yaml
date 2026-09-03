@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: arthora-api
+    env: node
+    plan: free
+    region: singapore
+    buildCommand: pnpm install && pnpm --filter @arthora/shared build && pnpm --filter @arthora/api build
+    startCommand: pnpm --filter @arthora/api start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RUN_WORKER_IN_PROCESS
+        value: "true"
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+      - key: ALLOWED_ORIGINS
+        value: https://arthora.vercel.app,https://arthora.in,http://localhost:3000
+      - key: MONGODB_URI
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ADMIN_KEY
+        sync: false

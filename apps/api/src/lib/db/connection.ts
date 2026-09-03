@@ -61,6 +61,15 @@ class DatabaseConnection {
   public async connect(uri?: string): Promise<typeof mongoose> {
     const mongoUri = uri || process.env.MONGODB_URI || 'mongodb://localhost:27017/arthora';
 
+    if (mongoUri.startsWith('mongodb+srv:')) {
+      try {
+        const dns = await import('dns');
+        dns.setServers(['8.8.8.8', '1.1.1.1']);
+      } catch {
+        // Ignore in environments where custom DNS servers cannot be set
+      }
+    }
+
     // Return existing connected instance
     if (mongoose.connection.readyState === 1) {
       return mongoose;

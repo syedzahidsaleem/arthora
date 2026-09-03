@@ -44,7 +44,7 @@ async function generateWithTimeout(
 ): Promise<string> {
   const ai = getGeminiClient();
   const model = ai.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+    model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
     systemInstruction,
   });
 

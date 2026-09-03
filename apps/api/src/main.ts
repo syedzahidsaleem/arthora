@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -124,6 +125,12 @@ async function startServer(): Promise<void> {
     // Verify Redis connection availability
     const redisPing = await redis.ping();
     console.log(`📡 [Redis] Initial ping status: ${redisPing}`);
+
+    if (process.env.RUN_WORKER_IN_PROCESS === 'true') {
+      const { startWorkers } = await import('./worker');
+      await startWorkers();
+      console.log('⚙️ [Worker Process] Embedded background worker started inside API process.');
+    }
 
     const server = app.listen(PORT, () => {
       console.log(`✨ [Server] Arthora API running on port ${PORT} in [${NODE_ENV}] mode.`);

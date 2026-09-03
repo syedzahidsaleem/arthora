@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import dotenv from 'dotenv';
 import { connectDB } from './lib/db/connection';
 import { redis } from './lib/db/redis';
@@ -11,7 +12,7 @@ dotenv.config();
 
 console.log('⚙️ [Worker Process] Initializing Arthora BullMQ workers...');
 
-async function startWorkers(): Promise<void> {
+export async function startWorkers(): Promise<void> {
   try {
     // 1. Connect to Database & Cache
     await connectDB();

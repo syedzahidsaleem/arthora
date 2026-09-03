@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import Redis, { RedisOptions } from 'ioredis';
 
 class RedisConnection {
