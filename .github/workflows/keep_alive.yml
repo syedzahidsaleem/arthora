@@ -1,0 +1,28 @@
+name: Keep-Alive & Uptime Heartbeat
+
+on:
+  schedule:
+    # Runs every 12 minutes (Render sleeps after 15 minutes of inactivity)
+    - cron: '*/12 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-render-backend:
+    name: Ping Render API Server
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Send Heartbeat Ping to Arthora API
+        run: |
+          echo "Sending heartbeat ping to Arthora Render backend..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}\nTIME_TOTAL:%{time_total}s\n" --max-time 60 https://arthora-api.onrender.com/api/v1/health)
+          echo "$RESPONSE"
+          
+          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          if [ "$STATUS" -eq 200 ]; then
+            echo "✅ Arthora Backend is awake and healthy!"
+          else
+            echo "⚠️ Unexpected status code: $STATUS"
+            exit 1
+          fi

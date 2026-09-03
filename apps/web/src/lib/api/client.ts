@@ -23,6 +23,42 @@ function onRefreshed(token: string) {
 }
 
 /**
+ * Automatically retries requests when the backend is waking from a cold start.
+ */
+async function fetchWithColdStartRetry(
+  url: string,
+  fetchOptions: RequestInit,
+  retries = 3,
+  delayMs = 2500,
+): Promise<Response> {
+  try {
+    const res = await fetch(url, fetchOptions);
+    if ((res.status === 502 || res.status === 503 || res.status === 504) && retries > 0) {
+      console.warn(`[Arthora API] Server waking up (${res.status}), retrying in ${delayMs}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, delayMs * 1.5);
+    }
+    return res;
+  } catch (err) {
+    if (retries > 0) {
+      console.warn(`[Arthora API] Connection pending, retrying in ${delayMs}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, delayMs * 1.5);
+    }
+    throw err;
+  }
+}
+
+/**
+ * Fires a non-blocking background probe to pre-warm the backend.
+ */
+export function prewarmServer(): void {
+  if (typeof window !== 'undefined') {
+    fetch(`${API_BASE_URL}/api/v1/health`, { method: 'GET', keepalive: true }).catch(() => {});
+  }
+}
+
+/**
  * Core HTTP client with automatic authentication, header injection, and token refresh.
  */
 async function request<T>(endpoint: string, options: RequestOptions = {}, isRetry = false): Promise<T> {
@@ -52,7 +88,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}, isRetr
     reqHeaders['Authorization'] = `Bearer ${store.accessToken}`;
   }
 
-  const response = await fetch(url, {
+  const response = await fetchWithColdStartRetry(url, {
     ...fetchOptions,
     headers: reqHeaders,
   });
