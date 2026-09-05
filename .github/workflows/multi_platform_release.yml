@@ -47,7 +47,7 @@ jobs:
           cd ../../packages/sdk && npm pack --pack-destination ../../dist/packages
 
       - name: Upload SDK Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: arthora-npm-packages
           path: dist/packages/*.tgz
@@ -87,7 +87,7 @@ jobs:
           tar -czf dist/web/arthora-web-bundle.tar.gz -C apps/web/out .
 
       - name: Upload Web Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: arthora-web-bundle
           path: dist/web/*.tar.gz
@@ -121,7 +121,7 @@ jobs:
           cp build/app/outputs/flutter-apk/app-release.apk ../dist/mobile/arthora-release.apk
 
       - name: Upload Mobile Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: arthora-android-apk
           path: dist/mobile/*.apk
