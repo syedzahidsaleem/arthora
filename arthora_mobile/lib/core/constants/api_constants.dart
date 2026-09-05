@@ -1,7 +1,7 @@
 class ApiConstants {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:4000/api/v1', // Android emulator host proxy
+    defaultValue: 'https://arthora-api.onrender.com/api/v1',
   );
 
   // Auth Endpoints
