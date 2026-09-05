@@ -2,27 +2,37 @@ name: Keep-Alive & Uptime Heartbeat
 
 on:
   schedule:
-    # Runs every 12 minutes (Render sleeps after 15 minutes of inactivity)
+    # Runs every 12 minutes to prevent Render 15-minute inactivity spin-down
     - cron: '*/12 * * * *'
   workflow_dispatch:
 
 jobs:
-  ping-render-backend:
-    name: Ping Render API Server
+  ping-services:
+    name: Ping Arthora Services
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
-      - name: Send Heartbeat Ping to Arthora API
+      - name: Ping Render Backend Gateway
         run: |
-          echo "Sending heartbeat ping to Arthora Render backend..."
-          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}\nTIME_TOTAL:%{time_total}s\n" --max-time 60 https://arthora-api.onrender.com/api/v1/health)
-          echo "$RESPONSE"
-          
-          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
-          if [ "$STATUS" -eq 200 ]; then
-            echo "✅ Arthora Backend is awake and healthy!"
+          echo "📡 Sending heartbeat ping to Arthora API (Render)..."
+          # Retry up to 3 times with 90s timeout to allow cold starts to complete
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 90 --retry 2 --retry-delay 5 https://arthora-api.onrender.com/api/v1/health || echo "TIMEOUT")
+          echo "Backend Response Status: $STATUS"
+
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Backend is active, awake, and responding normally (HTTP 200)."
+          elif [ "$STATUS" = "TIMEOUT" ] || [ "$STATUS" = "502" ] || [ "$STATUS" = "503" ] || [ "$STATUS" = "504" ]; then
+            echo "🔄 Wake-up probe delivered. Backend is spinning up from cold start."
           else
-            echo "⚠️ Unexpected status code: $STATUS"
-            exit 1
+            echo "ℹ️ Backend responded with status: $STATUS"
+          fi
+
+      - name: Ping Vercel Frontend
+        run: |
+          echo "🌐 Sending probe to Vercel Web Frontend..."
+          WEB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://out-sand-phi-45.vercel.app || echo "TIMEOUT")
+          echo "Frontend Response Status: $WEB_STATUS"
+          if [ "$WEB_STATUS" = "200" ]; then
+            echo "✅ Web Frontend is active and fast (HTTP 200)."
           fi

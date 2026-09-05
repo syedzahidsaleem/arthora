@@ -156,7 +156,23 @@ async function request<T>(endpoint: string, options: RequestOptions = {}, isRetr
     return undefined as unknown as T;
   }
 
-  const json: ApiResponse<T> = await response.json();
+  let json: ApiResponse<T>;
+  try {
+    const text = await response.text();
+    json = text ? JSON.parse(text) : ({ success: response.ok, timestamp: new Date().toISOString() } as ApiResponse<T>);
+  } catch {
+    json = {
+      success: false,
+      error: {
+        code: 'NETWORK_ERROR',
+        message:
+          response.status >= 500
+            ? 'Server is currently waking up from cold start. Please retry in a few moments.'
+            : `Request failed with status ${response.status}`,
+      },
+      timestamp: new Date().toISOString(),
+    };
+  }
 
   if (!response.ok || !json.success) {
     const errorMsg = json.error?.message || json.message || `Request failed with status ${response.status}`;
