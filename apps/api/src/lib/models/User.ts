@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IUser } from '@arthora/shared';
 
 export interface IUserDocument extends Omit<IUser, '_id'>, Document {
@@ -71,5 +71,6 @@ UserSchema.index({ firebaseUid: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true, sparse: true });
 
 export const User: Model<IUserDocument> =
+  (models.User as Model<IUserDocument>) ||
   model<IUserDocument>('User', UserSchema, 'users');
 export default User;
