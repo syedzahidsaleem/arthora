@@ -33,6 +33,16 @@ export const metadata: Metadata = {
     'Sharpe Ratio',
   ],
   authors: [{ name: 'Arthora Team' }],
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icon-192.svg',
+    apple: '/icon-192.svg',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Arthora',
+  },
   openGraph: {
     title: 'Arthora — AI Investment Research & Portfolio Builder',
     description:
