@@ -13,7 +13,11 @@ process.env.JWT_REFRESH_SECRET = 'test_refresh_secret_at_least_32_characters_123
 
 vi.mock('../../lib/models/User');
 vi.mock('../../lib/db/redis');
-vi.mock('argon2');
+vi.mock('argon2', () => ({
+  hash: vi.fn(),
+  verify: vi.fn(),
+  argon2id: 2,
+}));
 vi.mock('../../lib/middleware/authMiddleware', async (importOriginal) => {
   const actual = await importOriginal<typeof authMiddleware>();
   return {
