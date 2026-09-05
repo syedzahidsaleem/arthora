@@ -7,8 +7,10 @@ import {
   auth,
 } from '../lib/firebase';
 import { API_ENDPOINTS } from '../lib/api/endpoints';
+import { fetchWithColdStartRetry } from '../lib/api/client';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = RAW_API_URL.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
 
 export interface AuthState {
   user: IUser | null;
@@ -114,7 +116,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true });
         try {
-          const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
@@ -144,7 +146,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const { idToken } = await firebaseGoogleSignIn();
 
-          const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.GOOGLE}`, {
+          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.GOOGLE}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idToken }),
@@ -172,7 +174,7 @@ export const useAuthStore = create<AuthState>()(
       register: async (name: string, email: string, password: string) => {
         set({ isLoading: true });
         try {
-          const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
+          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),

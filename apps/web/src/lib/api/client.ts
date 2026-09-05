@@ -25,7 +25,7 @@ function onRefreshed(token: string) {
 /**
  * Automatically retries requests when the backend is waking from a cold start.
  */
-async function fetchWithColdStartRetry(
+export async function fetchWithColdStartRetry(
   url: string,
   fetchOptions: RequestInit,
   retries = 3,
