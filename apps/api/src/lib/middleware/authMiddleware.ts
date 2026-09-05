@@ -23,6 +23,61 @@ declare global {
 let firebaseApp: admin.app.App | null = null;
 
 /**
+ * Normalizes and formats PEM private keys from environment variables.
+ * Handles escaped newlines, surrounding quotes, single-line flattening, and base64 encoding.
+ */
+function cleanPrivateKey(rawKey: string | undefined): string | undefined {
+  if (!rawKey) return undefined;
+
+  let key = rawKey.trim();
+
+  // Strip leading and trailing quotes if present
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+
+  // Detect base64 without PEM markers
+  if (!key.includes('BEGIN') && key.length > 50) {
+    try {
+      const decoded = Buffer.from(key, 'base64').toString('utf-8');
+      if (decoded.includes('BEGIN')) {
+        key = decoded.trim();
+      }
+    } catch {
+      // Not base64
+    }
+  }
+
+  // Replace literal '\n' and carriage returns
+  key = key.replace(/\\n/g, '\n').replace(/\r/g, '');
+
+  // Ensure standard OpenSSL PEM structure with 64-char chunked lines
+  if (key.includes('BEGIN') && key.includes('END')) {
+    const beginMatch = key.match(/-----BEGIN[ A-Z0-9_-]+-----/);
+    const endMatch = key.match(/-----END[ A-Z0-9_-]+-----/);
+
+    if (beginMatch && endMatch) {
+      const beginHeader = beginMatch[0];
+      const endFooter = endMatch[0];
+      const beginIndex = key.indexOf(beginHeader);
+      const endIndex = key.indexOf(endFooter);
+
+      if (beginIndex !== -1 && endIndex !== -1) {
+        const body = key.slice(beginIndex + beginHeader.length, endIndex).trim();
+        const cleanBody = body.replace(/\s+/g, '');
+        const chunks: string[] = [];
+        for (let i = 0; i < cleanBody.length; i += 64) {
+          chunks.push(cleanBody.slice(i, i + 64));
+        }
+        key = `${beginHeader}\n${chunks.join('\n')}\n${endFooter}\n`;
+      }
+    }
+  }
+
+  return key;
+}
+
+/**
  * Initializes and returns the Firebase Admin SDK singleton instance.
  */
 export function getFirebaseAdmin(): admin.app.App {
@@ -37,20 +92,25 @@ export function getFirebaseAdmin(): admin.app.App {
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY
-    ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-    : undefined;
+  const privateKey = cleanPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
 
   if (projectId && clientEmail && privateKey) {
-    firebaseApp = admin.initializeApp({
-      credential: admin.credential.cert({
+    try {
+      firebaseApp = admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+      });
+      console.log('✅ [Firebase Admin] Initialized with service account credentials.');
+    } catch (certError) {
+      console.warn('⚠️ [Firebase Admin] Failed to initialize with cert credentials, falling back to projectId:', certError);
+      firebaseApp = admin.initializeApp({
         projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
+      });
+    }
   } else {
-    // Fallback initialize for testing or dev environments without certs
     firebaseApp = admin.initializeApp({
       projectId: projectId || 'arthora-dev',
     });
@@ -81,8 +141,29 @@ export async function verifyFirebaseToken(idToken: string): Promise<{
       picture: decoded.picture,
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Invalid Firebase ID token';
-    throw new AppError(`Firebase authentication failed: ${message}`, 401, 'INVALID_FIREBASE_TOKEN');
+    const errMsg = error instanceof Error ? error.message : String(error);
+    // If cert decoding failed or key was invalid, re-initialize without cert to verify using Google's public keys
+    if (errMsg.includes('private key') || errMsg.includes('DECODER')) {
+      try {
+        console.warn('⚠️ [Firebase] Retrying ID token verification using Google public certificates...');
+        if (admin.apps.length > 0) {
+          await Promise.all(admin.apps.map((app) => app?.delete().catch(() => {})));
+        }
+        firebaseApp = admin.initializeApp({
+          projectId: process.env.FIREBASE_PROJECT_ID || 'arthora-659a8',
+        });
+        const decoded = await firebaseApp.auth().verifyIdToken(idToken);
+        return {
+          uid: decoded.uid,
+          email: decoded.email,
+          name: decoded.name,
+          picture: decoded.picture,
+        };
+      } catch (retryError) {
+        console.error('❌ [Firebase] Public token verification retry also failed:', retryError);
+      }
+    }
+    throw new AppError(`Firebase authentication failed: ${errMsg}`, 401, 'INVALID_FIREBASE_TOKEN');
   }
 }
 
