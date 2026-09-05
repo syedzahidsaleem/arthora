@@ -39,6 +39,20 @@
 
 ---
 
+## 📱 Supported Device Atmospheres & Distribution Packages
+
+Arthora serves distinct user atmospheres and devices from the same unified codebase:
+
+| Atmosphere | Device / Target | Distribution Channel | Package / Artifact |
+|---|---|---|---|
+| **Web & Desktop PWA** | Chrome, Edge, Safari, Windows, macOS, Linux | [Live Vercel Production](https://out-sand-phi-45.vercel.app) | Installable PWA with offline theme and desktop windowing |
+| **Android Mobile** | Android 8.0+ (ARM64, ARMv7, x86_64) | [GitHub Releases](https://github.com/syedzahidsaleem/arthora/releases) | Universal APK (`arthora-release.apk`) & split ABI builds |
+| **iOS Mobile** | iOS 14.0+ (iPhone, iPad) | Flutter Workspace (`arthora_mobile`) | Native iOS IPA with Riverpod state synchronization |
+| **Developer & Node.js** | Node 18+, Web Browser, Edge Runtimes | NPM Package Distribution | [`@arthora/sdk`](packages/sdk) & [`@arthora/shared`](packages/shared) |
+| **Container & Cloud** | Docker, Render, Kubernetes | [Render Blueprint](render.yaml) & Dockerfile | Multi-stage Node 20 container image |
+
+---
+
 ## 🏗️ System Architecture
 
 ```
