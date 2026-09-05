@@ -208,7 +208,7 @@ export function createReportWorker(): Worker {
 
         const browser = await puppeteer.launch({
           args: chromium.args,
-          defaultViewport: chromium.defaultViewport,
+          defaultViewport: ((chromium as unknown as Record<string, unknown>).defaultViewport as { width: number; height: number }) || { width: 1920, height: 1080 },
           executablePath,
           headless: true,
         });
