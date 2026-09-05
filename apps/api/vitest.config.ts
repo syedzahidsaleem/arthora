@@ -3,11 +3,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
+    fileParallelism: false,
     pool: 'forks',
     poolOptions: {
       forks: {
-        maxForks: 2,
-        minForks: 1,
+        singleFork: true,
       },
     },
     testTimeout: 30000,

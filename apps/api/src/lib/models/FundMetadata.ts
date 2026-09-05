@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IFundMetadata } from '@arthora/shared';
 
 export interface IFundMetadataDocument extends Omit<IFundMetadata, '_id'>, Document {
@@ -38,5 +38,6 @@ FundMetadataSchema.index({ category: 1 });
 FundMetadataSchema.index({ schemeName: 'text' });
 
 export const FundMetadata: Model<IFundMetadataDocument> =
+  (models.FundMetadata as Model<IFundMetadataDocument>) ||
   model<IFundMetadataDocument>('FundMetadata', FundMetadataSchema, 'funds_metadata');
 export default FundMetadata;

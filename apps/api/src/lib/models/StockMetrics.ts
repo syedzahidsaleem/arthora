@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IStockMetrics } from '@arthora/shared';
 
 export interface IStockMetricsDocument extends Omit<IStockMetrics, '_id'>, Document {
@@ -51,5 +51,6 @@ StockMetricsSchema.index({ symbol: 1 }, { unique: true });
 StockMetricsSchema.index({ sector: 1, marketCap: -1 });
 
 export const StockMetrics: Model<IStockMetricsDocument> =
+  (models.StockMetrics as Model<IStockMetricsDocument>) ||
   model<IStockMetricsDocument>('StockMetrics', StockMetricsSchema, 'stock_metrics');
 export default StockMetrics;

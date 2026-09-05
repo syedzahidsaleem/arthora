@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IPortfolio } from '@arthora/shared';
 
 export interface IPortfolioDocument extends Omit<IPortfolio, '_id' | 'userId'>, Document {
@@ -103,5 +103,6 @@ PortfolioSchema.index({ userId: 1 });
 PortfolioSchema.index({ userId: 1, createdAt: -1 });
 
 export const Portfolio: Model<IPortfolioDocument> =
+  (models.Portfolio as Model<IPortfolioDocument>) ||
   model<IPortfolioDocument>('Portfolio', PortfolioSchema, 'portfolios');
 export default Portfolio;

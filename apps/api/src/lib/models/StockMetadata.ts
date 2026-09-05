@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IStockMetadata } from '@arthora/shared';
 
 export interface IStockMetadataDocument extends Omit<IStockMetadata, '_id'>, Document {
@@ -45,5 +45,6 @@ StockMetadataSchema.index({ sector: 1 });
 StockMetadataSchema.index({ companyName: 'text' });
 
 export const StockMetadata: Model<IStockMetadataDocument> =
+  (models.StockMetadata as Model<IStockMetadataDocument>) ||
   model<IStockMetadataDocument>('StockMetadata', StockMetadataSchema, 'stocks_metadata');
 export default StockMetadata;

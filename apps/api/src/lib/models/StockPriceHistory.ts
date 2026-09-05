@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IStockPriceHistory } from '@arthora/shared';
 
 export interface IStockPriceHistoryDocument extends Omit<IStockPriceHistory, '_id'>, Document {
@@ -32,6 +32,7 @@ const StockPriceHistorySchema = new Schema<IStockPriceHistoryDocument>(
 StockPriceHistorySchema.index({ symbol: 1, date: -1 }, { unique: true });
 
 export const StockPriceHistory: Model<IStockPriceHistoryDocument> =
+  (models.StockPriceHistory as Model<IStockPriceHistoryDocument>) ||
   model<IStockPriceHistoryDocument>(
     'StockPriceHistory',
     StockPriceHistorySchema,

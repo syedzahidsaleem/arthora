@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { ISession } from '@arthora/shared';
 
 export interface ISessionDocument extends Omit<ISession, '_id' | 'userId'>, Document {
@@ -33,5 +33,6 @@ SessionSchema.index({ userId: 1 });
 SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const Session: Model<ISessionDocument> =
+  (models.Session as Model<ISessionDocument>) ||
   model<ISessionDocument>('Session', SessionSchema, 'sessions');
 export default Session;

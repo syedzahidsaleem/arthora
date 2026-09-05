@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { ISearchHistory } from '@arthora/shared';
 
 export interface ISearchHistoryDocument
@@ -38,5 +38,6 @@ SearchHistorySchema.index({ userId: 1, searchedAt: -1 });
 SearchHistorySchema.index({ searchedAt: 1 }, { expireAfterSeconds: 7776000 });
 
 export const SearchHistory: Model<ISearchHistoryDocument> =
+  (models.SearchHistory as Model<ISearchHistoryDocument>) ||
   model<ISearchHistoryDocument>('SearchHistory', SearchHistorySchema, 'search_history');
 export default SearchHistory;

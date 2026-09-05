@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IFundSectorAlloc } from '@arthora/shared';
 
 export interface IFundSectorAllocDocument extends Omit<IFundSectorAlloc, '_id'>, Document {
@@ -30,5 +30,6 @@ const FundSectorAllocSchema = new Schema<IFundSectorAllocDocument>(
 FundSectorAllocSchema.index({ schemeCode: 1, reportDate: -1 });
 
 export const FundSectorAlloc: Model<IFundSectorAllocDocument> =
+  (models.FundSectorAlloc as Model<IFundSectorAllocDocument>) ||
   model<IFundSectorAllocDocument>('FundSectorAlloc', FundSectorAllocSchema, 'fund_sector_alloc');
 export default FundSectorAlloc;

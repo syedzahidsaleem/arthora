@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IFavorite } from '@arthora/shared';
 
 export interface IFavoriteDocument extends Omit<IFavorite, '_id' | 'userId'>, Document {
@@ -38,5 +38,6 @@ FavoriteSchema.index({ userId: 1, schemeCode: 1 }, { unique: true, sparse: true 
 FavoriteSchema.index({ userId: 1, symbol: 1 }, { unique: true, sparse: true });
 
 export const Favorite: Model<IFavoriteDocument> =
+  (models.Favorite as Model<IFavoriteDocument>) ||
   model<IFavoriteDocument>('Favorite', FavoriteSchema, 'favorites');
 export default Favorite;

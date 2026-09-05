@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IAISuggestionCache } from '@arthora/shared';
 
 export interface IAISuggestionCacheDocument extends Omit<IAISuggestionCache, '_id'>, Document {
@@ -28,6 +28,7 @@ AISuggestionCacheSchema.index({ inputHash: 1 }, { unique: true });
 AISuggestionCacheSchema.index({ createdAt: 1 }, { expireAfterSeconds: 604800 });
 
 export const AISuggestionCache: Model<IAISuggestionCacheDocument> =
+  (models.AISuggestionCache as Model<IAISuggestionCacheDocument>) ||
   model<IAISuggestionCacheDocument>(
     'AISuggestionCache',
     AISuggestionCacheSchema,

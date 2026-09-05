@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IFundHoldings } from '@arthora/shared';
 
 export interface IFundHoldingsDocument extends Omit<IFundHoldings, '_id'>, Document {
@@ -40,5 +40,6 @@ FundHoldingsSchema.index({ schemeCode: 1, reportDate: -1 });
 FundHoldingsSchema.index({ 'holdings.sector': 1 });
 
 export const FundHoldings: Model<IFundHoldingsDocument> =
+  (models.FundHoldings as Model<IFundHoldingsDocument>) ||
   model<IFundHoldingsDocument>('FundHoldings', FundHoldingsSchema, 'fund_holdings');
 export default FundHoldings;

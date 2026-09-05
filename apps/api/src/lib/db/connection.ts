@@ -32,7 +32,7 @@ class DatabaseConnection {
       console.error('❌ [MongoDB] Connection error:', err.message);
     });
 
-    if (!this.isShutdownRegistered) {
+    if (!this.isShutdownRegistered && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
       this.registerGracefulShutdown();
       this.isShutdownRegistered = true;
     }

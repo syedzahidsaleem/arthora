@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IReport } from '@arthora/shared';
 
 export interface IReportDocument extends Omit<IReport, '_id' | 'userId'>, Document {
@@ -42,5 +42,6 @@ ReportSchema.index({ userId: 1, createdAt: -1 });
 ReportSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const Report: Model<IReportDocument> =
+  (models.Report as Model<IReportDocument>) ||
   model<IReportDocument>('Report', ReportSchema, 'reports');
 export default Report;

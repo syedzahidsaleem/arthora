@@ -1,4 +1,4 @@
-import { Schema, model, Document, Model, Types } from 'mongoose';
+import { Schema, model, models, Document, Model, Types } from 'mongoose';
 import type { IFundNAVHistory } from '@arthora/shared';
 
 export interface IFundNAVHistoryDocument extends Omit<IFundNAVHistory, '_id'>, Document {
@@ -29,5 +29,6 @@ FundNAVHistorySchema.index({ schemeCode: 1, date: -1 }, { unique: true });
 FundNAVHistorySchema.index({ date: -1 });
 
 export const FundNAVHistory: Model<IFundNAVHistoryDocument> =
+  (models.FundNAVHistory as Model<IFundNAVHistoryDocument>) ||
   model<IFundNAVHistoryDocument>('FundNAVHistory', FundNAVHistorySchema, 'fund_nav_history');
 export default FundNAVHistory;
