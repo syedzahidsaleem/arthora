@@ -24,7 +24,7 @@
     "bullmq": "^5.41.6",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.4.2",
     "express": "^4.21.2",
     "firebase-admin": "^13.1.0",
     "helmet": "^8.0.0",
