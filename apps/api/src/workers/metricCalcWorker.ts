@@ -1,5 +1,6 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
+import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
 import { FundNAVHistory } from '../lib/models/FundNAVHistory';
 import { FundMetrics } from '../lib/models/FundMetrics';
 import {
@@ -133,7 +134,7 @@ export function createMetricCalcWorker(): Worker {
       };
     },
     {
-      connection: redis,
+      ...SERVERLESS_WORKER_DEFAULTS,
       concurrency: 5,
     },
   );

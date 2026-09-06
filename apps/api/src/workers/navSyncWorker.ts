@@ -1,5 +1,6 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
+import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
 import { FundMetadata } from '../lib/models/FundMetadata';
 import { FundNAVHistory } from '../lib/models/FundNAVHistory';
 import { fetchAllSchemes, fetchNAVHistory } from '../lib/external/mfapi';
@@ -111,7 +112,7 @@ export function createNavSyncWorker(): Worker {
       throw new Error(`Unknown job name: ${job.name}`);
     },
     {
-      connection: redis,
+      ...SERVERLESS_WORKER_DEFAULTS,
       concurrency: 5,
     },
   );

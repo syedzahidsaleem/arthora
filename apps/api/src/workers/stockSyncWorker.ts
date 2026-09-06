@@ -1,5 +1,6 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
+import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
 import { StockPriceHistory } from '../lib/models/StockPriceHistory';
 import { StockMetrics } from '../lib/models/StockMetrics';
 import {
@@ -191,7 +192,7 @@ export function createStockSyncWorker(): Worker {
       };
     },
     {
-      connection: redis,
+      ...SERVERLESS_WORKER_DEFAULTS,
       concurrency: 2,
     },
   );

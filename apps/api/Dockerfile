@@ -39,6 +39,6 @@ COPY --from=builder /app/packages/sdk/dist ./packages/sdk/dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api/package.json ./package.json
 EXPOSE 4000
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=60s --timeout=10s --start-period=5s --retries=3 \
   CMD wget -qO- http://localhost:4000/api/v1/health || exit 1
 CMD ["node", "dist/main.js"]

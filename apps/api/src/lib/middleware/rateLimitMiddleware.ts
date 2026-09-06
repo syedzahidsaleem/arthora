@@ -18,6 +18,11 @@ export function createRateLimiter(options: RateLimiterOptions) {
 
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      // Bypass rate limiting for health check probes and uptime monitors
+      if (req.path === '/health' || req.path.endsWith('/health') || req.originalUrl.includes('/health')) {
+        return next();
+      }
+
       const keySuffix = keyGenerator(req);
       const key = `ratelimit:${keySuffix}`;
 

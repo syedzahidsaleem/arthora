@@ -12,6 +12,7 @@ import { generalLimiter } from './lib/middleware/rateLimitMiddleware';
 import { corsMiddleware } from './lib/middleware/corsMiddleware';
 import { sanitizeBody } from './lib/middleware/sanitizationMiddleware';
 import { notFoundHandler, globalErrorHandler } from './lib/middleware/errorMiddleware';
+import healthRouter from './routes/health';
 import apiRouter from './routes';
 
 // Load environment variables
@@ -99,10 +100,15 @@ app.use(corsMiddleware);
 // 7. Request ID Injection
 app.use(requestIdMiddleware);
 
-// 8. Rate Limiting Middleware (General API Limiter)
+// 8. Health Check Endpoints (Exempt from rate limiting for Docker/uptime probes)
+app.use('/health', healthRouter);
+app.use('/api/v1/health', healthRouter);
+app.use('/api/health', healthRouter);
+
+// 9. Rate Limiting Middleware (General API Limiter)
 app.use(generalLimiter);
 
-// 9. Router Mounting (API Prefix & Root routes)
+// 10. Router Mounting (API Prefix & Root routes)
 app.use('/api/v1', apiRouter);
 app.use('/api', apiRouter);
 app.use('/', apiRouter);

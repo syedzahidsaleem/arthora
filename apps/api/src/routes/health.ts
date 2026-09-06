@@ -4,24 +4,37 @@ import { redis } from '../lib/db/redis';
 
 const router: Router = Router();
 
+let lastRedisCheck = 0;
+let cachedRedisStatus: 'connected' | 'disconnected' = 'disconnected';
+const REDIS_CACHE_TTL_MS = 60_000; // Cache for 60 seconds
+
 /**
  * GET /health - Service health check monitoring
  */
 router.get('/', async (_req: Request, res: Response) => {
   let mongoStatus: 'connected' | 'disconnected' = 'disconnected';
-  let redisStatus: 'connected' | 'disconnected' = 'disconnected';
+  let redisStatus = cachedRedisStatus;
 
   if (mongoose.connection.readyState === 1) {
     mongoStatus = 'connected';
   }
 
-  try {
-    const pong = await redis.ping();
-    if (pong === 'PONG') {
-      redisStatus = 'connected';
+  const now = Date.now();
+  if (now - lastRedisCheck > REDIS_CACHE_TTL_MS || redisStatus === 'disconnected') {
+    try {
+      const pong = await redis.ping();
+      if (pong === 'PONG') {
+        redisStatus = 'connected';
+        cachedRedisStatus = 'connected';
+      } else {
+        redisStatus = 'disconnected';
+        cachedRedisStatus = 'disconnected';
+      }
+    } catch {
+      redisStatus = 'disconnected';
+      cachedRedisStatus = 'disconnected';
     }
-  } catch {
-    redisStatus = 'disconnected';
+    lastRedisCheck = now;
   }
 
   const isHealthy = mongoStatus === 'connected' && redisStatus === 'connected';

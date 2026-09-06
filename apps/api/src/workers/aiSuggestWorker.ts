@@ -1,5 +1,6 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
+import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
 import { Portfolio } from '../lib/models/Portfolio';
 import {
   hashPortfolioInput,
@@ -93,7 +94,7 @@ export function createAiSuggestWorker(): Worker {
       }
     },
     {
-      connection: redis,
+      ...SERVERLESS_WORKER_DEFAULTS,
       concurrency: 3,
     },
   );

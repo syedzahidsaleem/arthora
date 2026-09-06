@@ -28,32 +28,36 @@ export async function startWorkers(): Promise<void> {
 
     console.log('🚀 [Worker Process] All 5 BullMQ workers active and listening for jobs.');
 
-    // 3. Register standard recurring cron schedules
-    // Sync all funds at 6:00 PM IST on weekdays (12:30 UTC)
-    await navSyncQueue.add(
-      'sync-all-funds',
-      {},
-      {
-        repeat: {
-          pattern: '30 12 * * 1-5',
+    // 3. Register standard recurring cron schedules only if explicitly enabled
+    if (process.env.ENABLE_RECURRING_SYNC === 'true') {
+      // Sync all funds at 6:00 PM IST on weekdays (12:30 UTC)
+      await navSyncQueue.add(
+        'sync-all-funds',
+        {},
+        {
+          repeat: {
+            pattern: '30 12 * * 1-5',
+          },
+          jobId: 'recurring-sync-all-funds',
         },
-        jobId: 'recurring-sync-all-funds',
-      },
-    );
+      );
 
-    // Live stock sync every 15 minutes
-    await stockSyncQueue.add(
-      'sync-stock-prices',
-      {},
-      {
-        repeat: {
-          every: 15 * 60 * 1000,
+      // Live stock sync hourly (during market hours)
+      await stockSyncQueue.add(
+        'sync-stock-prices',
+        {},
+        {
+          repeat: {
+            every: 60 * 60 * 1000,
+          },
+          jobId: 'recurring-stock-sync',
         },
-        jobId: 'recurring-stock-sync',
-      },
-    );
+      );
 
-    console.log('⏱️ [Worker Process] Recurring cron schedules registered in Redis.');
+      console.log('⏱️ [Worker Process] Recurring cron schedules registered in Redis.');
+    } else {
+      console.log('ℹ️ [Worker Process] Recurring background sync disabled (ENABLE_RECURRING_SYNC!=true) to protect Redis command limits.');
+    }
 
     // 4. Graceful Shutdown Handlers
     const shutdown = async (signal: string) => {
@@ -77,6 +81,6 @@ export async function startWorkers(): Promise<void> {
   }
 }
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && process.env.RUN_WORKER_PROCESS === 'true') {
   startWorkers();
 }

@@ -5,6 +5,7 @@ import { Worker, Queue, Job } from 'bullmq';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { redis } from '../lib/db/redis';
+import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
 import { Report } from '../lib/models/Report';
 
 export const REPORT_QUEUE = 'report-gen';
@@ -247,7 +248,7 @@ export function createReportWorker(): Worker {
       }
     },
     {
-      connection: redis,
+      ...SERVERLESS_WORKER_DEFAULTS,
       concurrency: 2,
     },
   );
