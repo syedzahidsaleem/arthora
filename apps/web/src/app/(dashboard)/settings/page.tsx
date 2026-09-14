@@ -10,7 +10,6 @@ import {
   Download,
   AlertTriangle,
   Save,
-  CheckCircle2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import * as Dialog from '@radix-ui/react-dialog';
