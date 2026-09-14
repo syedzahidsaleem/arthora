@@ -4,28 +4,30 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-bold tracking-wide border-2 border-black transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5',
   {
     variants: {
       variant: {
         default:
-          'bg-brand-primary text-white shadow-lg shadow-brand-primary/25 hover:bg-brand-primary/90 hover:shadow-brand-primary/40',
+          'bg-neo-yellow text-black shadow-neo hover:shadow-neo-lg hover:bg-[#FFE570]',
         secondary:
-          'bg-surface-3 text-content-primary hover:bg-surface-4 hover:text-white border border-surface-4',
+          'bg-neo-cyan text-black shadow-neo hover:shadow-neo-lg hover:bg-[#68E8FF]',
         destructive:
-          'bg-destructive text-white shadow-sm hover:bg-destructive/90',
+          'bg-[#FF4D6D] text-white shadow-neo hover:shadow-neo-lg',
         outline:
-          'border border-surface-4 bg-transparent text-content-primary hover:bg-surface-3 hover:text-white',
+          'bg-white dark:bg-[#18181F] text-black dark:text-white border-2 border-black shadow-neo hover:shadow-neo-lg',
         ghost:
-          'text-content-secondary hover:bg-surface-3 hover:text-content-primary',
-        link: 'text-brand-secondary underline-offset-4 hover:underline p-0 h-auto',
+          'border-transparent hover:border-black hover:bg-white/10 hover:shadow-neo-sm text-content-primary',
+        link: 'border-0 text-neo-yellow underline-offset-4 hover:underline p-0 h-auto font-bold',
         gradient:
-          'bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-lg shadow-brand-primary/30 hover:opacity-95',
+          'bg-gradient-to-r from-neo-yellow via-neo-lime to-neo-cyan text-black font-extrabold shadow-neo hover:shadow-neo-lg',
+        lime: 'bg-neo-lime text-black shadow-neo hover:shadow-neo-lg hover:bg-[#33F7AC]',
+        pink: 'bg-neo-pink text-black shadow-neo hover:shadow-neo-lg hover:bg-[#FF85D0]',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-8 rounded-lg px-3 text-xs',
-        lg: 'h-12 rounded-2xl px-6 text-base',
+        default: 'h-11 px-5 py-2',
+        sm: 'h-8.5 rounded-md px-3 text-xs',
+        lg: 'h-13 rounded-xl px-7 text-base font-extrabold',
         icon: 'h-10 w-10',
       },
     },
