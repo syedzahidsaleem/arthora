@@ -87,20 +87,20 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
             type="button"
             onClick={handleFavoriteClick}
             className={cn(
-              'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all',
+              'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all',
               favorited
-                ? 'bg-[#00D084]/10 text-[#00D084] border-[#00D084]/20'
-                : 'bg-white/5 text-[#9B9BB4] hover:text-white border-white/10 hover:bg-white/10',
+                ? 'bg-neo-green text-black'
+                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white',
             )}
           >
             {favorited ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
-            <span className="hidden sm:inline">{favorited ? 'Watchlist' : 'Add to Watchlist'}</span>
+            <span className="hidden sm:inline">{favorited ? 'WATCHLIST' : 'ADD WATCHLIST'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-1.5 rounded-xl text-[#9B9BB4] hover:text-white hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg bg-[#0E0E14] border-2 border-black text-[#A0A0B2] hover:text-white shadow-neo-sm hover:shadow-neo transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -111,27 +111,27 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               {stock.companyName}
             </h1>
-            <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 font-mono font-bold text-xs text-[#00D2FF]">
+            <span className="px-2 py-0.5 rounded bg-neo-cyan text-black font-mono font-black text-xs border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
               {stock.symbol}
             </span>
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap text-xs">
             {stock.sector && (
-              <span className="text-[#9B9BB4] font-medium capitalize">
+              <span className="text-[#A0A0B2] font-mono font-bold capitalize">
                 {stock.sector}
               </span>
             )}
             {stock.marketCapType && (
-              <span className="px-2 py-0.5 rounded-md bg-[#6C63FF]/15 text-[#00D2FF] font-semibold text-[11px] border border-[#6C63FF]/30 capitalize">
+              <span className="px-2 py-0.5 rounded bg-neo-yellow text-black font-mono font-black text-[10px] border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
                 {stock.marketCapType} Cap
               </span>
             )}
             {stock.isin && (
-              <span className="font-mono text-[10px] text-[#9B9BB4]/80 px-1.5 py-0.5 rounded bg-white/5">
+              <span className="font-mono text-[10px] text-[#A0A0B2] px-2 py-0.5 rounded bg-[#0E0E14] border border-black">
                 ISIN: {stock.isin}
               </span>
             )}
