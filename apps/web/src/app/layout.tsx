@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import './globals.css';
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-space-grotesk',
   display: 'swap',
 });
 
@@ -59,8 +59,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="min-h-screen bg-[#0D0E1A] text-[#F8F9FA] antialiased font-sans selection:bg-[#6C63FF]/30 selection:text-white">
+    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <body className="min-h-screen bg-[#0D0E15] text-[#F8F9FA] antialiased font-sans selection:bg-[#FFDE59] selection:text-black">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

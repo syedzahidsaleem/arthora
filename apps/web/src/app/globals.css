@@ -41,11 +41,68 @@
     @apply border-border;
   }
   body {
-    @apply bg-surface-1 text-content-primary font-sans antialiased selection:bg-brand-primary/30 selection:text-brand-secondary;
+    @apply bg-neo-canvas text-content-primary font-sans antialiased selection:bg-neo-yellow selection:text-neo-black;
     min-height: 100vh;
-    background-color: #0D0E1A;
+    background-color: #0D0E15;
     color: #F0F0FA;
   }
+}
+
+/* Neo-Brutalist Core Utilities */
+.neo-box {
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-box-sm {
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.neo-box-lg {
+  border: 3px solid #000000;
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.neo-btn {
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neo-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.neo-badge {
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Marquee infinite scroll container */
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: 1rem;
+}
+
+.marquee-content {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  min-width: 100%;
+  gap: 1rem;
 }
 
 /* Custom shimmer animation utility */
