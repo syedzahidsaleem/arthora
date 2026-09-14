@@ -36,7 +36,7 @@ export function GoogleAuthButton({ mode = 'signin', redirectTo = '/ai' }: Google
       variant="outline"
       onClick={handleGoogleClick}
       disabled={isLoading}
-      className="w-full bg-white text-gray-900 hover:bg-gray-100 hover:text-gray-950 font-medium h-11 border-gray-300 shadow-sm transition-all flex items-center justify-center space-x-3 rounded-xl"
+      className="w-full bg-white text-black font-bold h-12 border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center space-x-3 rounded-lg uppercase tracking-wide text-xs sm:text-sm"
     >
       {isLoading ? (
         <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-800 border-t-transparent" />
