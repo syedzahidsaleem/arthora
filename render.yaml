@@ -13,7 +13,7 @@ services:
       - key: RUN_WORKER_IN_PROCESS
         value: "true"
       - key: GEMINI_MODEL
-        value: gemini-3.6-flash
+        value: gemini-1.5-flash
       - key: ALLOWED_ORIGINS
         value: https://arthora.vercel.app,https://arthora.in,http://localhost:3000
       - key: MONGODB_URI

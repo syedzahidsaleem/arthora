@@ -36,34 +36,65 @@ function cleanJsonText(rawText: string): string {
 }
 
 /**
- * Invokes Gemini model with a hard timeout of 30 seconds.
+ * Invokes Gemini model with a hard timeout of 30 seconds, automatically cascading
+ * through available fallback models if the primary model is unavailable or capacity constrained.
  */
 async function generateWithTimeout(
   prompt: string,
   systemInstruction?: string,
 ): Promise<string> {
   const ai = getGeminiClient();
-  const model = ai.getGenerativeModel({
-    model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
-    systemInstruction,
-  });
+  const configuredModel = process.env.GEMINI_MODEL;
 
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new AppError('Gemini AI generation timed out after 30s', 504, 'GATEWAY_TIMEOUT')), TIMEOUT_MS),
+  // Cascade through configured model and known reliable production models
+  const candidateModels = Array.from(
+    new Set(
+      [
+        configuredModel,
+        'gemini-1.5-flash',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash-8b',
+        'gemini-1.5-pro',
+      ].filter(Boolean) as string[],
+    ),
   );
 
-  const apiPromise = (async () => {
-    try {
-      const response = await model.generateContent(prompt);
-      return response.response.text();
-    } catch (error) {
-      if (error instanceof AppError) throw error;
-      const msg = error instanceof Error ? error.message : 'Unknown AI error';
-      throw new AppError(`Gemini generation failure: ${msg}`, 502, 'AI_SERVICE_ERROR');
-    }
-  })();
+  let lastError: Error | null = null;
 
-  return Promise.race([apiPromise, timeoutPromise]);
+  for (const modelName of candidateModels) {
+    try {
+      const model = ai.getGenerativeModel({
+        model: modelName,
+        systemInstruction,
+      });
+
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new AppError('Gemini AI generation timed out after 30s', 504, 'GATEWAY_TIMEOUT')),
+          TIMEOUT_MS,
+        ),
+      );
+
+      const apiPromise = (async () => {
+        const response = await model.generateContent(prompt);
+        return response.response.text();
+      })();
+
+      return await Promise.race([apiPromise, timeoutPromise]);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      lastError = error instanceof Error ? error : new Error(msg);
+
+      if (error instanceof AppError && error.code === 'GATEWAY_TIMEOUT') {
+        throw error;
+      }
+
+      console.warn(`⚠️ [Gemini] Model "${modelName}" failed: ${msg}. Attempting fallback model...`);
+    }
+  }
+
+  const finalMsg = lastError?.message || 'Unknown AI error';
+  throw new AppError(`Gemini generation failure across all candidate models: ${finalMsg}`, 502, 'AI_SERVICE_ERROR');
 }
 
 /**
@@ -113,10 +144,22 @@ ${JSON.stringify(metrics, null, 2)}
 
 Highlight risk-adjusted performance (Sharpe/Alpha), downside protection (Sortino/Max Drawdown), and expense ratio impact. Keep it clear, objective, and easy to read.`;
 
-  return generateWithTimeout(
-    prompt,
-    'You are a certified Indian financial analyst. Provide a short, balanced paragraph explaining fund suitability.',
-  );
+  try {
+    return await generateWithTimeout(
+      prompt,
+      'You are a certified Indian financial analyst. Provide a short, balanced paragraph explaining fund suitability.',
+    );
+  } catch (err) {
+    console.warn('⚠️ [Gemini] Fund explanation failed, using deterministic summary:', err);
+    const sharpe = typeof metrics.sharpeRatio === 'number' ? metrics.sharpeRatio : undefined;
+    const alpha = typeof metrics.alpha === 'number' ? metrics.alpha : undefined;
+    const cagr3Y = typeof metrics.cagr3Y === 'number' ? metrics.cagr3Y : undefined;
+
+    if (sharpe !== undefined && sharpe > 1.2) {
+      return `${fundName} demonstrates strong risk-adjusted returns with a Sharpe ratio of ${sharpe.toFixed(2)}${alpha !== undefined ? ` and an alpha of ${alpha.toFixed(2)}% over benchmark` : ''}. It is well-suited for long-term investors seeking disciplined wealth creation.`;
+    }
+    return `${fundName} provides core exposure to Indian financial markets${cagr3Y !== undefined ? ` with a 3-year CAGR of ${cagr3Y.toFixed(1)}%` : ''}. Retail investors should review their asset allocation and investment horizon before investing.`;
+  }
 }
 
 /**
@@ -134,14 +177,13 @@ Respond in JSON format:
   "explanation": "2 sentence explanation of why this classification fits their stated goals and risk temperament"
 }`;
 
-  const rawText = await generateWithTimeout(
-    prompt,
-    'You are an investment psychologist. Categorize the risk appetite strictly into "low", "medium", or "high" in JSON format.',
-  );
-
-  const cleaned = cleanJsonText(rawText);
-
   try {
+    const rawText = await generateWithTimeout(
+      prompt,
+      'You are an investment psychologist. Categorize the risk appetite strictly into "low", "medium", or "high" in JSON format.',
+    );
+
+    const cleaned = cleanJsonText(rawText);
     const parsed = JSON.parse(cleaned) as { riskLevel: 'low' | 'medium' | 'high'; explanation: string };
     if (['low', 'medium', 'high'].includes(parsed.riskLevel)) {
       return {
@@ -149,12 +191,26 @@ Respond in JSON format:
         explanation: parsed.explanation || 'Classified based on investment horizon and risk preferences.',
       };
     }
-  } catch {
-    // fallback
+  } catch (err) {
+    console.warn('⚠️ [Gemini] Risk profile generation failed, using rule-based classification:', err);
+  }
+
+  const lower = description.toLowerCase();
+  if (lower.includes('aggressive') || lower.includes('small cap') || lower.includes('high risk') || lower.includes('crypto') || lower.includes('stocks')) {
+    return {
+      riskLevel: 'high',
+      explanation: 'Classified as aggressive risk based on preference for high-growth equities and capital appreciation.',
+    };
+  }
+  if (lower.includes('safe') || lower.includes('conservative') || lower.includes('debt') || lower.includes('fd') || lower.includes('preservation')) {
+    return {
+      riskLevel: 'low',
+      explanation: 'Classified as conservative risk based on emphasis on capital protection and fixed income.',
+    };
   }
 
   return {
     riskLevel: 'medium',
-    explanation: 'Defaulted to balanced moderate risk based on the provided investment description.',
+    explanation: 'Classified as moderate risk with balanced allocation across Indian equity and hybrid assets.',
   };
 }
