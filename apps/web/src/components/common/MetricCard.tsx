@@ -48,13 +48,13 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'bg-[#1A1B2E] border border-white/5 rounded-2xl flex flex-col justify-between transition-all duration-200 hover:border-white/10 hover:shadow-lg hover:shadow-black/20',
+        'bg-[#1A1A26] border-2 border-black rounded-xl flex flex-col justify-between transition-all duration-150 shadow-neo hover:shadow-neo-lg hover:-translate-y-0.5',
         size === 'sm' ? 'p-3' : 'p-4',
         className,
       )}
     >
       <div className="flex items-center justify-between gap-1 mb-2">
-        <span className="text-xs font-semibold text-[#9B9BB4] tracking-wider uppercase truncate">
+        <span className="text-xs font-mono font-black text-[#A0A0B2] tracking-wider uppercase truncate">
           {label}
         </span>
 
@@ -65,7 +65,7 @@ export function MetricCard({
                 <button
                   type="button"
                   aria-label={`Info about ${label}`}
-                  className="text-[#9B9BB4]/60 hover:text-white transition-colors cursor-help p-0.5"
+                  className="text-[#A0A0B2] hover:text-white transition-colors cursor-help p-0.5"
                 >
                   <HelpCircle className="w-3.5 h-3.5" />
                 </button>
@@ -74,11 +74,11 @@ export function MetricCard({
                 <Tooltip.Content
                   side="top"
                   align="center"
-                  className="bg-[#13141F] border border-white/10 text-[#F8F9FA] text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 max-w-xs animate-in fade-in-0 zoom-in-95"
+                  className="bg-neo-yellow border-2 border-black text-black font-mono font-black text-xs px-2.5 py-1.5 rounded-md shadow-neo z-50 max-w-xs animate-in fade-in-0 zoom-in-95 uppercase"
                   sideOffset={4}
                 >
                   {tooltip}
-                  <Tooltip.Arrow className="fill-[#13141F]" />
+                  <Tooltip.Arrow className="fill-black" />
                 </Tooltip.Content>
               </Tooltip.Portal>
             </Tooltip.Root>
@@ -88,7 +88,7 @@ export function MetricCard({
 
       <div
         className={cn(
-          'font-mono font-semibold text-white tracking-tight truncate my-0.5',
+          'font-mono font-black text-white tracking-tight truncate my-0.5',
           size === 'sm' ? 'text-lg' : 'text-2xl',
         )}
       >
@@ -100,14 +100,14 @@ export function MetricCard({
           {change !== undefined && (
             <span
               className={cn(
-                'inline-flex items-center font-mono font-medium px-1.5 py-0.5 rounded-md',
-                isPositive && 'bg-[#00D084]/10 text-[#00D084]',
-                isNegative && 'bg-[#FF4D6D]/10 text-[#FF4D6D]',
-                !isPositive && !isNegative && 'bg-white/5 text-[#9B9BB4]',
+                'inline-flex items-center font-mono font-black text-xs px-2 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_#000]',
+                isPositive && 'bg-neo-lime text-black',
+                isNegative && 'bg-[#FF4D6D] text-white',
+                !isPositive && !isNegative && 'bg-black text-[#A0A0B2]',
               )}
             >
-              {isPositive && <ArrowUpRight className="w-3 h-3 mr-0.5 inline" />}
-              {isNegative && <ArrowDownRight className="w-3 h-3 mr-0.5 inline" />}
+              {isPositive && <ArrowUpRight className="w-3 h-3 mr-0.5 stroke-[2.5]" />}
+              {isNegative && <ArrowDownRight className="w-3 h-3 mr-0.5 stroke-[2.5]" />}
               {change > 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`}
             </span>
           )}

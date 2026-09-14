@@ -34,14 +34,14 @@ export function DisclaimerBanner({ inline = false, className }: DisclaimerBanner
     return (
       <div
         className={cn(
-          'flex items-start gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200/90 text-xs leading-relaxed',
+          'flex items-start gap-3 p-4 rounded-xl bg-neo-yellow text-black border-2 border-black shadow-neo font-mono text-xs leading-relaxed',
           className,
         )}
       >
-        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <AlertCircle className="w-5 h-5 text-black shrink-0 mt-0.5 fill-black text-neo-yellow" />
         <div>
-          <span className="font-semibold text-amber-300">Disclaimer: </span>
-          Arthora is not a SEBI registered investment advisor. All information, projections, and suggested allocations are generated for educational and research purposes only. Past performance does not guarantee future results. Please consult a SEBI-registered financial advisor before investing.
+          <span className="font-black uppercase">Regulatory Note: </span>
+          Arthora is not a SEBI registered investment advisor. All information, simulations, and suggested allocations are generated for educational and research purposes only. Past performance does not guarantee future results.
         </div>
       </div>
     );
@@ -51,14 +51,14 @@ export function DisclaimerBanner({ inline = false, className }: DisclaimerBanner
     <aside
       aria-label="SEBI regulatory disclaimer"
       className={cn(
-        'fixed bottom-16 md:bottom-4 left-4 right-4 md:left-72 md:right-8 z-40 p-3.5 rounded-xl bg-[#13141F]/95 backdrop-blur-md border border-amber-500/30 text-xs text-amber-200/90 shadow-2xl flex items-center justify-between gap-4 animate-in slide-in-from-bottom-4 duration-300',
+        'fixed bottom-16 md:bottom-4 left-4 right-4 md:left-72 md:right-8 z-40 p-3.5 rounded-xl bg-neo-yellow text-black border-2 border-black shadow-neo-lg flex items-center justify-between gap-4 font-mono font-bold text-xs animate-in slide-in-from-bottom-4 duration-300',
         className,
       )}
     >
       <div className="flex items-center gap-2.5">
-        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+        <AlertCircle className="w-4 h-4 text-black shrink-0 fill-black text-neo-yellow" />
         <p className="leading-snug">
-          <strong className="text-amber-300">Regulatory Note:</strong> Arthora is not a SEBI registered advisor. All data is for educational research only.
+          <strong className="font-black uppercase">Regulatory Note:</strong> Arthora is not a SEBI registered advisor. All data is for educational research only.
         </p>
       </div>
 
@@ -66,9 +66,9 @@ export function DisclaimerBanner({ inline = false, className }: DisclaimerBanner
         type="button"
         onClick={handleDismiss}
         aria-label="Dismiss disclaimer banner"
-        className="p-1 rounded-lg hover:bg-white/10 text-amber-300/80 hover:text-white transition-colors"
+        className="p-1 rounded border border-black bg-black text-white hover:bg-neutral-800 transition-colors shadow-[1px_1px_0px_0px_#000]"
       >
-        <X className="w-4 h-4" />
+        <X className="w-3.5 h-3.5 stroke-[2.5]" />
       </button>
     </aside>
   );

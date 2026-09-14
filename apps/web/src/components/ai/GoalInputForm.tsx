@@ -68,16 +68,16 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-6"
+      className="p-5 sm:p-6 rounded-xl bg-[#161620] border-[3px] border-black shadow-neo-lg space-y-6"
     >
       {/* Form Header */}
-      <div className="flex items-center gap-2.5 pb-2 border-b border-white/5">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6C63FF] to-[#00D2FF] flex items-center justify-center text-white shadow-md">
-          <Sparkles className="w-4 h-4" />
+      <div className="flex items-center gap-2.5 pb-3 border-b-2 border-black">
+        <div className="w-8 h-8 rounded-lg bg-neo-yellow border-2 border-black flex items-center justify-center text-black shadow-neo-sm">
+          <Sparkles className="w-4 h-4 fill-black" />
         </div>
         <div>
-          <h2 className="font-bold text-base text-white">AI Portfolio Builder</h2>
-          <p className="text-xs text-[#9B9BB4]">
+          <h2 className="font-black text-base text-white uppercase tracking-tight">AI Portfolio Builder</h2>
+          <p className="text-xs font-mono text-[#A0A0B2]">
             Describe your investment goal and let Gemini AI tailor your portfolio
           </p>
         </div>
@@ -85,7 +85,7 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
 
       {/* Goal Preset Category Chips */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-[#9B9BB4] uppercase tracking-wider">
+        <label className="text-xs font-mono font-black text-[#A0A0B2] uppercase tracking-wider">
           Choose a Goal Template
         </label>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -97,10 +97,10 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
                 type="button"
                 onClick={() => handleCategorySelect(cat)}
                 className={cn(
-                  'px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border shrink-0',
+                  'px-3 py-1.5 rounded-md text-xs font-bold font-mono uppercase whitespace-nowrap transition-all border-2 border-black shrink-0 active:translate-x-0.5 active:translate-y-0.5',
                   isSelected
-                    ? 'bg-gradient-to-r from-[#6C63FF]/30 to-[#00D2FF]/20 text-white border-[#6C63FF] shadow-sm'
-                    : 'bg-[#13141F] text-[#9B9BB4] border-white/5 hover:border-white/10 hover:text-white',
+                    ? 'bg-neo-yellow text-black shadow-neo-sm'
+                    : 'bg-[#1E1E28] text-white hover:bg-[#282834]',
                 )}
               >
                 {cat.label}
@@ -112,31 +112,31 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
 
       {/* Goal Textarea */}
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-[#9B9BB4] uppercase tracking-wider flex items-center justify-between">
+        <label className="text-xs font-mono font-black text-[#A0A0B2] uppercase tracking-wider flex items-center justify-between">
           <span>Describe Your Goal in Detail</span>
-          <span className="text-[11px] text-[#9B9BB4]/60 font-normal">Natural Language</span>
+          <span className="text-[11px] text-neo-yellow font-bold">Natural Language</span>
         </label>
         <textarea
           {...register('goal')}
           rows={3}
           placeholder="e.g., Save ₹50 Lakhs for house down payment in Bangalore in 7 years..."
           className={cn(
-            'w-full px-3.5 py-2.5 rounded-xl bg-[#13141F] border text-sm text-white placeholder-[#9B9BB4]/50 focus:outline-none focus:ring-2 focus:ring-[#6C63FF] transition-all resize-none',
-            errors.goal ? 'border-[#FF4D6D]' : 'border-white/5 focus:border-transparent',
+            'w-full px-3.5 py-2.5 rounded-lg bg-[#121218] border-2 border-black text-sm font-medium text-white placeholder-[#A0A0B2] focus:outline-none focus:border-black focus:shadow-neo transition-all resize-none',
+            errors.goal ? 'border-[#FF4D6D]' : '',
           )}
         />
         {errors.goal && (
-          <p className="text-xs text-[#FF4D6D]">{errors.goal.message}</p>
+          <p className="text-xs text-[#FF4D6D] font-mono font-bold">{errors.goal.message}</p>
         )}
       </div>
 
       {/* Time Horizon Slider */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-[#9B9BB4] uppercase tracking-wider">
+          <label className="text-xs font-mono font-black text-[#A0A0B2] uppercase tracking-wider">
             Investment Horizon
           </label>
-          <span className="font-mono font-bold text-sm text-[#00D2FF]">
+          <span className="font-mono font-black text-xs px-2 py-0.5 rounded bg-neo-cyan text-black border border-black shadow-[1px_1px_0px_0px_#000]">
             {currentTimePeriod} {currentTimePeriod === 1 ? 'Year' : 'Years'}
           </span>
         </div>
@@ -146,18 +146,18 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
           control={control}
           render={({ field }) => (
             <Slider.Root
-              className="relative flex items-center select-none touch-none w-full h-5"
+              className="relative flex items-center select-none touch-none w-full h-6"
               value={[field.value]}
               max={30}
               min={1}
               step={1}
               onValueChange={(vals) => field.onChange(vals[0])}
             >
-              <Slider.Track className="bg-[#13141F] relative grow rounded-full h-2 overflow-hidden border border-white/5">
-                <Slider.Range className="absolute bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] h-full" />
+              <Slider.Track className="bg-[#121218] relative grow rounded-md h-3 overflow-hidden border-2 border-black">
+                <Slider.Range className="absolute bg-neo-yellow h-full border-r-2 border-black" />
               </Slider.Track>
               <Slider.Thumb
-                className="block w-5 h-5 bg-white shadow-lg shadow-black/50 rounded-full hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#6C63FF] transition-transform cursor-grab active:cursor-grabbing"
+                className="block w-6 h-6 bg-neo-cyan border-2 border-black shadow-neo-sm rounded-md hover:scale-110 focus:outline-none transition-transform cursor-grab active:cursor-grabbing"
                 aria-label="Time period in years"
               />
             </Slider.Root>
@@ -165,7 +165,7 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
         />
 
         {/* Milestone labels */}
-        <div className="flex justify-between text-[10px] font-mono text-[#9B9BB4]/60 px-1">
+        <div className="flex justify-between text-[10px] font-mono font-bold text-[#A0A0B2] px-1">
           <span>1Y</span>
           <span>3Y</span>
           <span>5Y</span>
@@ -178,7 +178,7 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
 
       {/* Risk Appetite 3 Cards */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-[#9B9BB4] uppercase tracking-wider">
+        <label className="text-xs font-mono font-black text-[#A0A0B2] uppercase tracking-wider">
           Risk Tolerance
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -187,18 +187,18 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
             type="button"
             onClick={() => setValue('riskLevel', 'low')}
             className={cn(
-              'p-3 rounded-2xl border text-left transition-all relative overflow-hidden',
+              'p-3 rounded-xl border-2 border-black text-left transition-all',
               selectedRisk === 'low'
-                ? 'bg-gradient-to-br from-[#00D084]/20 to-[#00D084]/5 border-[#00D084] shadow-md shadow-[#00D084]/10'
-                : 'bg-[#13141F] border-white/5 hover:border-white/10',
+                ? 'bg-neo-lime text-black shadow-neo'
+                : 'bg-[#1E1E28] text-white hover:bg-[#282834]',
             )}
           >
-            <div className="flex items-center gap-1.5 mb-1 text-[#00D084]">
-              <Shield className="w-4 h-4" />
-              <span className="font-bold text-xs text-white">Conservative</span>
+            <div className="flex items-center gap-1.5 mb-1 font-mono font-black text-xs uppercase">
+              <Shield className="w-4 h-4 stroke-[2.5]" />
+              <span>Conservative</span>
             </div>
-            <p className="text-[11px] text-[#9B9BB4] leading-snug">
-              Capital preservation. Mostly debt and balanced hybrid funds.
+            <p className={cn('text-[11px] leading-snug font-medium', selectedRisk === 'low' ? 'text-black' : 'text-[#A0A0B2]')}>
+              Capital preservation. Mostly debt and hybrid funds.
             </p>
           </button>
 
@@ -207,18 +207,18 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
             type="button"
             onClick={() => setValue('riskLevel', 'medium')}
             className={cn(
-              'p-3 rounded-2xl border text-left transition-all relative overflow-hidden',
+              'p-3 rounded-xl border-2 border-black text-left transition-all',
               selectedRisk === 'medium'
-                ? 'bg-gradient-to-br from-[#6C63FF]/20 to-[#6C63FF]/5 border-[#6C63FF] shadow-md shadow-[#6C63FF]/10'
-                : 'bg-[#13141F] border-white/5 hover:border-white/10',
+                ? 'bg-neo-yellow text-black shadow-neo'
+                : 'bg-[#1E1E28] text-white hover:bg-[#282834]',
             )}
           >
-            <div className="flex items-center gap-1.5 mb-1 text-[#00D2FF]">
-              <Compass className="w-4 h-4" />
-              <span className="font-bold text-xs text-white">Moderate</span>
+            <div className="flex items-center gap-1.5 mb-1 font-mono font-black text-xs uppercase">
+              <Compass className="w-4 h-4 stroke-[2.5]" />
+              <span>Moderate</span>
             </div>
-            <p className="text-[11px] text-[#9B9BB4] leading-snug">
-              Balanced growth. Index, flexi cap, and large cap funds.
+            <p className={cn('text-[11px] leading-snug font-medium', selectedRisk === 'medium' ? 'text-black' : 'text-[#A0A0B2]')}>
+              Balanced growth. Index, flexi cap, & large cap funds.
             </p>
           </button>
 
@@ -227,18 +227,18 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
             type="button"
             onClick={() => setValue('riskLevel', 'high')}
             className={cn(
-              'p-3 rounded-2xl border text-left transition-all relative overflow-hidden',
+              'p-3 rounded-xl border-2 border-black text-left transition-all',
               selectedRisk === 'high'
-                ? 'bg-gradient-to-br from-[#FF4D6D]/20 to-[#FF4D6D]/5 border-[#FF4D6D] shadow-md shadow-[#FF4D6D]/10'
-                : 'bg-[#13141F] border-white/5 hover:border-white/10',
+                ? 'bg-neo-pink text-black shadow-neo'
+                : 'bg-[#1E1E28] text-white hover:bg-[#282834]',
             )}
           >
-            <div className="flex items-center gap-1.5 mb-1 text-[#FF4D6D]">
-              <Flame className="w-4 h-4" />
-              <span className="font-bold text-xs text-white">Aggressive</span>
+            <div className="flex items-center gap-1.5 mb-1 font-mono font-black text-xs uppercase">
+              <Flame className="w-4 h-4 stroke-[2.5]" />
+              <span>Aggressive</span>
             </div>
-            <p className="text-[11px] text-[#9B9BB4] leading-snug">
-              Maximum wealth compounding. Small cap, mid cap, & equities.
+            <p className={cn('text-[11px] leading-snug font-medium', selectedRisk === 'high' ? 'text-black' : 'text-[#A0A0B2]')}>
+              Maximum compounding. Small cap, mid cap, & equities.
             </p>
           </button>
         </div>
@@ -246,22 +246,22 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
 
       {/* Monthly Investment Amount */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-[#9B9BB4] uppercase tracking-wider flex items-center justify-between">
+        <label className="text-xs font-mono font-black text-[#A0A0B2] uppercase tracking-wider flex items-center justify-between">
           <span>Monthly SIP Amount (INR)</span>
-          <span className="font-mono text-white text-xs font-bold">
+          <span className="font-mono text-white text-xs font-black">
             {formatINR(monthlyAmount)}
           </span>
         </label>
 
         <div className="relative">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono text-[#9B9BB4]">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono font-bold text-[#A0A0B2]">
             ₹
           </span>
           <input
             type="number"
             {...register('monthlyInvestment', { valueAsNumber: true })}
             placeholder="25000"
-            className="w-full pl-8 pr-4 py-2.5 rounded-xl bg-[#13141F] border border-white/5 text-sm font-mono font-semibold text-white placeholder-[#9B9BB4]/50 focus:outline-none focus:ring-2 focus:ring-[#6C63FF] transition-all"
+            className="w-full pl-8 pr-4 py-2.5 rounded-lg bg-[#121218] border-2 border-black text-sm font-mono font-black text-white focus:outline-none focus:shadow-neo transition-all"
           />
         </div>
 
@@ -275,10 +275,10 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
                 type="button"
                 onClick={() => handleQuickAmount(amt)}
                 className={cn(
-                  'px-2.5 py-1 rounded-lg text-xs font-mono font-medium border transition-all',
+                  'px-2.5 py-1 rounded-md text-xs font-mono font-bold border-2 border-black transition-all active:translate-x-0.5 active:translate-y-0.5',
                   isSelected
-                    ? 'bg-[#6C63FF]/20 text-[#00D2FF] border-[#6C63FF]'
-                    : 'bg-[#13141F] text-[#9B9BB4] border-white/5 hover:border-white/10 hover:text-white',
+                    ? 'bg-neo-cyan text-black shadow-neo-sm font-black'
+                    : 'bg-[#1E1E28] text-white hover:bg-[#282834]',
                 )}
               >
                 {formatINR(amt)}
@@ -293,10 +293,10 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
         type="submit"
         disabled={isGenerating}
         className={cn(
-          'w-full py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2.5 transition-all shadow-xl shadow-[#6C63FF]/25',
+          'w-full py-4 rounded-xl font-black text-base uppercase tracking-wider text-black flex items-center justify-center gap-2.5 border-[3px] border-black transition-all',
           isGenerating
-            ? 'bg-white/10 cursor-not-allowed text-[#9B9BB4]'
-            : 'bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] hover:opacity-90 active:scale-[0.98]',
+            ? 'bg-[#282834] cursor-not-allowed text-[#A0A0B2] border-black'
+            : 'bg-neo-yellow shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none hover:bg-[#FFE570]',
         )}
       >
         {isGenerating ? (
@@ -306,7 +306,7 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
           </>
         ) : (
           <>
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-5 h-5 fill-black" />
             <span>Generate My Portfolio</span>
           </>
         )}

@@ -46,13 +46,13 @@ export default function AIPage() {
       {/* Top Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
             <span>AI Portfolio Builder</span>
-            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/20 text-[#00D2FF] text-[11px] font-bold border border-[#6C63FF]/30">
+            <span className="px-2 py-0.5 rounded-md bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
               PRO
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#9B9BB4] mt-1">
+          <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
             Build custom, goal-based portfolios backed by 10,000 Monte Carlo simulations.
           </p>
         </div>
@@ -73,14 +73,14 @@ export default function AIPage() {
             <PortfolioResult portfolio={currentPortfolio} onReset={handleReset} />
           ) : (
             /* Empty state preview */
-            <div className="p-8 sm:p-12 rounded-3xl bg-[#1A1B2E]/60 border border-white/5 shadow-xl flex flex-col items-center justify-center text-center space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-[#6C63FF] shadow-inner">
-                <Sparkles className="w-8 h-8 opacity-70" />
+            <div className="p-8 sm:p-12 rounded-xl bg-[#161620] border-[3px] border-black shadow-neo-lg flex flex-col items-center justify-center text-center space-y-6">
+              <div className="w-16 h-16 rounded-xl bg-neo-yellow border-2 border-black flex items-center justify-center text-black shadow-neo-sm">
+                <Sparkles className="w-8 h-8 fill-black" />
               </div>
 
               <div className="space-y-2 max-w-sm">
-                <h3 className="text-lg font-bold text-white">Your portfolio will appear here</h3>
-                <p className="text-xs text-[#9B9BB4] leading-relaxed">
+                <h3 className="text-xl font-black uppercase text-white">Your portfolio will appear here</h3>
+                <p className="text-xs font-mono text-[#A0A0B2] leading-relaxed">
                   Fill in your investment goal, time horizon, and monthly budget to generate a customized mutual fund portfolio.
                 </p>
               </div>

@@ -19,7 +19,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#13141F]/95 backdrop-blur-md border-t border-white/5 px-2 pb-[env(safe-area-inset-bottom)]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#121218] border-t-2 border-black px-2 pb-[env(safe-area-inset-bottom)] select-none"
     >
       <div className="flex items-center justify-around h-16">
         {tabs.map((tab) => {
@@ -31,29 +31,34 @@ export function MobileNav() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 h-full py-1 text-xs font-medium transition-all active:scale-95',
-                isActive ? 'text-white' : 'text-[#9B9BB4] hover:text-white',
+                'flex flex-col items-center justify-center flex-1 h-full py-1 text-xs font-bold transition-all active:scale-95',
+                isActive ? 'text-white' : 'text-[#A0A0B2] hover:text-white',
               )}
             >
               <div
                 className={cn(
-                  'p-1.5 rounded-xl transition-all',
-                  isActive && 'bg-gradient-to-tr from-[#6C63FF]/20 to-[#00D2FF]/20',
+                  'p-1.5 rounded-lg border-2 transition-all',
+                  isActive
+                    ? 'bg-neo-yellow text-black border-black shadow-neo-sm'
+                    : 'border-transparent text-[#A0A0B2]',
                 )}
               >
                 <Icon
                   className={cn(
-                    'w-5 h-5',
-                    isActive ? 'text-[#00D2FF] stroke-[2.5]' : 'text-[#9B9BB4]',
+                    'w-5 h-5 stroke-[2.5]',
+                    isActive ? 'text-black' : 'text-[#A0A0B2]',
                   )}
                 />
               </div>
 
-              {isActive && (
-                <span className="text-[10px] font-semibold bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] bg-clip-text text-transparent mt-0.5">
-                  {tab.label}
-                </span>
-              )}
+              <span
+                className={cn(
+                  'text-[10px] font-mono font-black uppercase tracking-wider mt-0.5',
+                  isActive ? 'text-neo-yellow' : 'text-[#A0A0B2]',
+                )}
+              >
+                {tab.label}
+              </span>
             </Link>
           );
         })}

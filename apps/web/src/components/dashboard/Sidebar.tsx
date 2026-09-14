@@ -51,24 +51,24 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 bg-[#13141F] border-r border-white/5 transition-all duration-300 select-none',
-        isCollapsed ? 'w-16' : 'w-64',
+        'hidden md:flex flex-col fixed top-0 bottom-0 left-0 z-30 bg-[#121218] border-r-2 border-black transition-all duration-300 select-none',
+        isCollapsed ? 'w-18' : 'w-64',
       )}
     >
       {/* Top Brand Logo Section */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-white/5">
+      <div className="h-16 flex items-center justify-between px-4 border-b-2 border-black">
         <Link href="/ai" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6C63FF] to-[#00D2FF] flex items-center justify-center shrink-0 shadow-lg shadow-[#6C63FF]/20">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="w-9 h-9 rounded-lg bg-neo-yellow border-2 border-black flex items-center justify-center shrink-0 shadow-neo-sm">
+            <Sparkles className="w-4 h-4 text-black fill-black" />
           </div>
 
           {!isCollapsed && (
-            <div className="flex flex-col">
-              <span className="font-bold text-base tracking-tight text-white leading-none">
-                Arthora<span className="text-[#00D2FF]">.</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-black text-lg tracking-tight text-white uppercase leading-none">
+                Arthora
               </span>
-              <span className="text-[10px] text-[#9B9BB4] font-medium tracking-wider uppercase">
-                India
+              <span className="text-[10px] font-mono font-black px-1 py-0.2 bg-neo-cyan text-black border border-black rounded shadow-[1px_1px_0px_0px_#000]">
+                .IN
               </span>
             </div>
           )}
@@ -79,15 +79,15 @@ export function Sidebar() {
             type="button"
             onClick={toggleCollapsed}
             aria-label="Collapse sidebar"
-            className="p-1 rounded-lg text-[#9B9BB4] hover:text-white hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-md border-2 border-black bg-[#1A1A24] text-[#A0A0B2] hover:text-white hover:bg-[#252533] shadow-neo-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
           </button>
         )}
       </div>
 
       {/* Global Search Button */}
-      <div className="p-3 border-b border-white/5">
+      <div className="p-3 border-b-2 border-black">
         {isCollapsed ? (
           <SearchInput isMobileTrigger triggerClassName="w-full flex justify-center p-2" />
         ) : (
@@ -96,7 +96,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 py-4 px-2 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 py-4 px-3 space-y-2 overflow-y-auto">
         <Tooltip.Provider delayDuration={100}>
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -109,22 +109,22 @@ export function Sidebar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        'w-full flex items-center justify-center p-2.5 rounded-xl transition-all',
+                        'w-full flex items-center justify-center p-2.5 rounded-lg border-2 transition-all',
                         isActive
-                          ? 'bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/10 text-white shadow-sm'
-                          : 'text-[#9B9BB4] hover:text-white hover:bg-white/5',
+                          ? 'bg-neo-yellow text-black border-black shadow-neo-sm'
+                          : 'border-transparent text-[#A0A0B2] hover:text-white hover:bg-[#1A1A24] hover:border-black',
                       )}
                     >
-                      <Icon className={cn('w-5 h-5', isActive && 'text-[#00D2FF]')} />
+                      <Icon className={cn('w-5 h-5 stroke-[2.5]', isActive && 'text-black')} />
                     </Link>
                   </Tooltip.Trigger>
                   <Tooltip.Portal>
                     <Tooltip.Content
                       side="right"
-                      className="bg-[#1A1B2E] border border-white/10 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-xl z-50 ml-2"
+                      className="bg-neo-yellow border-2 border-black text-black font-mono font-black text-xs px-2.5 py-1.5 rounded-md shadow-neo z-50 ml-2 uppercase"
                     >
                       {item.label}
-                      <Tooltip.Arrow className="fill-[#1A1B2E]" />
+                      <Tooltip.Arrow className="fill-black" />
                     </Tooltip.Content>
                   </Tooltip.Portal>
                 </Tooltip.Root>
@@ -136,13 +136,13 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all',
+                  'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2',
                   isActive
-                    ? 'bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/10 text-white border-l-2 border-[#6C63FF] shadow-sm'
-                    : 'text-[#9B9BB4] hover:text-white hover:bg-white/5',
+                    ? 'bg-neo-yellow text-black border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5'
+                    : 'border-transparent text-[#A0A0B2] hover:text-white hover:bg-[#1A1A24] hover:border-black hover:shadow-neo-sm',
                 )}
               >
-                <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-[#00D2FF]')} />
+                <Icon className={cn('w-4 h-4 shrink-0 stroke-[2.5]', isActive && 'text-black')} />
                 <span className="truncate">{item.label}</span>
               </Link>
             );
@@ -151,7 +151,7 @@ export function Sidebar() {
       </nav>
 
       {/* Footer User Profile & Theme Toggle */}
-      <div className="p-3 border-t border-white/5 space-y-2">
+      <div className="p-3 border-t-2 border-black space-y-2">
         <div className={cn('flex items-center justify-between', isCollapsed && 'flex-col gap-2')}>
           {/* User Dropdown */}
           <DropdownMenu.Root>
@@ -160,11 +160,11 @@ export function Sidebar() {
                 type="button"
                 aria-label="User profile menu"
                 className={cn(
-                  'flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-white/5 transition-all text-left group',
+                  'flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-[#1A1A24] transition-all text-left group border border-transparent hover:border-black',
                   isCollapsed ? 'justify-center w-full' : 'flex-1 min-w-0',
                 )}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#6C63FF] to-[#00D2FF] flex items-center justify-center font-bold text-xs text-white shrink-0 shadow-md">
+                <div className="w-8 h-8 rounded-md bg-neo-pink border-2 border-black flex items-center justify-center font-mono font-black text-xs text-black shrink-0 shadow-neo-sm">
                   {userInitials}
                 </div>
 
