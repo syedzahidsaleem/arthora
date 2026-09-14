@@ -44,13 +44,13 @@ export default function WatchlistPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
             <span>Your Investment Watchlist</span>
-            <span className="px-2 py-0.5 rounded-full bg-[#6C63FF]/20 text-[#00D2FF] text-[11px] font-bold border border-[#6C63FF]/30">
+            <span className="px-2 py-0.5 rounded-md bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
               {favorites.length} SAVED
             </span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#9B9BB4] mt-1">
+          <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
             Track live NAVs, stock quotes, and compare metrics side-by-side.
           </p>
         </div>
@@ -59,9 +59,9 @@ export default function WatchlistPage() {
           <button
             type="button"
             onClick={() => setShowCompare(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] hover:opacity-90 shadow-lg shadow-[#6C63FF]/20 animate-in fade-in"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all animate-in fade-in"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 fill-black" />
             <span>Compare Selected ({selectedIds.length})</span>
           </button>
         )}

@@ -248,35 +248,35 @@ export default function ResearchHubPage() {
     <div className="space-y-8">
       {/* Top Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+        <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
           <span>Investment Research Hub</span>
-          <span className="px-2 py-0.5 rounded-full bg-[#00D2FF]/10 text-[#00D2FF] text-[11px] font-bold border border-[#00D2FF]/20">
+          <span className="px-2 py-0.5 rounded-md bg-neo-lime text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
             LIVE DATA
           </span>
         </h1>
-        <p className="text-xs sm:text-sm text-[#9B9BB4] mt-1">
+        <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
           Explore 40,000+ AMFI mutual funds and NSE listed stocks with quantitative analytics.
         </p>
       </div>
 
       {/* Prominent Search Bar & Category Chips */}
-      <div className="p-4 sm:p-5 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+      <div className="p-4 sm:p-5 rounded-xl bg-[#161620] border-[3px] border-black shadow-neo-lg space-y-4">
         <div className="relative flex items-center">
-          <Search className="w-5 h-5 text-[#6C63FF] absolute left-4 pointer-events-none" />
+          <Search className="w-5 h-5 text-neo-yellow absolute left-4 pointer-events-none stroke-[2.5]" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search mutual funds by name, AMC, category or stocks by NSE ticker..."
-            className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-[#13141F] border border-white/5 text-sm sm:text-base font-medium text-white placeholder-[#9B9BB4]/60 focus:outline-none focus:ring-2 focus:ring-[#6C63FF] transition-all"
+            className="w-full pl-12 pr-12 py-3.5 rounded-lg bg-[#121218] border-2 border-black text-sm sm:text-base font-medium text-white placeholder-[#A0A0B2] focus:outline-none focus:border-black focus:shadow-neo transition-all"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery('')}
               aria-label="Clear search input"
-              className="absolute right-4 p-1 text-[#9B9BB4] hover:text-white"
+              className="absolute right-4 p-1 rounded border border-black bg-neo-yellow text-black hover:bg-[#FFE570]"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 stroke-[2.5]" />
             </button>
           ) : isSearching ? (
             <div className="absolute right-4">
