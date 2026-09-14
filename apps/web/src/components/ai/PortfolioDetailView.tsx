@@ -52,36 +52,44 @@ export function PortfolioDetailView({ portfolioId }: PortfolioDetailViewProps) {
       </div>
 
       {/* Goal Summary Pills */}
-      <div className="p-4 rounded-2xl bg-[#1A1B2E] border border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-        <div className="flex items-center gap-2">
-          <Target className="w-4 h-4 text-[#6C63FF] shrink-0" />
+      <div className="p-4 rounded-xl bg-[#161620] border-2 border-black shadow-neo grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-neo-yellow border-2 border-black text-black shadow-[1px_1px_0px_0px_#000] shrink-0">
+            <Target className="w-4 h-4" />
+          </div>
           <div className="truncate">
-            <span className="text-[#9B9BB4] text-[10px] block">Target Goal</span>
-            <span className="font-semibold text-white truncate block">{portfolio.goal}</span>
+            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Target Goal</span>
+            <span className="font-black text-white truncate block uppercase">{portfolio.goal}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Shield className="w-4 h-4 text-[#00D2FF] shrink-0" />
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-neo-cyan border-2 border-black text-black shadow-[1px_1px_0px_0px_#000] shrink-0">
+            <Shield className="w-4 h-4" />
+          </div>
           <div>
-            <span className="text-[#9B9BB4] text-[10px] block">Risk Profile</span>
-            <span className="font-semibold text-white capitalize">{portfolio.riskLevel}</span>
+            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Risk Profile</span>
+            <span className="font-mono font-black text-white uppercase">{portfolio.riskLevel}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-[#00D084] shrink-0" />
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-neo-green border-2 border-black text-black shadow-[1px_1px_0px_0px_#000] shrink-0">
+            <Clock className="w-4 h-4" />
+          </div>
           <div>
-            <span className="text-[#9B9BB4] text-[10px] block">Time Period</span>
-            <span className="font-mono font-semibold text-white">{portfolio.timePeriod} Years</span>
+            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Time Period</span>
+            <span className="font-mono font-black text-white">{portfolio.timePeriod} Years</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <IndianRupee className="w-4 h-4 text-amber-400 shrink-0" />
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-md bg-neo-lavender border-2 border-black text-black shadow-[1px_1px_0px_0px_#000] shrink-0">
+            <IndianRupee className="w-4 h-4" />
+          </div>
           <div>
-            <span className="text-[#9B9BB4] text-[10px] block">Monthly SIP</span>
-            <span className="font-mono font-semibold text-white">
+            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Monthly SIP</span>
+            <span className="font-mono font-black text-white">
               {formatINR(portfolio.monthlyInvestment || 0)}
             </span>
           </div>

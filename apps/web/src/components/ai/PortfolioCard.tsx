@@ -29,26 +29,26 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
     <Link
       href={`/ai/${portfolio._id}`}
       className={cn(
-        'group block p-5 rounded-2xl bg-[#1A1B2E] border border-white/5 transition-all duration-200 hover:border-white/15 hover:shadow-xl hover:scale-[1.01] relative overflow-hidden',
-        portfolio.isPinned && 'border-[#6C63FF]/30 bg-gradient-to-br from-[#1A1B2E] to-[#6C63FF]/5',
+        'group block p-5 rounded-xl bg-[#161620] border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all relative overflow-hidden',
+        portfolio.isPinned && 'bg-[#1C1C2A] border-neo-yellow',
       )}
     >
       {/* Top Meta Row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className="font-bold text-sm text-white truncate group-hover:text-[#00D2FF] transition-colors">
+            <h4 className="font-black text-sm text-white uppercase tracking-wide truncate group-hover:text-neo-yellow transition-colors">
               {portfolio.name}
             </h4>
 
             {portfolio.isPinned && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#6C63FF]/20 text-[#00D2FF] text-[10px] font-bold">
-                <Pin className="w-2.5 h-2.5 fill-current" /> Pinned
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-yellow text-black text-[10px] font-mono font-black border border-black shadow-[1px_1px_0px_0px_#000]">
+                <Pin className="w-2.5 h-2.5 fill-black" /> PINNED
               </span>
             )}
           </div>
 
-          <p className="text-xs text-[#9B9BB4] truncate">{portfolio.goal}</p>
+          <p className="text-xs font-mono text-[#A0A0B2] truncate">{portfolio.goal}</p>
         </div>
 
         {/* Pin toggle button */}
@@ -57,32 +57,32 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
           onClick={handlePin}
           aria-label={portfolio.isPinned ? 'Unpin portfolio' : 'Pin portfolio'}
           className={cn(
-            'p-1.5 rounded-lg transition-colors shrink-0',
+            'p-1.5 rounded-md border-2 border-black transition-all shrink-0',
             portfolio.isPinned
-              ? 'text-[#6C63FF] hover:bg-[#6C63FF]/10'
-              : 'text-[#9B9BB4]/40 hover:text-white hover:bg-white/5',
+              ? 'bg-neo-yellow text-black shadow-[1px_1px_0px_0px_#000]'
+              : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white',
           )}
         >
-          <Pin className={cn('w-4 h-4', portfolio.isPinned && 'fill-current')} />
+          <Pin className={cn('w-3.5 h-3.5', portfolio.isPinned && 'fill-black')} />
         </button>
       </div>
 
       {/* Metric Middle Row */}
-      <div className="grid grid-cols-2 gap-3 py-3 my-2 border-y border-white/5">
+      <div className="grid grid-cols-2 gap-3 py-3 my-2 border-y-2 border-black/40">
         <div>
-          <span className="text-[10px] font-semibold text-[#9B9BB4] uppercase tracking-wider block">
+          <span className="text-[10px] font-black text-[#A0A0B2] uppercase tracking-wider block">
             Target Corpus
           </span>
-          <span className="font-mono text-base font-bold text-white">
+          <span className="font-mono text-base font-black text-white">
             {projectedCorpus > 0 ? formatINR(projectedCorpus) : 'Calculating...'}
           </span>
         </div>
 
         <div>
-          <span className="text-[10px] font-semibold text-[#9B9BB4] uppercase tracking-wider block">
+          <span className="text-[10px] font-black text-[#A0A0B2] uppercase tracking-wider block">
             Horizon & Risk
           </span>
-          <span className="font-mono text-xs text-[#00D2FF] font-medium capitalize">
+          <span className="font-mono text-xs text-neo-cyan font-bold capitalize">
             {portfolio.timePeriod}Y • {portfolio.riskLevel}
           </span>
         </div>
@@ -93,35 +93,35 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
         {/* Status Badge */}
         <div>
           {status === 'completed' && (
-            <span className="inline-flex items-center gap-1 text-[#00D084] font-medium text-[11px]">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>{allocation.length} Funds Portfolio</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-green text-black border border-black font-mono font-black text-[10px]">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>{allocation.length} FUNDS</span>
             </span>
           )}
 
           {status === 'generating' && (
-            <span className="inline-flex items-center gap-1.5 text-[#00D2FF] font-medium text-[11px] animate-pulse">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Generating AI Model...</span>
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-neo-cyan text-black border border-black font-mono font-black text-[10px] animate-pulse">
+              <Sparkles className="w-3 h-3" />
+              <span>GENERATING...</span>
             </span>
           )}
 
           {status === 'pending' && (
-            <span className="inline-flex items-center gap-1 text-amber-400 font-medium text-[11px]">
-              <Clock className="w-3.5 h-3.5" />
-              <span>In Queue</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-yellow text-black border border-black font-mono font-black text-[10px]">
+              <Clock className="w-3 h-3" />
+              <span>QUEUED</span>
             </span>
           )}
 
           {status === 'failed' && (
-            <span className="inline-flex items-center gap-1 text-[#FF4D6D] font-medium text-[11px]">
-              <AlertCircle className="w-3.5 h-3.5" />
-              <span>Generation Failed</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-coral text-black border border-black font-mono font-black text-[10px]">
+              <AlertCircle className="w-3 h-3" />
+              <span>FAILED</span>
             </span>
           )}
         </div>
 
-        <span className="text-[11px] text-[#9B9BB4]/60 font-mono">
+        <span className="text-[11px] text-[#A0A0B2] font-mono">
           {formatDate(portfolio.createdAt)}
         </span>
       </div>

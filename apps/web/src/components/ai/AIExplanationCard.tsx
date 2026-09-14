@@ -21,37 +21,37 @@ export function AIExplanationCard({
     <Collapsible.Root
       open={open}
       onOpenChange={setOpen}
-      className="p-5 rounded-2xl bg-[#1A1B2E] border border-white/10 space-y-3"
+      className="p-5 rounded-xl bg-[#161620] border-2 border-black shadow-neo space-y-3"
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs font-semibold text-[#00D2FF]">
-          <Sparkles className="w-4 h-4" />
-          <span className="uppercase tracking-wider">AI Investment Strategy & Thesis</span>
+        <div className="flex items-center gap-2 text-xs font-black uppercase text-neo-yellow tracking-wider">
+          <Sparkles className="w-4 h-4 fill-neo-yellow" />
+          <span>AI Investment Strategy & Thesis</span>
         </div>
 
-        <span className="text-[10px] font-mono text-[#9B9BB4] px-2 py-0.5 rounded bg-white/5 border border-white/5">
+        <span className="text-[10px] font-mono font-black uppercase text-black px-2 py-0.5 rounded bg-neo-lavender border border-black">
           {model}
         </span>
       </div>
 
-      <div className="text-xs text-[#9B9BB4] leading-relaxed">
+      <div className="text-xs font-mono text-[#A0A0B2] leading-relaxed">
         {open ? (
-          <p className="whitespace-pre-line text-[#F8F9FA]/90">{explanation}</p>
+          <p className="whitespace-pre-line text-white">{explanation}</p>
         ) : (
-          <p className="line-clamp-2 text-[#9B9BB4]">{explanation}</p>
+          <p className="line-clamp-2 text-[#A0A0B2]">{explanation}</p>
         )}
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
-        <div className="text-[11px] text-[#9B9BB4]">
-          Recommended Rebalancing:{' '}
-          <strong className="text-white capitalize">{rebalancing}</strong>
+      <div className="flex items-center justify-between pt-2 border-t-2 border-black/40 text-xs font-mono">
+        <div className="text-[11px] text-[#A0A0B2]">
+          Rebalancing:{' '}
+          <strong className="text-neo-cyan uppercase font-black">{rebalancing}</strong>
         </div>
 
         <Collapsible.Trigger asChild>
           <button
             type="button"
-            className="inline-flex items-center gap-1 font-semibold text-xs text-[#6C63FF] hover:text-[#00D2FF] transition-colors"
+            className="inline-flex items-center gap-1 font-black uppercase text-xs text-neo-yellow hover:underline transition-colors"
           >
             <span>{open ? 'Read Less' : 'Read Full Thesis'}</span>
             {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}

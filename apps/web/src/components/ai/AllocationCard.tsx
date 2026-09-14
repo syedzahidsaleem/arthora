@@ -60,38 +60,38 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
         : '/research';
 
   return (
-    <div className="relative p-4 sm:p-5 rounded-2xl bg-[#1A1B2E] border border-white/5 overflow-hidden transition-all hover:border-white/15 hover:shadow-lg space-y-3">
+    <div className="relative p-4 sm:p-5 rounded-xl bg-[#161620] border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all space-y-3 overflow-hidden">
       {/* Left Colored Accent Bar */}
       <div
-        className="absolute top-0 bottom-0 left-0 w-1.5"
+        className="absolute top-0 bottom-0 left-0 w-2.5 border-r-2 border-black"
         style={{ backgroundColor: accentColor }}
       />
 
       {/* Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pl-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pl-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xl sm:text-2xl font-black text-[#00D2FF]">
+            <span className="font-mono text-xl sm:text-2xl font-black text-neo-yellow">
               {item.allocationPercent}%
             </span>
-            <h4 className="font-bold text-sm sm:text-base text-white">{item.name}</h4>
+            <h4 className="font-black text-sm sm:text-base text-white uppercase tracking-wide">{item.name}</h4>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-xs">
             {item.isin && (
-              <span className="px-2 py-0.5 rounded-md bg-white/5 font-mono text-[10px] text-[#9B9BB4] border border-white/5">
+              <span className="px-2 py-0.5 rounded bg-[#0E0E14] font-mono text-[10px] text-[#A0A0B2] border border-black">
                 {item.isin}
               </span>
             )}
             {item.ticker && (
-              <span className="px-2 py-0.5 rounded-md bg-white/5 font-mono text-[10px] text-[#00D2FF] border border-white/5 font-bold">
+              <span className="px-2 py-0.5 rounded bg-neo-cyan text-black font-mono text-[10px] border border-black font-black uppercase">
                 {item.ticker} (NSE)
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-md bg-[#13141F] text-[11px] text-[#9B9BB4] capitalize">
+            <span className="px-2 py-0.5 rounded bg-[#0E0E14] text-[10px] font-mono text-[#A0A0B2] border border-black uppercase">
               {item.category?.replace(/_/g, ' ')}
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-[#00D084]/10 text-[11px] font-mono font-bold text-[#00D084]">
+            <span className="px-2 py-0.5 rounded bg-neo-green text-black text-[10px] font-mono font-black border border-black">
               ~{item.expectedReturn}% CAGR
             </span>
           </div>
@@ -103,40 +103,40 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
             type="button"
             onClick={handleToggleWatchlist}
             disabled={isSaving || isSaved}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
               isSaved
-                ? 'bg-[#00D084]/10 text-[#00D084] border-[#00D084]/30'
-                : 'bg-white/5 text-[#9B9BB4] hover:text-white hover:bg-white/10 border-white/10'
+                ? 'bg-neo-green text-black'
+                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white'
             }`}
           >
             {isSaved ? (
               <>
                 <BookmarkCheck className="w-3.5 h-3.5" />
-                <span>Saved</span>
+                <span>SAVED</span>
               </>
             ) : (
               <>
                 <Bookmark className="w-3.5 h-3.5" />
-                <span>Watchlist</span>
+                <span>WATCHLIST</span>
               </>
             )}
           </button>
 
           <Link
             href={researchUrl}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15 transition-all"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
           >
             <span>Research</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#00D2FF]" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-black" />
           </Link>
         </div>
       </div>
 
       {/* Rationale Text */}
-      <div className="pl-2 pt-1 border-t border-white/5 text-xs text-[#9B9BB4] leading-relaxed flex items-start gap-2">
-        <Shield className="w-3.5 h-3.5 text-[#6C63FF] shrink-0 mt-0.5" />
+      <div className="pl-3 pt-2 border-t-2 border-black/40 text-xs text-[#A0A0B2] font-mono leading-relaxed flex items-start gap-2">
+        <Shield className="w-3.5 h-3.5 text-neo-cyan shrink-0 mt-0.5" />
         <p>
-          <strong className="text-white/80 font-medium">Why this asset: </strong>
+          <strong className="text-white uppercase font-black">Thesis: </strong>
           {item.reason}
         </p>
       </div>
