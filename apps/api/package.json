@@ -30,7 +30,7 @@
     "helmet": "^8.0.0",
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.10.1",
+    "mongoose": "^9.10.0",
     "morgan": "^1.10.0",
     "puppeteer-core": "^25.9.0",
     "sanitize-html": "^2.17.7",
