@@ -18,7 +18,7 @@
   "dependencies": {
     "@arthora/shared": "workspace:*",
     "@google/generative-ai": "^0.24.1",
-    "@sentry/node": "^10.73.0",
+    "@sentry/node": "^10.74.0",
     "@sparticuz/chromium": "^149.0.0",
     "argon2": "^0.45.1",
     "bullmq": "^5.41.6",
