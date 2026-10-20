@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && pnpm --filter @arthora/web build",
+  "buildCommand": "cd ../.. && pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build",
   "outputDirectory": "out",
   "framework": "nextjs",
   "headers": [
