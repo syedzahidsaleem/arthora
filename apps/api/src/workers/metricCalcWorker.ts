@@ -23,6 +23,9 @@ export const metricCalcQueue = new Queue(METRIC_CALC_QUEUE, {
     removeOnFail: 500,
   },
 });
+metricCalcQueue.on('error', (err) => {
+  console.warn(`⚠️ [BullMQ:${METRIC_CALC_QUEUE}] Queue connection warning:`, err.message);
+});
 
 /**
  * Computes monthly return series from raw daily NAV history.
