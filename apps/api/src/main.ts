@@ -129,14 +129,22 @@ async function startServer(): Promise<void> {
     // Connect to MongoDB
     await connectDB();
 
-    // Verify Redis connection availability
-    const redisPing = await redis.ping();
-    console.log(`📡 [Redis] Initial ping status: ${redisPing}`);
+    // Verify Redis connection availability with graceful degradation
+    try {
+      const redisPing = await redis.ping();
+      console.log(`📡 [Redis] Initial ping status: ${redisPing}`);
+    } catch (redisErr) {
+      console.warn('⚠️ [Redis] Initial ping failed (proceeding in degraded mode):', redisErr);
+    }
 
     if (process.env.RUN_WORKER_IN_PROCESS === 'true') {
-      const { startWorkers } = await import('./worker');
-      await startWorkers();
-      console.log('⚙️ [Worker Process] Embedded background worker started inside API process.');
+      try {
+        const { startWorkers } = await import('./worker');
+        await startWorkers();
+        console.log('⚙️ [Worker Process] Embedded background worker started inside API process.');
+      } catch (workerErr) {
+        console.warn('⚠️ [Worker Process] Embedded background worker failed to start (API will remain online):', workerErr);
+      }
     }
 
     const server = app.listen(PORT, () => {
