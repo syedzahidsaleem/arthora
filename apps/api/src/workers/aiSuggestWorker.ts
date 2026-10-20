@@ -22,6 +22,9 @@ export const aiSuggestQueue = new Queue(AI_SUGGEST_QUEUE, {
     removeOnFail: 500,
   },
 });
+aiSuggestQueue.on('error', (err) => {
+  console.warn(`⚠️ [BullMQ:${AI_SUGGEST_QUEUE}] Queue connection warning:`, err.message);
+});
 
 /**
  * BullMQ Worker processing async portfolio generation via Gemini AI or Fallback Rules Engine.
