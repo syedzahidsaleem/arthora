@@ -18,6 +18,9 @@ export const navSyncQueue = new Queue(NAV_SYNC_QUEUE, {
     removeOnFail: 500,
   },
 });
+navSyncQueue.on('error', (err) => {
+  console.warn(`⚠️ [BullMQ:${NAV_SYNC_QUEUE}] Queue connection warning:`, err.message);
+});
 
 /**
  * BullMQ Worker handling mutual fund scheme metadata and historical NAV synchronization.
