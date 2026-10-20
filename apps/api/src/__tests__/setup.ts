@@ -9,3 +9,18 @@ vi.mock('argon2', () => ({
   argon2d: 0,
   needsRehash: vi.fn().mockReturnValue(false),
 }));
+
+// Globally mock bullmq to avoid ECONNREFUSED background connection attempts during tests
+vi.mock('bullmq', () => ({
+  Queue: vi.fn().mockImplementation(() => ({
+    add: vi.fn().mockResolvedValue({ id: 'mock-job-id' }),
+    on: vi.fn(),
+    close: vi.fn().mockResolvedValue(undefined),
+  })),
+  Worker: vi.fn().mockImplementation(() => ({
+    on: vi.fn(),
+    close: vi.fn().mockResolvedValue(undefined),
+  })),
+  Job: vi.fn(),
+}));
+
