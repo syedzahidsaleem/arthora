@@ -66,15 +66,12 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
 
       <GoogleAuthButton mode="signin" redirectTo={redirectTo} />
 
-      <div className="relative my-2">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t-2 border-black/60 dark:border-white/10" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-[#161620] px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2]">
-            Or continue with email
-          </span>
-        </div>
+      <div className="flex items-center justify-center my-4">
+        <div className="flex-grow border-t-2 border-black/40 dark:border-white/15" />
+        <span className="shrink-0 px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2] bg-[#161620]">
+          Or continue with email
+        </span>
+        <div className="flex-grow border-t-2 border-black/40 dark:border-white/15" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

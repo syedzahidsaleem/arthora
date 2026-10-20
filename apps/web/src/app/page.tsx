@@ -89,9 +89,10 @@ export default function LandingPage() {
 
       {/* Hero Section with Fluid Particles Background */}
       <FluidParticlesBackground
-        particleCount={1800}
+        particleCount={2000}
         noiseIntensity={0.0028}
-        className="h-auto min-h-[85vh] bg-[#0D0E15] dark:bg-[#0D0E15] py-12 md:py-20 flex flex-col justify-center border-b-2 border-black"
+        particleSize={{ min: 1.5, max: 3.2 }}
+        className="h-auto min-h-[85vh] bg-[#0D0E15] py-12 md:py-20 flex flex-col justify-center border-b-2 border-black"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center w-full">
           {/* Stickers row */}

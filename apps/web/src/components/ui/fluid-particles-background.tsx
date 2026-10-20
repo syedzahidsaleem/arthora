@@ -96,25 +96,19 @@ function createNoise() {
   };
 }
 
-const COLOR_SCHEME = {
-  light: {
-    particle: {
-      color: "rgba(0, 0, 0, 0.07)",
-    },
-    background: "rgba(255, 255, 255, 0.12)",
-  },
-  dark: {
-    particle: {
-      color: "rgba(255, 255, 255, 0.07)",
-    },
-    background: "rgba(0, 0, 0, 0.12)",
-  },
-} as const;
+const CYBER_COLORS = [
+  "255, 222, 89", // Neo-Yellow
+  "0, 240, 255",   // Neo-Cyan
+  "255, 255, 255", // Pure White
+  "191, 255, 4",   // Neo-Lime
+  "0, 240, 255",   // Cyan Accent
+] as const;
 
 interface Particle {
   x: number;
   y: number;
   size: number;
+  colorRgb: string;
   velocity: { x: number; y: number };
   life: number;
   maxLife: number;
@@ -122,9 +116,9 @@ interface Particle {
 
 export const FluidParticlesBackground = ({
   children,
-  particleCount = 2000,
-  noiseIntensity = 0.003,
-  particleSize = { min: 0.5, max: 2 },
+  particleCount = 1800,
+  noiseIntensity = 0.0028,
+  particleSize = { min: 1.2, max: 3.0 },
   className,
 }: CyberBackgroundProps) => { 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -138,14 +132,13 @@ export const FluidParticlesBackground = ({
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Use container dimensions if available, fallback to window
     const resizeCanvas = () => {
       const parent = containerRef.current || canvas.parentElement;
       canvas.width = parent ? parent.clientWidth : window.innerWidth;
       canvas.height = parent ? parent.clientHeight : window.innerHeight;
     };
 
-    resizeCanvas(); // Initial resize
+    resizeCanvas();
 
     const particles: Particle[] = Array.from({ length: particleCount }, () => ({
       x: Math.random() * (canvas.width || window.innerWidth),
@@ -153,20 +146,17 @@ export const FluidParticlesBackground = ({
       size:
         Math.random() * (particleSize.max - particleSize.min) +
         particleSize.min,
+      colorRgb: CYBER_COLORS[Math.floor(Math.random() * CYBER_COLORS.length)],
       velocity: { x: 0, y: 0 },
       life: Math.random() * 100,
-      maxLife: 100 + Math.random() * 50,
+      maxLife: 100 + Math.random() * 60,
     }));
 
     let animationFrameId: number;
 
     const animate = () => {
-      // Check for dark mode to apply theme-appropriate colors
-      const isDark = document.documentElement.classList.contains("dark") || true;
-      const scheme = isDark ? COLOR_SCHEME.dark : COLOR_SCHEME.light;
-
-      // Clear canvas with a semi-transparent background to create trails
-      ctx.fillStyle = scheme.background;
+      // Clear with soft dark background for persistent fluid trails
+      ctx.fillStyle = "rgba(13, 14, 21, 0.22)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (const particle of particles) {
@@ -177,10 +167,10 @@ export const FluidParticlesBackground = ({
           particle.y = Math.random() * canvas.height;
         }
 
-        const opacity =
-          Math.sin((particle.life / particle.maxLife) * Math.PI) * 0.15; // Fade in and out
+        // Luminous sine fade curve peaking at 0.75 alpha
+        const opacity = Math.sin((particle.life / particle.maxLife) * Math.PI) * 0.75;
 
-        // Use noise for particle movement direction
+        // Use Perlin noise field for organic fluid stream
         const n = noise.simplex3(
           particle.x * noiseIntensity,
           particle.y * noiseIntensity,
@@ -188,22 +178,20 @@ export const FluidParticlesBackground = ({
         );
 
         const angle = n * Math.PI * 4;
-        particle.velocity.x = Math.cos(angle) * 2;
-        particle.velocity.y = Math.sin(angle) * 2;
+        particle.velocity.x = Math.cos(angle) * 1.8;
+        particle.velocity.y = Math.sin(angle) * 1.8;
 
         particle.x += particle.velocity.x;
         particle.y += particle.velocity.y;
 
-        // Wrap particles around the canvas edges
+        // Wrap around canvas borders smoothly
         if (particle.x < 0) particle.x = canvas.width;
         if (particle.x > canvas.width) particle.x = 0;
         if (particle.y < 0) particle.y = canvas.height;
         if (particle.y > canvas.height) particle.y = 0;
 
-        // Draw particle
-        ctx.fillStyle = isDark
-          ? `rgba(255, 255, 255, ${opacity})`
-          : `rgba(0, 0, 0, ${opacity})`;
+        // Draw luminous particle
+        ctx.fillStyle = `rgba(${particle.colorRgb}, ${opacity})`;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fill();
@@ -212,7 +200,7 @@ export const FluidParticlesBackground = ({
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate(); // Start the animation loop
+    animate();
 
     const handleResize = () => {
       resizeCanvas();
@@ -231,13 +219,15 @@ export const FluidParticlesBackground = ({
     <div
       ref={containerRef}
       className={cn(
-        "relative w-full h-screen overflow-hidden",
-        "bg-white dark:bg-black", 
+        "relative w-full overflow-hidden bg-[#0D0E15]",
         className,
       )}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
- 
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      />
+
       <div className="relative z-10 w-full h-full flex items-center justify-center">
         {children}
       </div>
