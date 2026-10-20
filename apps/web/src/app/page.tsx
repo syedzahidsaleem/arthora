@@ -14,6 +14,7 @@ import {
   Percent,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
+import { FluidParticlesBackground } from '@/components/ui/fluid-particles-background';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -86,9 +87,13 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 flex-1 flex flex-col justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      {/* Hero Section with Fluid Particles Background */}
+      <FluidParticlesBackground
+        particleCount={1800}
+        noiseIntensity={0.0028}
+        className="h-auto min-h-[85vh] bg-[#0D0E15] dark:bg-[#0D0E15] py-12 md:py-20 flex flex-col justify-center border-b-2 border-black"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center w-full">
           {/* Stickers row */}
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-neo-cyan text-black border-2 border-black font-mono font-black text-xs uppercase shadow-neo-sm rotate-[-1.5deg] hover:rotate-0 transition-transform">
@@ -153,7 +158,7 @@ export default function LandingPage() {
 
           {/* Floating UI Showcase */}
           <div className="relative max-w-4xl mx-auto">
-            <div className="p-4 md:p-6 rounded-2xl bg-[#16161E] border-[3px] border-black shadow-neo-xl grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+            <div className="p-4 md:p-6 rounded-2xl bg-[#16161E]/90 backdrop-blur-sm border-[3px] border-black shadow-neo-xl grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
               {/* Card 1 */}
               <div className="p-4 rounded-xl bg-[#1F202B] border-2 border-black shadow-neo-sm hover:shadow-neo transition-all">
                 <div className="flex items-center justify-between mb-2">
@@ -192,7 +197,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </FluidParticlesBackground>
 
       {/* Features Grid Section */}
       <section className="py-20 bg-[#121218] border-t-2 border-black">
