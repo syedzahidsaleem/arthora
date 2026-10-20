@@ -19,6 +19,9 @@ export const stockSyncQueue = new Queue(STOCK_SYNC_QUEUE, {
     removeOnFail: 500,
   },
 });
+stockSyncQueue.on('error', (err) => {
+  console.warn(`⚠️ [BullMQ:${STOCK_SYNC_QUEUE}] Queue connection warning:`, err.message);
+});
 
 /**
  * Benchmark Indian Stock Universe: NIFTY 50 and NIFTY NEXT 50 symbols.
