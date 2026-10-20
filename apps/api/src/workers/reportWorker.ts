@@ -18,6 +18,9 @@ export const reportQueue = new Queue(REPORT_QUEUE, {
     removeOnFail: 500,
   },
 });
+reportQueue.on('error', (err) => {
+  console.warn(`⚠️ [BullMQ:${REPORT_QUEUE}] Queue connection warning:`, err.message);
+});
 
 /**
  * Builds clean HTML template for PDF institutional report generation.
