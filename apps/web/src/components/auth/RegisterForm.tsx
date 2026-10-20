@@ -83,11 +83,15 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
 
       <GoogleAuthButton mode="signup" redirectTo={redirectTo} />
 
-      <div className="relative flex items-center justify-center">
-        <div className="w-full border-t-2 border-black" />
-        <span className="bg-[#161620] px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2]">
-          Or register with email
-        </span>
+      <div className="relative my-2">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t-2 border-black/60 dark:border-white/10" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-[#161620] px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2]">
+            Or register with email
+          </span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -97,7 +101,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             Full Name
           </Label>
           <div className="relative">
-            <User className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="name"
               type="text"
@@ -119,7 +123,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="email"
               type="email"
@@ -141,7 +145,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             Password (min 8 chars)
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
@@ -152,8 +156,9 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-3.5 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors p-1"
               tabIndex={-1}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -171,7 +176,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             Confirm Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
@@ -182,8 +187,9 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3.5 top-3.5 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors p-1"
               tabIndex={-1}
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
             >
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -198,7 +204,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
         {/* Submit Button */}
         <Button
           type="submit"
-          variant="default"
+          variant="secondary"
           disabled={isSubmitting}
           className="w-full h-12 text-sm font-black uppercase tracking-wider mt-2 border-2 border-black shadow-neo hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
         >

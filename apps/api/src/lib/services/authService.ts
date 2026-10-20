@@ -165,44 +165,85 @@ export async function loginWithGoogle(
 ): Promise<AuthResult> {
   const { uid, email, name, picture } = await verifyFirebaseToken(firebaseIdToken);
 
+  const normalizedEmail = email ? email.toLowerCase().trim() : undefined;
+
+  // 1. Check if user exists by Firebase UID
   let user = await User.findOne({ firebaseUid: uid });
 
+  // 2. If not found by UID, check if user exists by normalized email (e.g. from prior email/password registration)
+  if (!user && normalizedEmail) {
+    user = await User.findOne({ email: normalizedEmail });
+  }
+
   if (user) {
-    // Update existing user details
-    user.name = name || user.name;
-    user.avatarUrl = picture || user.avatarUrl;
+    // Link or update existing user record
+    user.firebaseUid = uid;
+    if (name && (!user.name || user.name === 'Investor')) {
+      user.name = name.trim();
+    }
+    if (picture) {
+      user.avatarUrl = picture;
+    }
     user.emailVerified = true;
     user.lastLoginAt = new Date();
     await user.save();
   } else {
-    // Create new user from Google profile
-    user = await User.create({
-      name: name || 'Investor',
-      email: email ? email.toLowerCase().trim() : undefined,
-      firebaseUid: uid,
-      avatarUrl: picture,
-      authProvider: 'google',
-      emailVerified: true,
-      preferences: {
-        theme: 'dark',
-        defaultTab: 'ai',
-        currency: 'INR',
-        language: 'en',
-        exchange: 'NSE',
-      },
-      fcmTokens: [],
-      lastLoginAt: new Date(),
-      isActive: true,
-    });
+    // 3. Create new user with duplicate-key protection
+    try {
+      user = await User.create({
+        name: (name && name.trim()) || 'Investor',
+        email: normalizedEmail,
+        firebaseUid: uid,
+        avatarUrl: picture,
+        authProvider: 'google',
+        emailVerified: true,
+        preferences: {
+          theme: 'dark',
+          defaultTab: 'ai',
+          currency: 'INR',
+          language: 'en',
+          exchange: 'NSE',
+        },
+        fcmTokens: [],
+        lastLoginAt: new Date(),
+        isActive: true,
+      });
+    } catch (createErr: unknown) {
+      const isDuplicate =
+        createErr &&
+        typeof createErr === 'object' &&
+        'code' in createErr &&
+        (createErr as { code: number }).code === 11000;
+
+      if (isDuplicate && normalizedEmail) {
+        user = await User.findOne({ email: normalizedEmail });
+        if (user) {
+          user.firebaseUid = uid;
+          if (name && (!user.name || user.name === 'Investor')) user.name = name.trim();
+          if (picture) user.avatarUrl = picture;
+          user.emailVerified = true;
+          user.lastLoginAt = new Date();
+          await user.save();
+        } else {
+          throw createErr;
+        }
+      } else {
+        throw createErr;
+      }
+    }
   }
 
   const userId = user._id.toString();
   const accessToken = generateAccessToken(userId, user.firebaseUid);
   const refreshToken = generateRefreshToken(userId);
 
-  // Store session in Redis
-  const tokenHash = hashToken(refreshToken);
-  await redisService.set(`session:${userId}:${tokenHash}`, userId, SESSION_TTL);
+  // Store session in Redis with non-blocking error resilience
+  try {
+    const tokenHash = hashToken(refreshToken);
+    await redisService.set(`session:${userId}:${tokenHash}`, userId, SESSION_TTL);
+  } catch (redisErr) {
+    console.warn('⚠️ [Auth] Failed to cache session in Redis, proceeding with JWT auth:', redisErr);
+  }
 
   return {
     user: user.toObject() as unknown as IUser,

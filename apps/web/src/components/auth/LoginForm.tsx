@@ -66,11 +66,15 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
 
       <GoogleAuthButton mode="signin" redirectTo={redirectTo} />
 
-      <div className="relative flex items-center justify-center">
-        <div className="w-full border-t-2 border-black" />
-        <span className="bg-[#161620] px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2]">
-          Or continue with email
-        </span>
+      <div className="relative my-2">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t-2 border-black/60 dark:border-white/10" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-[#161620] px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2]">
+            Or continue with email
+          </span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -80,7 +84,7 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="email"
               type="email"
@@ -110,7 +114,7 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
             </Link>
           </div>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-3.5 h-4 w-4 text-[#A0A0B2]" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
@@ -121,8 +125,9 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-3.5 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors p-1"
               tabIndex={-1}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>

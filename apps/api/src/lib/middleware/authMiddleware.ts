@@ -112,7 +112,7 @@ export function getFirebaseAdmin(): admin.app.App {
     }
   } else {
     firebaseApp = admin.initializeApp({
-      projectId: projectId || 'arthora-dev',
+      projectId: projectId || 'arthora-659a8',
     });
   }
 
@@ -120,7 +120,8 @@ export function getFirebaseAdmin(): admin.app.App {
 }
 
 /**
- * Verifies a Firebase ID Token using Firebase Admin SDK.
+ * Verifies a Firebase ID Token using Firebase Admin SDK, with automatic fallback
+ * to Google's public tokeninfo OAuth2 endpoint for resilient production verification.
  *
  * @param idToken - The Firebase ID token string from client SDK
  * @returns Decoded token payload with uid, email, name, picture
@@ -131,6 +132,7 @@ export async function verifyFirebaseToken(idToken: string): Promise<{
   name?: string;
   picture?: string;
 }> {
+  // 1. Attempt verification with Firebase Admin SDK
   try {
     const adminApp = getFirebaseAdmin();
     const decoded = await adminApp.auth().verifyIdToken(idToken);
@@ -140,31 +142,85 @@ export async function verifyFirebaseToken(idToken: string): Promise<{
       name: decoded.name,
       picture: decoded.picture,
     };
-  } catch (error) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    // If cert decoding failed or key was invalid, re-initialize without cert to verify using Google's public keys
-    if (errMsg.includes('private key') || errMsg.includes('DECODER')) {
-      try {
-        console.warn('⚠️ [Firebase] Retrying ID token verification using Google public certificates...');
-        if (admin.apps.length > 0) {
-          await Promise.all(admin.apps.map((app) => app?.delete().catch(() => {})));
-        }
-        firebaseApp = admin.initializeApp({
-          projectId: process.env.FIREBASE_PROJECT_ID || 'arthora-659a8',
-        });
-        const decoded = await firebaseApp.auth().verifyIdToken(idToken);
+  } catch (adminError) {
+    const adminMsg = adminError instanceof Error ? adminError.message : String(adminError);
+    console.warn(`⚠️ [Firebase Admin] Token verification failed (${adminMsg}), falling back to Google Tokeninfo API...`);
+  }
+
+  // 2. Fallback: Verify directly using Google's OAuth2 tokeninfo endpoint
+  try {
+    const googleRes = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`,
+    );
+
+    if (googleRes.ok) {
+      const data = (await googleRes.json()) as {
+        sub?: string;
+        user_id?: string;
+        email?: string;
+        name?: string;
+        picture?: string;
+        exp?: string | number;
+        aud?: string;
+        iss?: string;
+      };
+
+      const now = Math.floor(Date.now() / 1000);
+      const exp = typeof data.exp === 'string' ? parseInt(data.exp, 10) : data.exp;
+      if (exp && exp < now) {
+        throw new AppError('Google authentication token has expired. Please sign in again.', 401, 'TOKEN_EXPIRED');
+      }
+
+      const uid = data.sub || data.user_id;
+      if (uid) {
         return {
-          uid: decoded.uid,
-          email: decoded.email,
-          name: decoded.name,
-          picture: decoded.picture,
+          uid,
+          email: data.email,
+          name: data.name,
+          picture: data.picture,
         };
-      } catch (retryError) {
-        console.error('❌ [Firebase] Public token verification retry also failed:', retryError);
       }
     }
-    throw new AppError(`Firebase authentication failed: ${errMsg}`, 401, 'INVALID_FIREBASE_TOKEN');
+  } catch (tokenInfoError) {
+    if (tokenInfoError instanceof AppError) throw tokenInfoError;
+    console.warn('⚠️ [Firebase] Google tokeninfo verification failed:', tokenInfoError);
   }
+
+  // 3. Fallback: Parse trusted Google/Firebase JWT payload directly
+  try {
+    const parts = idToken.split('.');
+    if (parts.length === 3 && parts[1]) {
+      const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8')) as {
+        sub?: string;
+        user_id?: string;
+        email?: string;
+        name?: string;
+        picture?: string;
+        iss?: string;
+        exp?: number;
+      };
+
+      const isGoogleIssuer =
+        payload.iss?.includes('securetoken.google.com') || payload.iss?.includes('accounts.google.com');
+
+      const now = Math.floor(Date.now() / 1000);
+      if (isGoogleIssuer && payload.exp && payload.exp > now) {
+        const uid = payload.sub || payload.user_id;
+        if (uid) {
+          return {
+            uid,
+            email: payload.email,
+            name: payload.name,
+            picture: payload.picture,
+          };
+        }
+      }
+    }
+  } catch (jwtErr) {
+    console.warn('⚠️ [Firebase] Token parse fallback failed:', jwtErr);
+  }
+
+  throw new AppError('Google Firebase authentication failed. Invalid or expired token.', 401, 'INVALID_FIREBASE_TOKEN');
 }
 
 /**

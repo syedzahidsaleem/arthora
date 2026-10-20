@@ -21,7 +21,11 @@ export function GoogleAuthButton({ mode = 'signin', redirectTo = '/ai' }: Google
     try {
       await loginWithGoogle();
       toast.success('Signed in with Google successfully!');
-      router.push(redirectTo);
+      if (typeof window !== 'undefined') {
+        window.location.href = redirectTo;
+      } else {
+        router.push(redirectTo);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Google authentication failed';
       toast.error(message);

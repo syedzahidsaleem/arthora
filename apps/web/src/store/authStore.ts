@@ -124,7 +124,7 @@ export const useAuthStore = create<AuthState>()(
 
           const result = await response.json();
           if (!response.ok || !result.success) {
-            throw new Error(result.error?.message || 'Invalid email or password');
+            throw new Error(result.error?.message || result.message || 'Invalid email or password');
           }
 
           const { user, accessToken, refreshToken } = result.data;
@@ -154,7 +154,7 @@ export const useAuthStore = create<AuthState>()(
 
           const result = await response.json();
           if (!response.ok || !result.success) {
-            throw new Error(result.error?.message || 'Google authentication failed');
+            throw new Error(result.error?.message || result.message || 'Google authentication failed');
           }
 
           const { user, accessToken, refreshToken } = result.data;
@@ -182,7 +182,7 @@ export const useAuthStore = create<AuthState>()(
 
           const result = await response.json();
           if (!response.ok || !result.success) {
-            throw new Error(result.error?.message || 'Registration failed');
+            throw new Error(result.error?.message || result.message || 'Registration failed');
           }
 
           const { user, accessToken, refreshToken } = result.data;
