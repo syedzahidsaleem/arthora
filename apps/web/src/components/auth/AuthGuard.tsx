@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '../../store/authStore';
 import { API_ENDPOINTS } from '../../lib/api/endpoints';
+import { getApiBaseUrl } from '../../lib/api/config';
+import { useAuthStore } from '../../store/authStore';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = getApiBaseUrl();
 
 interface AuthGuardProps {
   children: React.ReactNode;

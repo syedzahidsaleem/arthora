@@ -8,9 +8,9 @@ import {
 } from '../lib/firebase';
 import { API_ENDPOINTS } from '../lib/api/endpoints';
 import { fetchWithColdStartRetry } from '../lib/api/client';
+import { getApiBaseUrl } from '../lib/api/config';
 
-const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-const API_BASE_URL = RAW_API_URL.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
+const API_BASE_URL = getApiBaseUrl();
 
 export interface AuthState {
   user: IUser | null;

@@ -1,9 +1,9 @@
 import type { ApiResponse } from '@arthora/shared';
 import { useAuthStore } from '../../store/authStore';
 import { API_ENDPOINTS } from './endpoints';
+import { getApiBaseUrl } from './config';
 
-const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-const API_BASE_URL = RAW_API_URL.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
+const API_BASE_URL = getApiBaseUrl();
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
