@@ -1,170 +1,116 @@
 <div align="center">
 
-# Arthora (अर्थोरा)
+# ⚡ ARTHORA (अर्थोरा)
 
-### *Intelligent Investment Research & Portfolio Architecture for Indian Retail Investors*
+### *Institutional-Grade AI Investment Research & Portfolio Architecture for India*
 
-[![CI Pipeline](https://github.com/syedzahidsaleem/arthora/actions/workflows/ci.yml/badge.svg)](https://github.com/syedzahidsaleem/arthora/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-14_App_Router-black?logo=next.js)](https://nextjs.org)
-[![Node.js](https://img.shields.io/badge/Node.js-20_LTS-green?logo=node.js)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7_Strict-blue?logo=typescript)](https://www.typescriptlang.org)
-[![Flutter](https://img.shields.io/badge/Flutter-3.29_Cross--Platform-02569B?logo=flutter)](https://flutter.dev)
-[![MongoDB Atlas](https://img.shields.io/badge/MongoDB_Atlas-Cluster_Active-47A248?logo=mongodb)](https://www.mongodb.com/atlas)
-[![Upstash Redis](https://img.shields.io/badge/Upstash_Redis-TLS_Serverless-00E599?logo=redis)](https://upstash.com)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.6_Flash-4285F4?logo=google)](https://aistudio.google.com)
-[![Render Backend](https://img.shields.io/badge/Render-API_Active-46E3B7?logo=render)](https://arthora-api.onrender.com/api/v1/health)
-[![Vercel Production](https://img.shields.io/badge/Vercel-Web_Active-000000?logo=vercel)](https://out-sand-phi-45.vercel.app)
+[![Live Deployment](https://img.shields.io/badge/Vercel-Live_App-black?logo=vercel&logoColor=white)](https://arthora.vercel.app)
+[![API Status](https://img.shields.io/badge/Render-API_Gateway-46E3B7?logo=render&logoColor=black)](https://arthora-api.onrender.com/api/v1/health)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14_Static_Export-000000?logo=next.js)](https://nextjs.org)
+[![TypeScript 5.7](https://img.shields.io/badge/TypeScript-5.7_Strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Node.js](https://img.shields.io/badge/Node.js-20_LTS-5FA04E?logo=node.js&logoColor=white)](https://nodejs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas_Cluster-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com)
+[![Redis](https://img.shields.io/badge/Upstash_Redis-TLS_Serverless-00E599?logo=redis&logoColor=black)](https://upstash.com)
+[![Google Gemini](https://img.shields.io/badge/Gemini_AI-1.5_Flash-4285F4?logo=google&logoColor=white)](https://aistudio.google.com)
+[![Tests Passing](https://img.shields.io/badge/Vitest-106_Passed-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-FACC15?logo=open-source-initiative&logoColor=black)](LICENSE)
 
 <br/>
 
-[**Explore Live Web App**](https://out-sand-phi-45.vercel.app) • [**API Health Status**](https://arthora-api.onrender.com/api/v1/health) • [**Deployment Guide**](docs/DEPLOYMENT.md) • [**Design System**](docs/DESIGN_SYSTEM.md) • [**Compliance & Legal**](docs/COMPLIANCE_AND_CERTIFICATIONS.md) • [**Security Policy**](SECURITY.md)
+[🌐 **Open Live Web App**](https://arthora.vercel.app) • [🩺 **API Health Check**](https://arthora-api.onrender.com/api/v1/health) • [🚀 **Deployment Guide**](docs/DEPLOYMENT.md) • [🎨 **Design System**](docs/DESIGN_SYSTEM.md) • [🛡️ **Security Policy**](SECURITY.md)
+
+<br/>
+
+<a href="https://arthora.vercel.app">
+  <img src=".github/assets/hero-banner.png" alt="Arthora Neo-Brutalist Interface with Cyber Fluid Particles" width="100%" />
+</a>
 
 </div>
 
 ---
 
-## 🌟 Overview
+## 💡 What is Arthora?
 
-**Arthora** is an institutional-grade investment research platform designed specifically for the 14+ crore retail investors across India. By fusing real-time market data across 40,000+ mutual fund schemes and NSE/BSE listed equities with Google Gemini generative models and deterministic financial calculation engines, Arthora delivers tailored asset allocations, deep quantitative risk metrics, and instant research reports.
+**Arthora** empowers India's 14+ crore retail investors with the same quantitative firepower used by top hedge funds and institutional desks. 
 
-### Key Capabilities
-
-- 🤖 **AI Portfolio Builder:** Generates goal-oriented asset allocation strategies across Large Cap, Mid Cap, Small Cap, Hybrid, and Debt with Monte Carlo probability projections.
-- 📊 **40,000+ Mutual Fund Analytics:** Comprehensive AMFI directory parsing with 14 trailing ratios (CAGR, Sharpe, Sortino, Alpha, Beta, Max Drawdown, Rolling Returns).
-- 📈 **Indian Equity Technicals & Fundamentals:** Real-time quotes, candlestick history, moving averages (SMA 20/50/200), RSI, MACD, PE, PB, and shareholding patterns.
-- 🛡️ **Institutional Risk Governance:** Deterministic rule-based fallback engine protects against LLM hallucinations, ensuring allocations always sum to 100% within valid asset class boundaries.
-- 📑 **Institutional PDF Reports:** Headless Chromium/Puppeteer generation engine for high-resolution downloadable mutual fund research briefs.
-- 📱 **Cross-Platform Mobile Application:** Native iOS and Android application built with Flutter 3, Riverpod `StateNotifier`, and GoRouter.
-
----
-
-## 📱 Supported Device Atmospheres & Distribution Packages
-
-Arthora serves distinct user atmospheres and devices from the same unified codebase:
-
-| Atmosphere | Device / Target | Distribution Channel | Package / Artifact |
-|---|---|---|---|
-| **Web & Desktop PWA** | Chrome, Edge, Safari, Windows, macOS, Linux | [Live Vercel Production](https://out-sand-phi-45.vercel.app) | Installable PWA with offline theme and desktop windowing |
-| **Android Mobile** | Android 8.0+ (ARM64, ARMv7, x86_64) | [GitHub Releases](https://github.com/syedzahidsaleem/arthora/releases) | Universal APK (`arthora-release.apk`) & split ABI builds |
-| **iOS Mobile** | iOS 14.0+ (iPhone, iPad) | Flutter Workspace (`arthora_mobile`) | Native iOS IPA with Riverpod state synchronization |
-| **Developer & Node.js** | Node 18+, Web Browser, Edge Runtimes | NPM Package Distribution | [`@arthora/sdk`](packages/sdk) & [`@arthora/shared`](packages/shared) |
-| **Container & Cloud** | Docker, Render, Kubernetes | [Render Blueprint](render.yaml) & Dockerfile | Multi-stage Node 20 container image |
-
----
-
-## 🏗️ System Architecture
+By unifying **40,000+ AMFI mutual fund schemes**, real-time **NSE & BSE equity market feeds**, **Google Gemini 1.5 Flash AI**, and deterministic mathematical financial engines, Arthora generates personalized goal-based portfolios, calculates 14 trailing risk-adjusted ratios, and provides institutional PDF research dossiers — completely free for retail users.
 
 ```
-                                  ┌─────────────────────────────────────────────────────────────┐
-                                  │                       Client Surfaces                       │
-                                  │  ┌─────────────────────────┐   ┌──────────────────────────┐ │
-                                  │  │   Next.js 14 Web App    │   │      Flutter Mobile      │ │
-                                  │  │  https://out-sand-phi...│   │   (iOS / Android / Web)  │ │
-                                  │  └────────────┬────────────┘   └────────────┬─────────────┘ │
-                                  └───────────────┼─────────────────────────────┼───────────────┘
-                                                  │ HTTPS / TLS 1.3             │
-                                                  ▼                             ▼
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                 Arthora API Gateway                                                     │
-│                                           https://arthora-api.onrender.com                                              │
-│                                                                                                                         │
-│  ┌───────────────────────┐   ┌────────────────────────┐   ┌────────────────────────┐   ┌─────────────────────────────┐  │
-│  │   Helmet.js Security  │   │  XSS Sanitizer & 1MB   │   │  Redis Sliding-Window  │   │     Firebase Admin SDK      │  │
-│  │   HSTS / CSP Preload  │──▶│     Body Guard         │──▶│     Rate Limiters      │──▶│  Dual JWT Rotation (Argon2) │  │
-│  └───────────────────────┘   └────────────────────────┘   └────────────────────────┘   └─────────────────────────────┘  │
-│                                                                                                                         │
-│  ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ REST Routing & Services: /funds, /stocks, /portfolios, /ai, /charts, /reports, /favorites, /search, /health       │  │
-│  └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────┬───────────────────────────────────────┬─────────────────────────────────┘
-                                                │                                       │
-                                                ▼                                       ▼
-                     ┌─────────────────────────────────────┐         ┌─────────────────────────────────────┐
-                     │         MongoDB Atlas Cluster       │         │          Upstash Redis (TLS)        │
-                     │       arthora.2be4m1j.mongodb       │         │      refined-collie-149010.upstash  │
-                     │  • Metadata & 15 Schemas            │         │  • Sliding-Window Rate Limit Keys   │
-                     │  • Portfolios & Users               │         │  • Distributed Session Cache        │
-                     │  • Indexed NAV & Price History      │         │  • BullMQ Task Queues               │
-                     └─────────────────────────────────────┘         └──────────────────┬──────────────────┘
-                                                                                        │
-                                                                                        ▼
-                                                                     ┌─────────────────────────────────────┐
-                                                                     │     BullMQ Background Workers       │
-                                                                     │  • NAV & Stock Price Sync Workers   │
-                                                                     │  • Rolling Returns & Sharpe Calc    │
-                                                                     │  • Headless Chromium PDF Generator  │
-                                                                     └─────────────────────────────────────┘
+       ┌────────────────────────┐              ┌────────────────────────┐
+       │   AMFI Direct Feeds    │              │   NSE / BSE Real-Time  │
+       │ (40,000+ Mutual Funds) │              │ (Quotes & Candlesticks)│
+       └───────────┬────────────┘              └───────────┬────────────┘
+                   │                                       │
+                   └───────────────────┬───────────────────┘
+                                       ▼
+                       ┌───────────────────────────────┐
+                       │   Deterministic Math Engine   │
+                       │ Sharpe · Sortino · Alpha/Beta │
+                       │   CAGR · Rolling Drawdowns    │
+                       └───────────────┬───────────────┘
+                                       │
+                   ┌───────────────────┴───────────────────┐
+                   ▼                                       ▼
+       ┌───────────────────────┐               ┌───────────────────────┐
+       │ Gemini 1.5 Flash AI   │               │ Neo-Brutalist Client  │
+       │ Goal Portfolio Engine │               │ Fluid Particle Canvas │
+       └───────────────────────┘               └───────────────────────┘
 ```
 
 ---
 
-## 🛡️ Security, Governance & Safety
+## ✨ Key Capabilities
 
-Arthora is engineered with defense-in-depth security:
+| Capability | What It Does | Technology |
+| :--- | :--- | :--- |
+| **🤖 AI Portfolio Architect** | Generates goal-oriented asset allocations with Monte Carlo simulations and zero LLM hallucination safeguards. | Gemini 1.5 Flash + Custom Heuristic Engine |
+| **📊 40,000+ Mutual Fund Screener** | Real-time AMFI NAV analytics, category rankings, and rolling return risk ratios (Sharpe, Sortino, Beta). | AMFI Scraper + MongoDB Time-Series |
+| **📈 Equity Fundamentals & Technics** | Live candlestick historical charts, moving averages (20/50/200 SMA), RSI, MACD, and shareholding patterns. | NSE/BSE Market Data Engine |
+| **⚡ Neo-Brutalist High-Contrast UX** | Built with cyber fluid particle background physics, high-contrast borders, tactile drop shadows, and dark mode. | Next.js 14 + Tailwind CSS + HTML5 Canvas |
+| **🛡️ Institutional Security Guard** | Rate limiting, Argon2id password encryption, Redis sliding windows, and dual JWT rotation. | Upstash Redis + Argon2id + Helmet |
+| **📱 Native Mobile Ecosystem** | Seamless iOS and Android experience sharing the same backend and design tokens. | Flutter 3.29 + Riverpod State Management |
 
-- **Distributed Rate Limiting:**
-  - `General API Limiter:` 100 requests / minute per client
-  - `Auth Limiter:` 10 requests / minute per IP to prevent credential stuffing
-  - `AI Portfolio Limiter:` 10 requests / hour per user to protect LLM compute quotas
-  - `Report Limiter:` 5 PDF generations / hour per user
-- **Proxy & IP Integrity:** Configured with `app.set('trust proxy', 1)` to evaluate client IPs accurately behind reverse proxies (Render, Cloudflare, Vercel).
-- **Cryptographic Foundations:**
-  - Password hashing via memory-hard **Argon2id** (RFC 9106)
-  - 256-bit cryptographically secure JWT secrets with Redis blacklisting on token revocation
-- **XSS & Injection Protection:** Recursive input sanitization via `sanitize-html` and strict runtime schema enforcement with Zod.
-- **Monitoring & Auditing:** Real-time error capturing via Sentry (`@sentry/node` and `@sentry/nextjs`).
-
-For vulnerability reporting, review our [Security Policy](SECURITY.md).
+<div align="center">
+  <img src=".github/assets/login-preview.png" alt="Arthora Split-Pane Investor Access" width="85%" />
+</div>
 
 ---
 
-## ⚖️ Regulatory Compliance & Certifications
+## 🗂️ Clean Monorepo Architecture
 
-> [!NOTE]
-> **Arthora is NOT a SEBI-registered Investment Adviser (RIA) or Research Analyst (RA).**  
-> All calculations, projections, and suggested allocations are provided strictly for educational and analytical purposes.
-
-- **AMFI Open Data:** Mutual fund data is sourced via Association of Mutual Funds in India (AMFI) and mfapi.in public endpoints.
-- **Market Data Notice:** Equity market quotes and candlestick series may be delayed up to 15 minutes in compliance with exchange policies.
-- **DPDP Act 2023:** Full adherence to India's Digital Personal Data Protection Act 2023 with data minimization and right-to-erasure guarantees.
-
-Read the complete [Regulatory Compliance & Certifications Document](docs/COMPLIANCE_AND_CERTIFICATIONS.md).
-
----
-
-## 📦 Monorepo Structure
+The repository is organized as a high-performance, modular **pnpm workspace**:
 
 ```text
 arthora/
 ├── apps/
-│   ├── api/                   # Express.js REST API & BullMQ workers
-│   │   ├── src/main.ts        # Primary API server entry point
-│   │   ├── src/worker.ts      # BullMQ background worker entry point
-│   │   ├── src/lib/           # Calculations, external adapters, Mongoose models, middleware
-│   │   └── src/__tests__/     # 91 unit, integration, and performance tests
-│   └── web/                   # Next.js 14 App Router client (Static Export)
-│       ├── src/app/           # Auth, Dashboard, AI Builder, Research, Watchlist, Settings
-│       ├── src/components/    # shadcn/ui components, charts, and interactive calculators
-│       └── src/store/         # Zustand global state stores with persistence
-├── arthora_mobile/            # Cross-platform Flutter 3.29+ iOS/Android application
-│   ├── lib/core/              # Network interceptors, theme tokens, storage adapters
-│   └── lib/features/          # Auth, AI Portfolio, Research, Fund/Stock detail, Watchlist
+│   ├── web/                   # Next.js 14 Client (App Router, Tailwind CSS, Neo-Brutalism, Static Export)
+│   │   ├── src/app/           # Routes: Landing (/), Research (/research), AI (/ai), Watchlist, Settings
+│   │   ├── src/components/    # Modular UI components, charts, and fluid particle canvas
+│   │   └── src/store/         # Persistent Zustand global stores (Auth, Portfolio, Watchlist)
+│   │
+│   └── api/                   # Express.js 4 REST API Gateway & BullMQ Workers
+│       ├── src/main.ts        # Primary API server entry point (port 4000)
+│       ├── src/routes/        # REST routes: /auth, /funds, /stocks, /portfolios, /charts, /reports
+│       └── src/lib/           # Calculations, Mongoose models, external scrapers, security middleware
+│
 ├── packages/
-│   └── shared/                # Pure TypeScript types, Zod schemas, INR formatters
-├── docs/                      # PRD, Architecture, API Contract, Smoke Tests, Compliance
-├── render.yaml                # Infrastructure-as-Code blueprint for Render deployment
-└── .github/                   # CI/CD workflow, Dependabot, Issue & PR templates
+│   ├── shared/                # Universal TypeScript models, Zod validation schemas, Indian currency formatters
+│   └── sdk/                   # Isomorphic API client library for frontend, mobile, and third-party consumers
+│
+├── arthora_mobile/            # Cross-platform Flutter 3.29+ mobile application (iOS & Android)
+├── docs/                      # Architectural Decision Records (ADRs), PRD, Compliance, and Deployment docs
+├── scripts/                   # Automated pre-commit verification gates (verify-all.ps1, verify-all.sh)
+├── vercel.json                # Vercel Monorepo deployment specification
+└── render.yaml                # Render Infrastructure-as-Code Blueprint
 ```
 
 ---
 
-## 🚀 Quickstart & Local Development
+## 🚀 Quickstart & Local Setup
 
 ### Prerequisites
-- Node.js 20+ & pnpm 9+
-- Flutter 3.29+ (for mobile development)
-- Docker Desktop (optional, cloud databases already supported)
+- **Node.js**: `v20.x` or later
+- **pnpm**: `v9.x` or `v10.x` (`npm install -g pnpm`)
 
 ### 1. Clone & Install
 ```bash
@@ -173,60 +119,74 @@ cd arthora
 pnpm install
 ```
 
-### 2. Environment Setup
+### 2. Configure Environment
 ```bash
-# Backend environment variables
+# Backend configuration
 cp apps/api/.env.example apps/api/.env
 
-# Frontend environment variables
+# Frontend configuration
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-### 3. Build & Run
+### 3. Build Shared Packages & Run
 ```bash
-# Build shared library
+# 1. Compile shared TypeScript contracts
 pnpm --filter @arthora/shared build
 
-# Start Backend API (runs on http://localhost:4000)
+# 2. Start the Backend API (runs on http://localhost:4000)
 pnpm --filter @arthora/api dev
 
-# Start Background Worker (separate terminal)
-pnpm --filter @arthora/api dev:worker
-
-# Start Web Client (runs on http://localhost:3000)
+# 3. Start the Web Client (runs on http://localhost:3000)
 pnpm --filter @arthora/web dev
-
-# Start Mobile App (separate terminal)
-cd arthora_mobile
-flutter run
 ```
 
 ---
 
-## 🧪 Verification & Quality Standards
+## 🧪 Automated Quality Gates
+
+Arthora enforces automated test coverage and type safety across all monorepo workspaces:
 
 ```bash
-# Run strict TypeScript type checks across all packages
-pnpm run type-check
+# Run all automated checks in one command (Cross-Platform)
+# On Windows PowerShell:
+powershell -ExecutionPolicy Bypass -File ./scripts/verify-all.ps1
 
-# Run ESLint validation (0 errors, 0 warnings)
-pnpm run lint
-
-# Run all 91 unit, integration, and performance tests
-pnpm run test
-
-# Run full production build (API + Next.js static export)
-pnpm run build
+# On macOS / Linux:
+./scripts/verify-all.sh
 ```
+
+| Check | Workspace | Result |
+| :--- | :--- | :--- |
+| **Shared Contracts** | `@arthora/shared` | 10 passed (100%) |
+| **Web Client Tests** | `@arthora/web` | 4 passed (100%) |
+| **API & Worker Tests** | `@arthora/api` | 92 passed (100%) |
+| **Static Build Gate** | `@arthora/web` | All 13 routes pre-rendered to `apps/web/out` |
+| **Total Test Count** | **Monorepo** | **106 passed (100%)** |
+
+---
+
+## 🌐 Production Deployments
+
+- **Web Frontend**: [https://arthora.vercel.app](https://arthora.vercel.app) *(Vercel Global Edge CDN)*
+- **API Gateway**: [https://arthora-api.onrender.com](https://arthora-api.onrender.com) *(Render Container)*
+- **Health Check**: [https://arthora-api.onrender.com/api/v1/health](https://arthora-api.onrender.com/api/v1/health)
+
+For full deployment instructions, see the [Production Deployment Guide](docs/DEPLOYMENT.md).
+
+---
+
+## ⚖️ Compliance & Disclaimer
+
+> [!IMPORTANT]
+> **Arthora is a financial technology and research platform, NOT a SEBI-registered Investment Adviser (RIA) or Research Analyst (RA).**  
+> All financial calculations, risk metrics, and AI portfolio simulations are provided strictly for educational and analytical purposes. Direct investments in securities and mutual funds carry market risk.
 
 ---
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
----
+This repository is open-source under the [MIT License](LICENSE).
 
 <div align="center">
-  <sub>Built with ❤️ for Indian Retail Investors • Maintained by <a href="https://github.com/syedzahidsaleem">Syed Zahid Saleem</a></sub>
+  <sub>Crafted with passion for Indian retail investors • Maintained by <a href="https://github.com/syedzahidsaleem">Syed Zahid Saleem</a></sub>
 </div>
