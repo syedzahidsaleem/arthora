@@ -18,7 +18,7 @@
 
 <br/>
 
-[**Explore Live Web App**](https://out-sand-phi-45.vercel.app) • [**API Health Status**](https://arthora-api.onrender.com/api/v1/health) • [**Compliance & Legal**](docs/COMPLIANCE_AND_CERTIFICATIONS.md) • [**Security Policy**](SECURITY.md)
+[**Explore Live Web App**](https://out-sand-phi-45.vercel.app) • [**API Health Status**](https://arthora-api.onrender.com/api/v1/health) • [**Deployment Guide**](docs/DEPLOYMENT.md) • [**Design System**](docs/DESIGN_SYSTEM.md) • [**Compliance & Legal**](docs/COMPLIANCE_AND_CERTIFICATIONS.md) • [**Security Policy**](SECURITY.md)
 
 </div>
 
