@@ -76,7 +76,8 @@ async function fetchWithTimeout(url: string): Promise<unknown> {
     if (error instanceof Error && error.name === 'AbortError') {
       throw new AppError('Request to mfapi.in timed out after 15s', 504, 'GATEWAY_TIMEOUT');
     }
-    throw new AppError('External API unavailable', 502, 'EXTERNAL_API_ERROR');
+    const msg = error instanceof Error ? error.message : 'External AMFI service unavailable';
+    throw new AppError(`External AMFI API error: ${msg}`, 502, 'EXTERNAL_API_ERROR');
   } finally {
     clearTimeout(timeoutId);
   }
