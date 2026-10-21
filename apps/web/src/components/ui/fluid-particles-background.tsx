@@ -152,6 +152,23 @@ export const FluidParticlesBackground = ({
       maxLife: 100 + Math.random() * 60,
     }));
 
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      // Draw static ambient particles once to respect user accessibility preferences
+      ctx.fillStyle = "rgba(13, 14, 21, 1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles.slice(0, 300)) {
+        ctx.fillStyle = `rgba(${p.colorRgb}, 0.45)`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      return;
+    }
+
     let animationFrameId: number;
 
     const animate = () => {
