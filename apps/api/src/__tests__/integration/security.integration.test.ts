@@ -71,4 +71,13 @@ describe('Security & Hardening Endpoints', () => {
     expect(res.status).toBe(422);
     expect(res.body.success).toBe(false);
   });
+
+  it('permits CORS requests from .github.io origin', async () => {
+    const res = await request(app)
+      .options('/api/v1/health')
+      .set('Origin', 'https://syedzahidsaleem.github.io')
+      .set('Access-Control-Request-Method', 'GET');
+
+    expect(res.headers['access-control-allow-origin']).toBe('https://syedzahidsaleem.github.io');
+  });
 });
