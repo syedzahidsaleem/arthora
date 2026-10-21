@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build",
   "outputDirectory": "apps/web/out",
   "framework": null,
