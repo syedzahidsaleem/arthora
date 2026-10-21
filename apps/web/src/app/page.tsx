@@ -26,8 +26,26 @@ export default function LandingPage() {
     }
   }, [isAuthenticated, router]);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Arthora',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'INR',
+    },
+    description: 'AI-guided investment research platform for Indian mutual funds and NSE/BSE stocks with Monte Carlo projections.',
+  };
+
   return (
     <div className="min-h-screen bg-[#0D0E15] text-[#F8F9FA] flex flex-col selection:bg-neo-yellow selection:text-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Ticker Banner at Top */}
       <div className="w-full bg-neo-yellow text-black border-b-2 border-black py-2 overflow-hidden flex items-center font-mono font-black text-xs uppercase tracking-widest select-none">
         <div className="marquee-container animate-marquee whitespace-nowrap flex items-center gap-8">
