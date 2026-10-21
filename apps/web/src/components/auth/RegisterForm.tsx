@@ -42,6 +42,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<WebRegisterInput>({
     resolver: zodResolver(webRegisterSchema),
@@ -52,6 +53,14 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
       confirmPassword: '',
     },
   });
+
+  const passwordVal = watch('password') || '';
+  const strengthScore = [
+    passwordVal.length >= 8,
+    /[A-Z]/.test(passwordVal),
+    /[0-9]/.test(passwordVal),
+    /[^A-Za-z0-9]/.test(passwordVal),
+  ].filter(Boolean).length;
 
   const onSubmit = async (data: WebRegisterInput) => {
     setIsSubmitting(true);
@@ -160,6 +169,38 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
+          {passwordVal.length > 0 && (
+            <div className="space-y-1 pt-1">
+              <div className="flex gap-1.5 h-1.5">
+                {[1, 2, 3, 4].map((level) => (
+                  <div
+                    key={level}
+                    className={`flex-1 rounded-sm border border-black transition-colors ${
+                      strengthScore >= level
+                        ? strengthScore === 1
+                          ? 'bg-[#FF4D6D]'
+                          : strengthScore === 2
+                          ? 'bg-neo-yellow'
+                          : strengthScore === 3
+                          ? 'bg-neo-cyan'
+                          : 'bg-neo-lime'
+                        : 'bg-[#252533]'
+                    }`}
+                  />
+                ))}
+              </div>
+              <p className="text-[10px] font-mono font-bold text-[#A0A0B2] uppercase">
+                Strength:{' '}
+                <span className="text-white">
+                  {strengthScore === 0 && 'Too Short'}
+                  {strengthScore === 1 && 'Weak'}
+                  {strengthScore === 2 && 'Fair'}
+                  {strengthScore === 3 && 'Good'}
+                  {strengthScore === 4 && 'Institutional Strong'}
+                </span>
+              </p>
+            </div>
+          )}
           {errors.password && (
             <p className="text-xs text-[#FF4D6D] font-mono font-bold">
               {errors.password.message}
