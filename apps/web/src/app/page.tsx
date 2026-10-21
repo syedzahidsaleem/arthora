@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { FluidParticlesBackground } from '@/components/ui/fluid-particles-background';
+import { formatLakhsCrores } from '@arthora/shared';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -198,7 +199,7 @@ export default function LandingPage() {
                   </span>
                   <span className="text-[11px] font-mono font-black px-1.5 py-0.5 bg-black text-white rounded">15 YRS</span>
                 </div>
-                <div className="text-2xl font-mono font-black mb-1">₹1.48 Cr</div>
+                <div className="text-2xl font-mono font-black mb-1">{formatLakhsCrores(14800000)}</div>
                 <div className="text-[11px] font-mono font-black uppercase">10,000 Monte Carlo Iterations</div>
               </div>
 
