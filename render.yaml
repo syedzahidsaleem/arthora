@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     region: singapore
-    buildCommand: pnpm install && pnpm --filter @arthora/shared build && pnpm --filter @arthora/api build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm --filter @arthora/shared build && pnpm --filter @arthora/api build
     startCommand: pnpm --filter @arthora/api start
     healthCheckPath: /api/v1/health
     envVars:
@@ -38,7 +38,7 @@ services:
   - type: web
     name: arthora-web
     runtime: static
-    buildCommand: pnpm install && pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build
     staticPublishPath: ./apps/web/out
     headers:
       - path: /*
