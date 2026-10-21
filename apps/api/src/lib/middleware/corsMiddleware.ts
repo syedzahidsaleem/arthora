@@ -14,6 +14,7 @@ export const corsMiddleware = cors({
       allowedOrigins.includes(origin) ||
       allowedOrigins.includes('*') ||
       origin.endsWith('.vercel.app') ||
+      origin.endsWith('.github.io') ||
       origin.endsWith('.arthora.in') ||
       origin === 'https://arthora.in'
     ) {
