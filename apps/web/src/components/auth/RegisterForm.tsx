@@ -43,6 +43,7 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<WebRegisterInput>({
     resolver: zodResolver(webRegisterSchema),
@@ -138,6 +139,21 @@ export function RegisterForm({ redirectTo = '/ai' }: RegisterFormProps) {
               {...register('email')}
             />
           </div>
+          {watch('email') && watch('email').length > 2 && !watch('email').includes('@') && (
+            <div className="flex items-center gap-1.5 pt-1">
+              <span className="text-[10px] font-mono text-[#A0A0B2]">Quick:</span>
+              {['@gmail.com', '@outlook.com', '@yahoo.com'].map((domain) => (
+                <button
+                  key={domain}
+                  type="button"
+                  onClick={() => setValue('email', `${watch('email')}${domain}`, { shouldValidate: true })}
+                  className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#1C1C26] border border-black text-[#A0A0B2] hover:bg-neo-cyan hover:text-black hover:border-black transition-colors"
+                >
+                  {domain}
+                </button>
+              ))}
+            </div>
+          )}
           {errors.email && (
             <p className="text-xs text-[#FF4D6D] font-mono font-bold">
               {errors.email.message}
