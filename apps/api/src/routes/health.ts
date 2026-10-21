@@ -45,7 +45,13 @@ router.get('/', async (_req: Request, res: Response) => {
       mongodb: mongoStatus,
       redis: redisStatus,
     },
+    uptime: Math.floor(process.uptime()),
+    memory: {
+      heapUsedMb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+      rssMb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+    },
     version: '1.0.0',
+    nodeVersion: process.version,
     timestamp: new Date().toISOString(),
   };
 
