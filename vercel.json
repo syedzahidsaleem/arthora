@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build",
   "outputDirectory": "apps/web/out",
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": true,
   "headers": [
     {
       "source": "/(.*)",
