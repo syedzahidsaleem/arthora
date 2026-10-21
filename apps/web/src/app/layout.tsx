@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { AuthProvider } from '@/components/providers/AuthProvider';
+import { OfflineBanner } from '@/components/common/OfflineBanner';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -69,6 +70,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
+            <OfflineBanner />
             {children}
             <Toaster position="bottom-right" theme="dark" richColors closeButton />
             <Analytics />
