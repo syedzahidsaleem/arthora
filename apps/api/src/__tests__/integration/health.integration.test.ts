@@ -24,6 +24,9 @@ describe('Health Check Integration Endpoint', () => {
     expect(res.body.status).toBe('ok');
     expect(res.body.services.mongodb).toBe('connected');
     expect(res.body.services.redis).toBe('connected');
+    expect(res.body.uptime).toBeGreaterThanOrEqual(0);
+    expect(res.body.memory).toHaveProperty('heapUsedMb');
+    expect(res.body.nodeVersion).toBe(process.version);
   });
 
   it('returns 503 with degraded status when MongoDB is disconnected', async () => {
