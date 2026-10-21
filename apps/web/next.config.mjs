@@ -6,6 +6,7 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
+  poweredByHeader: false,
   trailingSlash: true,
 };
 
