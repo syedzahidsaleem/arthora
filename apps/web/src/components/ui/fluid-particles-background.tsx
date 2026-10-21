@@ -169,9 +169,16 @@ export const FluidParticlesBackground = ({
       return;
     }
 
-    let animationFrameId: number;
+    let lastFrameTime = performance.now();
+    const frameInterval = 1000 / 60; // 60 FPS cap
 
-    const animate = () => {
+    const animate = (currentTime: number) => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      const elapsed = currentTime - lastFrameTime;
+      if (elapsed < frameInterval) return;
+      lastFrameTime = currentTime - (elapsed % frameInterval);
+
       // Clear with soft dark background for persistent fluid trails
       ctx.fillStyle = "rgba(13, 14, 21, 0.22)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -213,11 +220,9 @@ export const FluidParticlesBackground = ({
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameId = requestAnimationFrame(animate);
 
     const handleResize = () => {
       resizeCanvas();
