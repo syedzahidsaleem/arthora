@@ -22,6 +22,7 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -134,6 +135,19 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
               {errors.password.message}
             </p>
           )}
+        </div>
+
+        <div className="flex items-center space-x-2 pt-0.5">
+          <input
+            id="rememberMe"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="h-4 w-4 rounded border-2 border-black bg-[#16161D] text-neo-yellow accent-[#FFDE59] focus:ring-0 cursor-pointer"
+          />
+          <Label htmlFor="rememberMe" className="text-xs font-mono font-bold text-[#A0A0B2] cursor-pointer select-none">
+            Remember this session
+          </Label>
         </div>
 
         {/* Submit Button */}
