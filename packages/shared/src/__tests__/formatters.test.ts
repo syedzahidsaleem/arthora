@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatINR } from '../formatters/inr.js';
+import { formatINR, formatLakhsCrores } from '../formatters/inr.js';
 import { formatPercent } from '../formatters/percent.js';
 import { formatLargeNumberINR } from '../formatters/largeNumber.js';
 import { formatDate, isMarketOpen, daysUntil } from '../utils/date.js';
@@ -16,6 +16,20 @@ describe('Formatters', () => {
     it('handles decimal precision and symbol suppression', () => {
       expect(formatINR(1234.56, { decimals: 2 })).toBe('₹1,234.56');
       expect(formatINR(1234567, { showSymbol: false })).toBe('12,34,567');
+    });
+  });
+
+  describe('formatLakhsCrores', () => {
+    it('formats numbers into Crores and Lakhs with decimals', () => {
+      expect(formatLakhsCrores(14800000)).toBe('₹1.48 Cr');
+      expect(formatLakhsCrores(1240000)).toBe('₹12.40 L');
+      expect(formatLakhsCrores(50000)).toBe('₹50.00 K');
+      expect(formatLakhsCrores(800)).toBe('₹800.00');
+    });
+
+    it('handles negative numbers and symbol suppression', () => {
+      expect(formatLakhsCrores(-15000000)).toBe('-₹1.50 Cr');
+      expect(formatLakhsCrores(14800000, { showSymbol: false })).toBe('1.48 Cr');
     });
   });
 
