@@ -226,6 +226,8 @@ export const FluidParticlesBackground = ({
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        aria-hidden="true"
+        role="presentation"
       />
 
       <div className="relative z-10 w-full h-full flex items-center justify-center">
