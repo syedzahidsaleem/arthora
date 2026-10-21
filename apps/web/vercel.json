@@ -1,7 +1,10 @@
 {
+  "installCommand": "cd ../.. && pnpm install",
   "buildCommand": "cd ../.. && pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build",
   "outputDirectory": "out",
-  "framework": "nextjs",
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": true,
   "headers": [
     {
       "source": "/(.*)",
