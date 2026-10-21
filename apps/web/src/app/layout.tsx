@@ -62,6 +62,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-[#0D0E15] text-[#F8F9FA] antialiased font-sans selection:bg-[#FFDE59] selection:text-black">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-neo-yellow focus:text-black focus:border-2 focus:border-black focus:font-mono focus:font-bold focus:shadow-neo"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
