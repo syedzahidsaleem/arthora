@@ -169,6 +169,7 @@ export const FluidParticlesBackground = ({
       return;
     }
 
+    let animationFrameId: number;
     let lastFrameTime = performance.now();
     const frameInterval = 1000 / 60; // 60 FPS cap
 
