@@ -9,6 +9,11 @@ interface StockMetricsGridProps {
   metrics: IStockMetrics | null;
 }
 
+function safeNum(val: number | null | undefined, decimals = 2, prefix = '', suffix = ''): string {
+  if (typeof val !== 'number' || isNaN(val)) return '—';
+  return `${prefix}${val.toFixed(decimals)}${suffix}`;
+}
+
 export function StockMetricsGrid({ metrics }: StockMetricsGridProps) {
   if (!metrics) {
     return (
@@ -20,8 +25,8 @@ export function StockMetricsGrid({ metrics }: StockMetricsGridProps) {
     );
   }
 
-  const formatCr = (val?: number) => {
-    if (!val) return '—';
+  const formatCr = (val?: number | null) => {
+    if (typeof val !== 'number' || isNaN(val) || val === 0) return '—';
     return `₹${(val / 10000000).toFixed(1)} Cr`;
   };
 
@@ -31,89 +36,89 @@ export function StockMetricsGrid({ metrics }: StockMetricsGridProps) {
         {/* Row 1: Valuation */}
         <MetricCard
           label="P/E Ratio (TTM)"
-          value={metrics.peRatioTTM !== undefined ? metrics.peRatioTTM.toFixed(2) : '—'}
+          value={safeNum(metrics.peRatioTTM)}
           tooltip="Price to Earnings ratio based on Trailing Twelve Months earnings"
         />
         <MetricCard
           label="Forward P/E"
-          value={metrics.peRatioForward !== undefined ? metrics.peRatioForward.toFixed(2) : '—'}
+          value={safeNum(metrics.peRatioForward)}
           tooltip="Price to Earnings ratio based on consensus forward earnings forecasts"
         />
         <MetricCard
           label="P/B Ratio"
-          value={metrics.pbRatio !== undefined ? metrics.pbRatio.toFixed(2) : '—'}
+          value={safeNum(metrics.pbRatio)}
           tooltip="Price to Book value per share ratio"
         />
         <MetricCard
           label="Dividend Yield"
-          value={metrics.dividendYield !== undefined ? `${metrics.dividendYield.toFixed(2)}%` : '—'}
+          value={safeNum(metrics.dividendYield, 2, '', '%')}
           tooltip="Annual dividend payout as a percentage of current share price"
         />
 
         {/* Row 2: Scale & Range */}
         <MetricCard
           label="Market Cap"
-          value={metrics.marketCap ? formatCr(metrics.marketCap) : '—'}
+          value={formatCr(metrics.marketCap)}
           tooltip="Total market capitalization across outstanding equity shares"
         />
         <MetricCard
           label="52-Week High"
-          value={metrics.week52High ? formatINR(metrics.week52High) : '—'}
+          value={typeof metrics.week52High === 'number' ? formatINR(metrics.week52High) : '—'}
           tooltip="Highest traded price reached over the trailing 52 weeks"
         />
         <MetricCard
           label="52-Week Low"
-          value={metrics.week52Low ? formatINR(metrics.week52Low) : '—'}
+          value={typeof metrics.week52Low === 'number' ? formatINR(metrics.week52Low) : '—'}
           tooltip="Lowest traded price reached over the trailing 52 weeks"
         />
         <MetricCard
           label="Beta (Sensitivity)"
-          value={metrics.beta !== undefined ? metrics.beta.toFixed(2) : '—'}
+          value={safeNum(metrics.beta)}
           tooltip="Price volatility relative to the broader Nifty 50 index"
         />
 
         {/* Row 3: Profitability & Returns */}
         <MetricCard
           label="EPS (TTM)"
-          value={metrics.epsTTM !== undefined ? `₹${metrics.epsTTM.toFixed(2)}` : '—'}
+          value={safeNum(metrics.epsTTM, 2, '₹')}
           tooltip="Earnings Per Share over the trailing twelve months"
         />
         <MetricCard
           label="EPS Growth YoY"
-          value={metrics.epsGrowthYoY !== undefined ? `${metrics.epsGrowthYoY > 0 ? '+' : ''}${metrics.epsGrowthYoY.toFixed(2)}%` : '—'}
-          change={metrics.epsGrowthYoY}
+          value={typeof metrics.epsGrowthYoY === 'number' ? `${metrics.epsGrowthYoY > 0 ? '+' : ''}${metrics.epsGrowthYoY.toFixed(2)}%` : '—'}
+          change={typeof metrics.epsGrowthYoY === 'number' ? metrics.epsGrowthYoY : undefined}
           tooltip="Year-over-Year growth in earnings per share"
         />
         <MetricCard
           label="Return on Equity (ROE)"
-          value={metrics.roe !== undefined ? `${metrics.roe.toFixed(2)}%` : '—'}
+          value={safeNum(metrics.roe, 2, '', '%')}
           tooltip="Net income returned as a percentage of shareholders equity"
         />
         <MetricCard
           label="ROCE"
-          value={metrics.roce !== undefined ? `${metrics.roce.toFixed(2)}%` : '—'}
+          value={safeNum(metrics.roce, 2, '', '%')}
           tooltip="Return on Capital Employed efficiency ratio"
         />
 
         {/* Row 4: Financial Strength */}
         <MetricCard
           label="Revenue (TTM)"
-          value={metrics.revenueTTM ? formatCr(metrics.revenueTTM) : '—'}
+          value={formatCr(metrics.revenueTTM)}
           tooltip="Total revenue generated over the trailing twelve months"
         />
         <MetricCard
           label="Net Profit (TTM)"
-          value={metrics.netProfitTTM ? formatCr(metrics.netProfitTTM) : '—'}
+          value={formatCr(metrics.netProfitTTM)}
           tooltip="Consolidated net profit over the trailing twelve months"
         />
         <MetricCard
           label="Debt to Equity"
-          value={metrics.debtToEquity !== undefined ? metrics.debtToEquity.toFixed(2) : '—'}
+          value={safeNum(metrics.debtToEquity)}
           tooltip="Total financial leverage and liabilities relative to equity"
         />
         <MetricCard
           label="Return on Assets (ROA)"
-          value={metrics.roa !== undefined ? `${metrics.roa.toFixed(2)}%` : '—'}
+          value={safeNum(metrics.roa, 2, '', '%')}
           tooltip="Profitability relative to total corporate assets"
         />
       </div>

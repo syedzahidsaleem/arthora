@@ -11,6 +11,11 @@ interface FundMetricsGridProps {
   calculating?: boolean;
 }
 
+function safeNum(val: number | null | undefined, decimals = 2, prefix = '', suffix = ''): string {
+  if (typeof val !== 'number' || isNaN(val)) return '—';
+  return `${prefix}${val.toFixed(decimals)}${suffix}`;
+}
+
 export function FundMetricsGrid({ metrics, calculating = false }: FundMetricsGridProps) {
   if (calculating || !metrics) {
     return (
@@ -30,7 +35,10 @@ export function FundMetricsGrid({ metrics, calculating = false }: FundMetricsGri
     );
   }
 
-  const formatCAGR = (val?: number) => (val !== undefined ? `${val > 0 ? '+' : ''}${val.toFixed(2)}%` : '—');
+  const formatCAGR = (val?: number | null) => {
+    if (typeof val !== 'number' || isNaN(val)) return '—';
+    return `${val > 0 ? '+' : ''}${val.toFixed(2)}%`;
+  };
 
   return (
     <div className="space-y-4">
@@ -39,94 +47,72 @@ export function FundMetricsGrid({ metrics, calculating = false }: FundMetricsGri
         <MetricCard
           label="1Y CAGR"
           value={formatCAGR(metrics.cagr1Y)}
-          change={metrics.cagr1Y}
+          change={typeof metrics.cagr1Y === 'number' ? metrics.cagr1Y : undefined}
           tooltip="Compound Annual Growth Rate over the last 12 months"
         />
         <MetricCard
           label="3Y CAGR"
           value={formatCAGR(metrics.cagr3Y)}
-          change={metrics.cagr3Y}
+          change={typeof metrics.cagr3Y === 'number' ? metrics.cagr3Y : undefined}
           tooltip="Annualized return over a 3-year rolling period"
         />
         <MetricCard
           label="5Y CAGR"
           value={formatCAGR(metrics.cagr5Y)}
-          change={metrics.cagr5Y}
+          change={typeof metrics.cagr5Y === 'number' ? metrics.cagr5Y : undefined}
           tooltip="Annualized return over a 5-year rolling period"
         />
         <MetricCard
           label="10Y CAGR"
           value={formatCAGR(metrics.cagr10Y)}
-          change={metrics.cagr10Y}
+          change={typeof metrics.cagr10Y === 'number' ? metrics.cagr10Y : undefined}
           tooltip="Long-term 10-year compound annual growth rate"
         />
 
         {/* Row 2 - Risk Adjusted Metrics */}
         <MetricCard
           label="Sharpe Ratio"
-          value={metrics.sharpeRatio !== undefined ? metrics.sharpeRatio.toFixed(2) : '—'}
+          value={safeNum(metrics.sharpeRatio)}
           tooltip="Excess return per unit of total risk (Rf = 6.5% RBI 91D T-Bill)"
         />
         <MetricCard
           label="Sortino Ratio"
-          value={metrics.sortinoRatio !== undefined ? metrics.sortinoRatio.toFixed(2) : '—'}
+          value={safeNum(metrics.sortinoRatio)}
           tooltip="Risk-adjusted return focusing exclusively on harmful downside volatility"
         />
         <MetricCard
           label="Alpha (Jensen's)"
-          value={metrics.alpha !== undefined ? `${metrics.alpha > 0 ? '+' : ''}${metrics.alpha.toFixed(2)}%` : '—'}
-          change={metrics.alpha}
+          value={typeof metrics.alpha === 'number' ? `${metrics.alpha > 0 ? '+' : ''}${metrics.alpha.toFixed(2)}%` : '—'}
+          change={typeof metrics.alpha === 'number' ? metrics.alpha : undefined}
           tooltip="Excess performance generated over the benchmark index"
         />
         <MetricCard
           label="Beta (Sensitivity)"
-          value={metrics.beta !== undefined ? metrics.beta.toFixed(2) : '—'}
+          value={safeNum(metrics.beta)}
           tooltip="Systematic volatility relative to the benchmark index (1.0 = benchmark)"
         />
 
         {/* Row 3 - Volatility & Costs */}
         <MetricCard
           label="Std Deviation"
-          value={metrics.stdDev !== undefined ? `${metrics.stdDev.toFixed(2)}%` : '—'}
+          value={safeNum(metrics.stdDev, 2, '', '%')}
           tooltip="Annualized historical volatility of monthly returns"
         />
         <MetricCard
           label="Max Drawdown"
-          value={metrics.maxDrawdown !== undefined ? `-${metrics.maxDrawdown.toFixed(2)}%` : '—'}
-          change={metrics.maxDrawdown !== undefined ? -metrics.maxDrawdown : undefined}
+          value={typeof metrics.maxDrawdown === 'number' ? `-${metrics.maxDrawdown.toFixed(2)}%` : '—'}
+          change={typeof metrics.maxDrawdown === 'number' ? -metrics.maxDrawdown : undefined}
           tooltip="Largest peak-to-trough decline across entire historical series"
         />
         <MetricCard
           label="Expense Ratio"
-          value={metrics.expenseRatio !== undefined ? `${metrics.expenseRatio.toFixed(2)}%` : '—'}
-          tooltip="Total annual management and operating fee charged by the AMC"
+          value={safeNum(metrics.expenseRatio, 2, '', '%')}
+          tooltip="Total annual fund management cost charged as a percentage of NAV"
         />
         <MetricCard
-          label="Exit Load"
-          value={metrics.exitLoad || 'Nil'}
-          tooltip="Redemption fee charged if units are sold before lock-in"
-        />
-
-        {/* Row 4 - Info & Minimums */}
-        <MetricCard
-          label="Total AUM"
-          value={metrics.aum ? `₹${(metrics.aum / 100).toFixed(0)} Cr` : '—'}
-          tooltip="Total Assets Under Management across the scheme"
-        />
-        <MetricCard
-          label="Minimum SIP"
-          value={metrics.minSIP ? formatINR(metrics.minSIP) : '₹500'}
-          tooltip="Minimum required monthly Systematic Investment Plan installment"
-        />
-        <MetricCard
-          label="Fund Manager"
-          value={metrics.fundManagerName || 'AMC Team'}
-          tooltip="Lead portfolio manager responsible for investment decisions"
-        />
-        <MetricCard
-          label="Manager Tenure"
-          value={metrics.fundManagerTenure ? `${metrics.fundManagerTenure} Yrs` : '—'}
-          tooltip="Tenure of the current lead fund manager on this scheme"
+          label="Fund AUM"
+          value={typeof metrics.aum === 'number' ? formatINR(metrics.aum) : '—'}
+          tooltip="Total Assets Under Management managed in this scheme"
         />
       </div>
     </div>
