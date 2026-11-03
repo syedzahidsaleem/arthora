@@ -6,7 +6,7 @@ import { FundHoldings } from '../models/FundHoldings';
 import { FundSectorAlloc } from '../models/FundSectorAlloc';
 import { AppError } from '../errors/AppError';
 import * as redisService from '../db/redis';
-import { fetchNAVHistory, fetchLatestNAV } from '../external/mfapi';
+import { fetchNAVHistory, fetchLatestNAV, fetchSchemeDetail } from '../external/mfapi';
 import { metricCalcQueue } from '../../workers/metricCalcWorker';
 import type { IFundMetadata, PaginatedData } from '@arthora/shared';
 
@@ -99,7 +99,30 @@ export async function getFundDetail(schemeCode: number): Promise<FundSearchResul
     return cached;
   }
 
-  const fund = await FundMetadata.findOne({ schemeCode }).lean();
+  let fund = await FundMetadata.findOne({ schemeCode }).lean();
+  if (!fund) {
+    // On-demand fetch from mfapi.in if not yet cached in MongoDB
+    try {
+      const extDetail = await fetchSchemeDetail(schemeCode);
+      if (extDetail?.meta) {
+        fund = await FundMetadata.findOneAndUpdate(
+          { schemeCode },
+          {
+            schemeCode: extDetail.meta.scheme_code,
+            schemeName: extDetail.meta.scheme_name,
+            fundHouse: extDetail.meta.fund_house,
+            category: extDetail.meta.scheme_category || 'Other',
+            schemeType: extDetail.meta.scheme_type,
+            isActive: true,
+          },
+          { upsert: true, new: true, setDefaultsOnInsert: true },
+        ).lean();
+      }
+    } catch (extErr) {
+      console.warn(`⚠️ [FundService] On-demand mfapi fetch for ${schemeCode} failed:`, extErr);
+    }
+  }
+
   if (!fund) {
     throw new AppError(`Mutual fund scheme with code ${schemeCode} not found`, 404, 'NOT_FOUND');
   }
@@ -287,7 +310,7 @@ export async function getFundPeers(schemeCode: number, limit = 5) {
 
   const currentFund = await FundMetadata.findOne({ schemeCode }).lean();
   if (!currentFund) {
-    throw new AppError(`Fund with code ${schemeCode} not found`, 404, 'NOT_FOUND');
+    return [];
   }
 
   const category = currentFund.category;
