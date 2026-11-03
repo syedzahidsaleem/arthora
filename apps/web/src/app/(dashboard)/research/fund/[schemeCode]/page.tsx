@@ -1,6 +1,8 @@
 import React from 'react';
 import { FundDetailView } from '@/components/fund/FundDetailView';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return [{ schemeCode: '_' }];
 }

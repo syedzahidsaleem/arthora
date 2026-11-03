@@ -1,6 +1,8 @@
 import React from 'react';
 import { StockDetailView } from '@/components/stock/StockDetailView';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return [{ symbol: '_' }];
 }

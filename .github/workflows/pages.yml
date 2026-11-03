@@ -45,6 +45,7 @@ jobs:
           pnpm --filter @arthora/web build
         env:
           NEXT_PUBLIC_API_URL: https://arthora-api.onrender.com
+          EXPORT_STATIC: 'true'
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

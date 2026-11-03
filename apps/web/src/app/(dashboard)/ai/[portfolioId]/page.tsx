@@ -1,6 +1,8 @@
 import React from 'react';
 import { PortfolioDetailView } from '@/components/ai/PortfolioDetailView';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return [{ portfolioId: '_' }];
 }

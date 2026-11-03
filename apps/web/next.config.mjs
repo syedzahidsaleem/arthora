@@ -1,13 +1,14 @@
 /** @type {import('next').NextConfig} */
+const isStaticExport = process.env.EXPORT_STATIC === 'true' || process.env.GITHUB_PAGES === 'true';
+
 const nextConfig = {
-  output: 'export',
-  distDir: 'out',
+  ...(isStaticExport ? { output: 'export', distDir: 'out' } : {}),
   images: {
     unoptimized: true,
   },
   reactStrictMode: true,
   poweredByHeader: false,
-  trailingSlash: true,
+  trailingSlash: isStaticExport,
 };
 
 export default nextConfig;
