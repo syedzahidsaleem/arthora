@@ -16,6 +16,8 @@ export interface MFSchemeDetail {
     scheme_category: string;
     scheme_code: number;
     scheme_name: string;
+    isin_growth?: string | null;
+    isin_div_reinvestment?: string | null;
   };
   data: Array<{
     date: string; // "DD-MM-YYYY"

@@ -109,6 +109,8 @@ export async function getFundDetail(schemeCode: number): Promise<FundSearchResul
           { schemeCode },
           {
             schemeCode: extDetail.meta.scheme_code,
+            isin: extDetail.meta.isin_growth || `INF${schemeCode}`,
+            isinReinvest: extDetail.meta.isin_div_reinvestment || undefined,
             schemeName: extDetail.meta.scheme_name,
             fundHouse: extDetail.meta.fund_house,
             category: extDetail.meta.scheme_category || 'Other',
