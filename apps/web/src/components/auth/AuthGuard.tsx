@@ -41,26 +41,56 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
   const router = useRouter();
   const { isAuthenticated, accessToken, refreshToken, setTokens, logout } = useAuthStore();
   const [isVerifying, setIsVerifying] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  // Wait for Zustand persist to hydrate from localStorage
+  useEffect(() => {
+    if (useAuthStore.persist?.hasHydrated?.()) {
+      setHasHydrated(true);
+      return;
+    }
+
+    const unsub = useAuthStore.persist?.onFinishHydration?.(() => {
+      setHasHydrated(true);
+    });
+
+    const timer = setTimeout(() => {
+      setHasHydrated(true);
+    }, 100);
+
+    return () => {
+      if (unsub) unsub();
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
+
     async function checkAuth() {
-      if (!isAuthenticated || !accessToken) {
+      const store = useAuthStore.getState();
+      const currentToken = store.accessToken || accessToken;
+      const isAuth = store.isAuthenticated || isAuthenticated;
+      const currentRefreshToken = store.refreshToken || refreshToken;
+
+      if (!isAuth || !currentToken) {
         setIsVerifying(false);
         router.push('/login');
         return;
       }
 
       // Check if access token is expiring within 5 minutes (300 seconds)
-      const decoded = parseJwt(accessToken);
+      const decoded = parseJwt(currentToken);
       const nowSeconds = Math.floor(Date.now() / 1000);
 
       if (decoded && decoded.exp && decoded.exp - nowSeconds < 300) {
-        if (refreshToken) {
+        if (currentRefreshToken) {
           try {
-            const refreshRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`, {
+            const baseUrl = getApiBaseUrl();
+            const refreshRes = await fetch(`${baseUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ refreshToken }),
+              body: JSON.stringify({ refreshToken: currentRefreshToken }),
             });
 
             const refreshData = await refreshRes.json();
@@ -86,7 +116,7 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
     }
 
     checkAuth();
-  }, [isAuthenticated, accessToken, refreshToken, setTokens, logout, router]);
+  }, [hasHydrated, isAuthenticated, accessToken, refreshToken, setTokens, logout, router]);
 
   if (isVerifying) {
     if (fallback) {
