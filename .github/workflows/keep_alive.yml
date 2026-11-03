@@ -31,7 +31,7 @@ jobs:
       - name: Ping Vercel Frontend
         run: |
           echo "🌐 Sending probe to Vercel Web Frontend..."
-          WEB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://out-sand-phi-45.vercel.app || echo "TIMEOUT")
+          WEB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://arthora.vercel.app || echo "TIMEOUT")
           echo "Frontend Response Status: $WEB_STATUS"
           if [ "$WEB_STATUS" = "200" ]; then
             echo "✅ Web Frontend is active and fast (HTTP 200)."

@@ -3,6 +3,8 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -30,6 +32,8 @@ export {
   auth,
   googleProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -40,23 +44,63 @@ export type { FirebaseUser };
 
 /**
  * Initiates Google OAuth popup sign-in and returns the Firebase ID token.
+ * Includes a timeout so the UI never hangs indefinitely when popups or cross-origin
+ * communication are blocked (e.g., in Brave or ad blockers).
  */
-export async function signInWithGoogle(): Promise<{ idToken: string; user: FirebaseUser }> {
+export async function signInWithGoogle(timeoutMs = 45000): Promise<{ idToken: string; user: FirebaseUser }> {
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(
+      () =>
+        reject(
+          new Error(
+            'Google Sign-In timed out. If you are using Brave or an ad blocker, please disable Shields or allow popups/cookies for this site, or sign in using email & password.'
+          )
+        ),
+      timeoutMs
+    )
+  );
+
+  const authPromise = (async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+      return { idToken, user: result.user };
+    } catch (error: unknown) {
+      const firebaseError = error as { code?: string; message?: string };
+      if (firebaseError.code === 'auth/popup-closed-by-user') {
+        throw new Error('Sign-in cancelled. Please try again.');
+      }
+      if (firebaseError.code === 'auth/popup-blocked') {
+        throw new Error('Popup blocked by your browser. Please allow popups for this site and try again, or use email login.');
+      }
+      if (firebaseError.code === 'auth/unauthorized-domain') {
+        throw new Error('This domain is not authorized for Google Sign-In in Firebase.');
+      }
+      throw error;
+    }
+  })();
+
+  return Promise.race([authPromise, timeoutPromise]);
+}
+
+/**
+ * Initiates Google Sign-In via full-page redirect for browsers that block popups (e.g. Brave, mobile).
+ */
+export async function signInWithGoogleRedirect(): Promise<void> {
+  await signInWithRedirect(auth, googleProvider);
+}
+
+/**
+ * Checks if a redirect sign-in was completed.
+ */
+export async function getGoogleRedirectResult(): Promise<{ idToken: string; user: FirebaseUser } | null> {
   try {
-    const result = await signInWithPopup(auth, googleProvider);
+    const result = await getRedirectResult(auth);
+    if (!result) return null;
     const idToken = await result.user.getIdToken();
     return { idToken, user: result.user };
-  } catch (error: unknown) {
-    const firebaseError = error as { code?: string; message?: string };
-    if (firebaseError.code === 'auth/popup-closed-by-user') {
-      throw new Error('Sign-in cancelled. Please try again.');
-    }
-    if (firebaseError.code === 'auth/popup-blocked') {
-      throw new Error('Popup blocked by your browser. Please allow popups for this site and try again.');
-    }
-    if (firebaseError.code === 'auth/unauthorized-domain') {
-      throw new Error('This domain is not authorized for Google Sign-In in Firebase.');
-    }
-    throw error;
+  } catch (error) {
+    console.warn('Google redirect result error:', error);
+    return null;
   }
 }

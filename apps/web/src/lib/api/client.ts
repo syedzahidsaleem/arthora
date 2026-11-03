@@ -24,11 +24,12 @@ function onRefreshed(token: string) {
 
 /**
  * Automatically retries requests when the backend is waking from a cold start.
+ * Supports up to 15 retries (approx 60-70 seconds) to handle Render free-tier wake-up latency.
  */
 export async function fetchWithColdStartRetry(
   url: string,
   fetchOptions: RequestInit,
-  retries = 3,
+  retries = 15,
   delayMs = 2500,
 ): Promise<Response> {
   try {
@@ -36,14 +37,14 @@ export async function fetchWithColdStartRetry(
     if ((res.status === 502 || res.status === 503 || res.status === 504) && retries > 0) {
       console.warn(`[Arthora API] Server waking up (${res.status}), retrying in ${delayMs}ms...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
-      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, delayMs * 1.5);
+      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, Math.min(delayMs * 1.3, 4000));
     }
     return res;
   } catch (err) {
     if (retries > 0) {
       console.warn(`[Arthora API] Connection pending, retrying in ${delayMs}ms...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
-      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, delayMs * 1.5);
+      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, Math.min(delayMs * 1.3, 4000));
     }
     throw err;
   }
@@ -54,7 +55,8 @@ export async function fetchWithColdStartRetry(
  */
 export function prewarmServer(): void {
   if (typeof window !== 'undefined') {
-    fetch(`${API_BASE_URL}/api/v1/health`, { method: 'GET', keepalive: true }).catch(() => {});
+    const baseUrl = getApiBaseUrl();
+    fetch(`${baseUrl}/api/v1/health`, { method: 'GET', keepalive: true }).catch(() => {});
   }
 }
 

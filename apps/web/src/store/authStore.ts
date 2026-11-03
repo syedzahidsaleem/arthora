@@ -20,6 +20,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithGoogleToken: (idToken: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: IUser | null) => void;
@@ -141,11 +142,9 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      loginWithGoogle: async () => {
+      loginWithGoogleToken: async (idToken: string) => {
         set({ isLoading: true });
         try {
-          const { idToken } = await firebaseGoogleSignIn();
-
           const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.GOOGLE}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -165,6 +164,17 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      loginWithGoogle: async () => {
+        set({ isLoading: true });
+        try {
+          const { idToken } = await firebaseGoogleSignIn();
+          await get().loginWithGoogleToken(idToken);
         } catch (error) {
           set({ isLoading: false });
           throw error;

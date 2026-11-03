@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { useAuthStore } from '../../store/authStore';
+import { getGoogleRedirectResult, signInWithGoogleRedirect } from '../../lib/firebase';
 import { toast } from 'sonner';
 
 interface GoogleAuthButtonProps {
@@ -14,7 +15,37 @@ interface GoogleAuthButtonProps {
 export function GoogleAuthButton({ mode = 'signin', redirectTo = '/ai' }: GoogleAuthButtonProps) {
   const router = useRouter();
   const loginWithGoogle = useAuthStore((state) => state.loginWithGoogle);
+  const loginWithGoogleToken = useAuthStore((state) => state.loginWithGoogleToken);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    getGoogleRedirectResult()
+      .then(async (result) => {
+        if (result && mounted) {
+          setIsLoading(true);
+          try {
+            await loginWithGoogleToken(result.idToken);
+            toast.success('Signed in with Google successfully!');
+            if (typeof window !== 'undefined') {
+              window.location.href = redirectTo;
+            } else {
+              router.push(redirectTo);
+            }
+          } catch (err) {
+            const message = err instanceof Error ? err.message : 'Google authentication failed';
+            toast.error(message);
+          } finally {
+            if (mounted) setIsLoading(false);
+          }
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, [loginWithGoogleToken, redirectTo, router]);
 
   const handleGoogleClick = async () => {
     setIsLoading(true);
@@ -28,7 +59,17 @@ export function GoogleAuthButton({ mode = 'signin', redirectTo = '/ai' }: Google
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Google authentication failed';
-      toast.error(message);
+      if (message.includes('Popup blocked') || message.includes('popup-blocked')) {
+        toast.info('Popup was blocked by browser. Redirecting to Google Sign-In...');
+        try {
+          await signInWithGoogleRedirect();
+          return;
+        } catch {
+          toast.error('Failed to redirect to Google Sign-In');
+        }
+      } else {
+        toast.error(message);
+      }
     } finally {
       setIsLoading(false);
     }
