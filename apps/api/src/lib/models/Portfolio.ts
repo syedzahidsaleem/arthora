@@ -32,19 +32,21 @@ const AssetAllocationSchema = new Schema(
 
 const AISuggestionSchema = new Schema(
   {
-    model: { type: String, required: true },
-    allocation: { type: [AssetAllocationSchema], required: true, default: [] },
-    projectedValue: { type: Number, required: true },
+    model: { type: String, default: 'gemini-3.6-flash' },
+    allocation: { type: [AssetAllocationSchema], default: [] },
+    projectedValue: { type: Number, default: 0 },
     rebalancing: {
       type: String,
       enum: ['monthly', 'quarterly', 'half-yearly', 'yearly'],
-      required: true,
       default: 'yearly',
     },
-    explanation: { type: String, required: true },
+    explanation: { type: String, default: '' },
     generatedAt: { type: Date, default: Date.now },
-    aiModel: { type: String, required: true },
-    disclaimer: { type: String, required: true },
+    aiModel: { type: String, default: 'gemini-3.6-flash' },
+    disclaimer: {
+      type: String,
+      default: 'Educational and research preview only. Not SEBI registered investment advice.',
+    },
     status: {
       type: String,
       enum: ['pending', 'generating', 'completed', 'failed'],
@@ -75,7 +77,7 @@ const PortfolioSchema = new Schema<IPortfolioDocument>(
         'vacation',
         'other',
       ],
-      required: true,
+      default: 'wealth_building',
     },
     timePeriod: { type: Number, required: true, min: 1, max: 30 },
     riskLevel: {

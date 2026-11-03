@@ -19,6 +19,7 @@ export async function createPortfolio(
     userId,
     name: input.name || input.goal || 'Goal Portfolio',
     goal: input.goal,
+    goalCategory: input.goalCategory || 'wealth_building',
     timePeriod: input.timePeriod,
     riskLevel: input.riskLevel,
     monthlyInvestment: input.monthlyInvestment ?? 0,
@@ -27,11 +28,13 @@ export async function createPortfolio(
     isActive: true,
     aiSuggestion: {
       status: 'pending',
+      model: 'gemini-3.6-flash',
+      aiModel: 'gemini-3.6-flash',
       allocation: [],
       projectedValue: 0,
       rebalancing: 'quarterly',
-      explanation: '',
-      disclaimer: '',
+      explanation: 'AI synthesis in progress...',
+      disclaimer: 'Educational and research preview only. Not SEBI registered investment advice.',
     },
   });
 
