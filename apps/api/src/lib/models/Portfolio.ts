@@ -92,6 +92,7 @@ const PortfolioSchema = new Schema<IPortfolioDocument>(
     aiSuggestion: { type: AISuggestionSchema },
     history: { type: [AISuggestionSchema], default: [] },
     isPinned: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
   },
   {
     timestamps: true,

@@ -55,6 +55,7 @@ export interface IPortfolio {
   aiSuggestion?: IAISuggestion;
   history: IAISuggestion[];
   isPinned: boolean;
+  isActive?: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
