@@ -8,7 +8,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   poweredByHeader: false,
-  trailingSlash: isStaticExport,
+  trailingSlash: true,
 };
 
 export default nextConfig;
