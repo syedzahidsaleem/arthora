@@ -6,7 +6,6 @@ import { API_ENDPOINTS } from '../../lib/api/endpoints';
 import { getApiBaseUrl } from '../../lib/api/config';
 import { useAuthStore } from '../../store/authStore';
 
-const API_BASE_URL = getApiBaseUrl();
 
 interface AuthGuardProps {
   children: React.ReactNode;
