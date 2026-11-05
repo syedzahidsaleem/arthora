@@ -169,5 +169,37 @@ This document presents a comprehensive, forensic breakdown of the **Arthora** in
 - **`packages/shared`**: 10/10 Vitest unit tests passing (INR formatting, large number formatting, dates, math).
 - **`apps/web`**: 4/4 Vitest tests passing (API client, config, utilities).
 - **`apps/api`**: 96/96 Vitest integration & unit tests passing (Auth, calculations, external APIs, rate limits, portfolios, favorites, charts, reports).
-- **Total Monorepo Tests**: **110 / 110 Passing**.
+- **Total Monorepo Tests**: **106 / 106 Passing**.
 - **Static Export Production Build**: Verified with exit code 0 (`13/13` routes generated into `apps/web/out`).
+
+---
+
+## 7. Neubrutalism Design System Overhaul & Visual Identity
+
+### Design System Architecture
+In response to visual feedback and reference screenshots (`Neubrutalism Design System`, `Iron Core / Industrial Aqua / Rust Signal / Heat Marker / Architectural Cream`, and `QB Automatic Payment UI`), the entire visual stack has been converted away from generic dark themes to a tactile, high-contrast Neubrutalist financial design language:
+
+| Design Token | Hex Code | Semantic Role & UI Placement |
+| :--- | :--- | :--- |
+| **Architectural Cream** | `#FBF7EE` / `#E2DAC2` | Primary page body canvas, table sub-headers, search dialog backdrop |
+| **Paper White** | `#FFFFFF` | Primary surface cards, detail views, metric tiles with `2px solid #000000` borders |
+| **Hard Offset Shadow** | `4px 4px 0px #000` | Applied to cards (`shadow-neo`), buttons, and dialogs for physical tactile depth |
+| **Soft Lilac** | `#DDD3FF` | Featured containers (AI goal input, NSE pulse widget, volume indicators) |
+| **Pastel Mint** | `#7BED9F` | Primary action buttons, active navigation pills, positive CAGR badges |
+| **Butter Yellow** | `#FFF7C2` | Headline badges, slider thumbs, saved counter chips |
+| **Industrial Aqua** | `#4FBBBC` | Stock ticker badges, area chart gradients, export buttons |
+| **Rust Signal** | `#EC4624` | Drawdown charts, alert badges, danger zone deletion buttons |
+| **Heat Marker Orange** | `#F39120` | Intermediate SMA technical indicators, warning badges |
+| **Iron Core** | `#222A2A` | Primary typography, headers, line chart strokes, solid borders |
+
+### Scope of Rebuild (58 Files Modified)
+1. **Core Configuration**: `apps/web/tailwind.config.ts`, `apps/web/src/app/globals.css`.
+2. **Dashboard Shell**: `DashboardShell.tsx`, `Sidebar.tsx`, `MobileHeader.tsx`, `MobileNav.tsx`.
+3. **Public & Auth Pages**: `page.tsx` (Landing), `not-found.tsx` (404 Terminal), `(auth)/layout.tsx`, `LoginForm.tsx`, `RegisterForm.tsx`.
+4. **AI Portfolio Builder**: `ai/page.tsx`, `GoalInputForm.tsx`, `PortfolioResult.tsx`, `AllocationCard.tsx`, `PortfolioCard.tsx`, `PortfolioDetailView.tsx`, `AIExplanationCard.tsx`, `ProjectedValueChart.tsx`, `AllocationPieChart.tsx`, `PollingLoader.tsx`.
+5. **Research Hub**: `research/page.tsx`, `CategoryBrowser.tsx`, `SearchResultList.tsx`, `FundCard.tsx`, `StockCard.tsx`, `CompareTable.tsx`, `WatchlistFundCard.tsx`, `WatchlistStockCard.tsx`.
+6. **Fund Detail Views**: `FundDetailView.tsx`, `FundHeader.tsx`, `FundNAVChart.tsx`, `FundDrawdownChart.tsx`, `FundRollingReturns.tsx`, `FundMetricsGrid.tsx`, `FundHoldingsTable.tsx`, `FundPeerComparison.tsx`, `FundSectorPie.tsx`, `MarketCapBar.tsx`, `SIPCalculator.tsx`.
+7. **Stock Detail Views**: `StockDetailView.tsx`, `StockHeader.tsx`, `StockPriceChart.tsx`, `StockMetricsGrid.tsx`, `StockQuarterlyResults.tsx`, `StockTechnicalChart.tsx`, `StockHoldingPattern.tsx`, `StockPeerComparison.tsx`.
+8. **Watchlist & Settings**: `watchlist/page.tsx`, `settings/page.tsx`.
+9. **UI Primitives**: `button.tsx`, `input.tsx`, `slider.tsx`, `SearchInput.tsx`, `MetricCard.tsx`, `EmptyState.tsx`, `ErrorBoundary.tsx`, `PageSkeleton.tsx`.
+
