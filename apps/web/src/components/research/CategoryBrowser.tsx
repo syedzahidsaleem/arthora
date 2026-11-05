@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Filter, ChevronDown, X, ArrowUpDown, Building, Layers } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronDown, X, ArrowUpDown, Building, Layers } from 'lucide-react';
 
 export const CATEGORIES = [
   { id: '', label: 'All Categories' },

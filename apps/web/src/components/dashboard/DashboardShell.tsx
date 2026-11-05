@@ -12,7 +12,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebarStore();
 
   return (
-    <div className="min-h-screen bg-[#0D0E1A] text-[#F8F9FA] flex flex-col">
+    <div className="min-h-screen bg-[#0B0D17] text-[#F8F9FA] flex flex-col">
       {/* Desktop Sidebar */}
       <Sidebar />
 
@@ -23,7 +23,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <main
         className={cn(
           'flex-1 transition-all duration-300 pb-20 md:pb-8 min-h-[calc(100vh-3.5rem)] md:min-h-screen',
-          isCollapsed ? 'md:ml-16' : 'md:ml-64',
+          isCollapsed ? 'md:ml-20' : 'md:ml-64',
         )}
       >
         <div className="p-4 md:p-8 max-w-7xl mx-auto w-full">

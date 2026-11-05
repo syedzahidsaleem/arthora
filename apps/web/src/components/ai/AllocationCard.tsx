@@ -1,12 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Bookmark, BookmarkCheck, ArrowUpRight, Shield } from 'lucide-react';
-import { toast } from 'sonner';
 import { useFavorites } from '@/hooks/useFavorites';
-import { api } from '@/lib/api/client';
-import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import type { IAssetAllocation } from '@arthora/shared';
 
 const CHART_COLORS = [
@@ -100,7 +97,7 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
           <button
             type="button"
             onClick={handleToggleWatchlist}
-            disabled={isSaving || favorited}
+            
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
               favorited
                 ? 'bg-neo-green text-black'
