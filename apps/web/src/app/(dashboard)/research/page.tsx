@@ -183,6 +183,8 @@ const POPULAR_STOCKS: StockCardData[] = [
 export default function ResearchHubPage() {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedAmc, setSelectedAmc] = useState('');
+  const [sortBy, setSortBy] = useState('default');
   const [fundResults, setFundResults] = useState<FundCardData[]>([]);
   const [stockResults, setStockResults] = useState<StockCardData[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -242,7 +244,32 @@ export default function ResearchHubPage() {
     setSelectedCategory(cat);
   };
 
-  const isSearchActive = Boolean(debouncedQuery.trim() || selectedCategory);
+  const handleResetFilters = () => {
+    setSelectedCategory('');
+    setSelectedAmc('');
+    setSortBy('default');
+    setQuery('');
+  };
+
+  const sortFunds = (list: FundCardData[]) => {
+    let copy = [...list];
+    if (selectedCategory) {
+      const catLower = selectedCategory.toLowerCase();
+      copy = copy.filter((f) => f.category?.toLowerCase().includes(catLower));
+    }
+    if (selectedAmc) {
+      const amcLower = selectedAmc.toLowerCase();
+      copy = copy.filter((f) => f.fundHouse?.toLowerCase().includes(amcLower));
+    }
+    if (sortBy === 'cagr3Y_desc') return copy.sort((a, b) => (b.cagr3Y || 0) - (a.cagr3Y || 0));
+    if (sortBy === 'cagr5Y_desc') return copy.sort((a, b) => (b.cagr5Y || 0) - (a.cagr5Y || 0));
+    if (sortBy === 'cagr1Y_desc') return copy.sort((a, b) => (b.cagr1Y || 0) - (a.cagr1Y || 0));
+    if (sortBy === 'aum_desc') return copy.sort((a, b) => (b.aum || 0) - (a.aum || 0));
+    if (sortBy === 'nav_asc') return copy.sort((a, b) => (a.latestNAV || 0) - (b.latestNAV || 0));
+    return copy;
+  };
+
+  const isSearchActive = Boolean(debouncedQuery.trim() || selectedCategory || selectedAmc);
 
   return (
     <div className="space-y-8">
@@ -289,6 +316,11 @@ export default function ResearchHubPage() {
         <CategoryBrowser
           selectedCategory={selectedCategory}
           onSelectCategory={handleCategorySelect}
+          selectedAmc={selectedAmc}
+          onSelectAmc={setSelectedAmc}
+          sortBy={sortBy}
+          onSelectSortBy={setSortBy}
+          onResetFilters={handleResetFilters}
         />
       </div>
 
@@ -312,7 +344,7 @@ export default function ResearchHubPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {POPULAR_FUNDS.map((fund) => (
+              {sortFunds(POPULAR_FUNDS).map((fund) => (
                 <FundCard key={fund.schemeCode} fund={fund} />
               ))}
             </div>
