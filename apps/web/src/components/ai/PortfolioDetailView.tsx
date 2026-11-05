@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
 import { ArrowLeft, Target, Shield, Clock, IndianRupee } from 'lucide-react';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { PortfolioResult } from '@/components/ai/PortfolioResult';
@@ -13,7 +14,11 @@ interface PortfolioDetailViewProps {
   portfolioId: string;
 }
 
-export function PortfolioDetailView({ portfolioId }: PortfolioDetailViewProps) {
+export function PortfolioDetailView({ portfolioId: initialPortfolioId }: PortfolioDetailViewProps) {
+  const nextParams = useParams();
+  const pathname = usePathname();
+  const rawId = (nextParams?.portfolioId as string) || initialPortfolioId || '';
+  const portfolioId = (rawId && rawId !== '_') ? rawId : (pathname?.match(/\/ai\/([^/?#]+)/)?.[1] || initialPortfolioId);
   const { portfolio, isLoading, isGenerating, error } = usePortfolio(portfolioId);
 
   if (isLoading && !portfolio) {

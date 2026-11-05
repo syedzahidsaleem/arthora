@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
 import { ArrowLeft, BarChart3, TrendingUp, PieChart, Users, Calculator } from 'lucide-react';
 import { useFund } from '@/hooks/useFund';
 import { useFundHoldings } from '@/hooks/useFundHoldings';
@@ -24,7 +25,11 @@ interface FundDetailViewProps {
   schemeCode: string;
 }
 
-export function FundDetailView({ schemeCode }: FundDetailViewProps) {
+export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailViewProps) {
+  const nextParams = useParams();
+  const pathname = usePathname();
+  const rawCode = (nextParams?.schemeCode as string) || initialSchemeCode || '';
+  const schemeCode = (rawCode && rawCode !== '_') ? rawCode : (pathname?.match(/\/research\/fund\/([^/?#]+)/)?.[1] || initialSchemeCode);
   const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'holdings' | 'peers' | 'calculator'>('overview');
   const [selectedSector, setSelectedSector] = useState<string | undefined>(undefined);
 

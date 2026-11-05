@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import { useFavorites } from '@/hooks/useFavorites';
 import { formatINR, formatDate } from '@arthora/shared';
+import { getApiBaseUrl } from '@/lib/api/config';
 import type { FundDetailData } from '@/hooks/useFund';
 import { cn } from '@/lib/utils';
 
@@ -45,7 +46,8 @@ export function FundHeader({ fund }: FundHeaderProps) {
 
   const handleDownloadReport = () => {
     toast.info('Generating institutional PDF report for ' + fund.schemeName);
-    window.open(`/api/v1/reports/fund-analysis?schemeCode=${fund.schemeCode}`, '_blank');
+    const baseUrl = getApiBaseUrl();
+    window.open(`${baseUrl}/api/v1/reports/fund-analysis?schemeCode=${fund.schemeCode}`, '_blank');
   };
 
   const navChange =

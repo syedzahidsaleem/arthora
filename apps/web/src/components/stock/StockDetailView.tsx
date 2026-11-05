@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
 import { ArrowLeft, BarChart3, DollarSign, Activity, Users, Layers } from 'lucide-react';
 import { useStock } from '@/hooks/useStock';
 import { StockHeader } from './StockHeader';
@@ -19,7 +20,11 @@ interface StockDetailViewProps {
   symbol: string;
 }
 
-export function StockDetailView({ symbol }: StockDetailViewProps) {
+export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps) {
+  const nextParams = useParams();
+  const pathname = usePathname();
+  const rawSymbol = (nextParams?.symbol as string) || initialSymbol || '';
+  const symbol = (rawSymbol && rawSymbol !== '_') ? rawSymbol : (pathname?.match(/\/research\/stock\/([^/?#]+)/)?.[1] || initialSymbol);
   const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'technical' | 'holdings' | 'peers'>('overview');
   const { stock, metrics, isLoading, error, refetch } = useStock(symbol);
 

@@ -96,7 +96,7 @@ export function GoalInputForm({ onSubmit, isGenerating }: GoalInputFormProps) {
         <label className="text-xs font-mono font-medium text-[#9B9BB4] uppercase tracking-wider">
           Choose a Goal Template
         </label>
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {PRESET_CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (

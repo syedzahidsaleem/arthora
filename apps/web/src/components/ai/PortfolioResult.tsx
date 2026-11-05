@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, PlusCircle, RotateCcw, PieChart as PieIcon, TrendingUp } from 'lucide-react';
+import { Sparkles, PlusCircle, RotateCcw, PieChart as PieIcon, TrendingUp, Printer } from 'lucide-react';
 import { ProjectedValueChart } from './ProjectedValueChart';
 import { AllocationPieChart } from './AllocationPieChart';
 import { AllocationCard } from './AllocationCard';
@@ -57,6 +57,15 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
               </button>
             )}
 
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold uppercase text-white bg-[#1A1B28] hover:bg-[#25273A] border-2 border-black transition-all shadow-[2px_2px_0px_0px_#000]"
+              title="Print or save client portfolio report as PDF"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Export PDF</span>
+            </button>
             <Link
               href="/ai"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"

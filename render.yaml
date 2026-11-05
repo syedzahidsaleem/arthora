@@ -55,6 +55,15 @@ services:
         value: public, max-age=31536000, immutable
     routes:
       - type: rewrite
+        source: /research/fund/*
+        destination: /research/fund/_/index.html
+      - type: rewrite
+        source: /research/stock/*
+        destination: /research/stock/_/index.html
+      - type: rewrite
+        source: /ai/*
+        destination: /ai/_/index.html
+      - type: rewrite
         source: /*
         destination: /index.html
 
