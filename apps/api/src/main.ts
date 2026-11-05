@@ -12,7 +12,6 @@ import { generalLimiter } from './lib/middleware/rateLimitMiddleware';
 import { corsMiddleware } from './lib/middleware/corsMiddleware';
 import { sanitizeBody } from './lib/middleware/sanitizationMiddleware';
 import { notFoundHandler, globalErrorHandler } from './lib/middleware/errorMiddleware';
-import { startKeepAliveBot, stopKeepAliveBot } from './lib/services/keepAliveService';
 import healthRouter from './routes/health';
 import apiRouter from './routes';
 
@@ -152,12 +151,10 @@ async function startServer(): Promise<void> {
     const server = app.listen(PORT, () => {
       console.log(`✨ [Server] Arthora API running on port ${PORT} in [${NODE_ENV}] mode.`);
       console.log(`🔗 [Server] Health check: http://localhost:${PORT}/health`);
-      startKeepAliveBot();
     });
 
     const shutdown = async (signal: string) => {
       console.log(`\n🛑 [Server] Received ${signal}. Shutting down HTTP server...`);
-      stopKeepAliveBot();
       server.close(() => {
         console.log('🔒 [Server] HTTP server closed.');
         process.exit(0);
