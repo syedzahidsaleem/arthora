@@ -30,6 +30,7 @@ export function useFund(schemeCode: number | string) {
   }, []);
 
   const fetchMetrics = useCallback(async () => {
+    if (!schemeCode || schemeCode === '_' || schemeCode === 'NaN' || Number.isNaN(schemeCode)) return;
     try {
       const res = await api.get<FundMetricsResponse>(
         API_ENDPOINTS.FUNDS.METRICS(schemeCode),
@@ -67,7 +68,10 @@ export function useFund(schemeCode: number | string) {
   }, [schemeCode, clearPolling]);
 
   const fetchData = useCallback(async () => {
-    if (!schemeCode) return;
+    if (!schemeCode || schemeCode === '_' || schemeCode === 'NaN' || Number.isNaN(schemeCode)) {
+      setIsLoading(true);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     clearPolling();

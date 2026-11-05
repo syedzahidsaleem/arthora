@@ -49,15 +49,15 @@
   "rewrites": [
     {
       "source": "/research/fund/:path*",
-      "destination": "/research/fund/_"
+      "destination": "/research/fund/_/"
     },
     {
       "source": "/research/stock/:path*",
-      "destination": "/research/stock/_"
+      "destination": "/research/stock/_/"
     },
     {
-      "source": "/ai/:id+",
-      "destination": "/ai/_"
+      "source": "/ai/:id*",
+      "destination": "/ai/_/"
     }
   ]
 }

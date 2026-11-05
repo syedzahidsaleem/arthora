@@ -24,7 +24,9 @@ export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps)
   const nextParams = useParams();
   const pathname = usePathname();
   const rawSymbol = (nextParams?.symbol as string) || initialSymbol || '';
-  const symbol = (rawSymbol && rawSymbol !== '_') ? rawSymbol : (pathname?.match(/\/research\/stock\/([^/?#]+)/)?.[1] || initialSymbol);
+  const pathSymbol = pathname?.match(/\/research\/stock\/([^/?#]+)/)?.[1];
+  const windowSymbol = typeof window !== 'undefined' ? window.location.pathname.match(/\/research\/stock\/([^/?#]+)/)?.[1] : undefined;
+  const symbol = (rawSymbol && rawSymbol !== '_') ? rawSymbol : (pathSymbol && pathSymbol !== '_' ? pathSymbol : (windowSymbol && windowSymbol !== '_' ? windowSymbol : initialSymbol));
   const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'technical' | 'holdings' | 'peers'>('overview');
   const { stock, metrics, isLoading, error, refetch } = useStock(symbol);
 

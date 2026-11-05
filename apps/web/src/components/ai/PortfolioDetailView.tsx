@@ -18,7 +18,9 @@ export function PortfolioDetailView({ portfolioId: initialPortfolioId }: Portfol
   const nextParams = useParams();
   const pathname = usePathname();
   const rawId = (nextParams?.portfolioId as string) || initialPortfolioId || '';
-  const portfolioId = (rawId && rawId !== '_') ? rawId : (pathname?.match(/\/ai\/([^/?#]+)/)?.[1] || initialPortfolioId);
+  const pathId = pathname?.match(/\/ai\/([^/?#]+)/)?.[1];
+  const windowId = typeof window !== 'undefined' ? window.location.pathname.match(/\/ai\/([^/?#]+)/)?.[1] : undefined;
+  const portfolioId = (rawId && rawId !== '_') ? rawId : (pathId && pathId !== '_' ? pathId : (windowId && windowId !== '_' ? windowId : initialPortfolioId));
   const { portfolio, isLoading, isGenerating, error } = usePortfolio(portfolioId);
 
   if (isLoading && !portfolio) {

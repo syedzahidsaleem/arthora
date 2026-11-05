@@ -34,7 +34,10 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
   const nextParams = useParams();
   const pathname = usePathname();
   const rawCode = (nextParams?.schemeCode as string) || String(initialSchemeCode);
-  const schemeCode = Number((rawCode && rawCode !== '_') ? rawCode : (pathname?.match(/\/research\/fund\/(\d+)/)?.[1] || initialSchemeCode));
+  const pathCode = pathname?.match(/\/research\/fund\/([0-9a-zA-Z_-]+)/)?.[1];
+  const windowCode = typeof window !== 'undefined' ? window.location.pathname.match(/\/research\/fund\/([0-9a-zA-Z_-]+)/)?.[1] : undefined;
+  const effectiveCode = (rawCode && rawCode !== '_') ? rawCode : (pathCode && pathCode !== '_' ? pathCode : (windowCode && windowCode !== '_' ? windowCode : String(initialSchemeCode)));
+  const schemeCode = Number(effectiveCode) || 0;
 
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedSector, setSelectedSector] = useState<string | undefined>();
