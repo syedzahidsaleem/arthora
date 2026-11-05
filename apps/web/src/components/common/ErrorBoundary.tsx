@@ -38,18 +38,18 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center p-8 rounded-2xl bg-[#1A1B2E] border border-[#FF4D6D]/20 text-center max-w-lg mx-auto my-8">
-          <div className="w-12 h-12 rounded-xl bg-[#FF4D6D]/10 text-[#FF4D6D] flex items-center justify-center mb-4">
-            <AlertTriangle className="w-6 h-6" />
+        <div className="neo-box p-8 bg-white border-2 border-black max-w-lg mx-auto my-8 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 rounded-xl bg-neo-rust border-2 border-black text-white flex items-center justify-center mb-4 shadow-sm">
+            <AlertTriangle className="w-6 h-6 stroke-[2.5]" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">Something went wrong</h3>
-          <p className="text-sm text-[#9B9BB4] mb-6">
+          <h3 className="text-lg font-black text-black mb-2 uppercase tracking-tight">Something went wrong</h3>
+          <p className="text-sm font-mono text-black/70 mb-6">
             {this.state.error?.message || 'An unexpected rendering error occurred.'}
           </p>
           <button
             type="button"
             onClick={this.handleReset}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-all active:scale-95"
+            className="neo-btn bg-neo-mint text-black font-bold text-sm inline-flex items-center gap-2"
           >
             <RotateCcw className="w-4 h-4" />
             Try again

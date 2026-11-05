@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
-import type { IFundMetrics, IRollingReturnPoint } from '@arthora/shared';
+import type { IFundMetrics } from '@arthora/shared';
 import { formatDate } from '@arthora/shared';
 import { cn } from '@/lib/utils';
 
@@ -21,7 +21,7 @@ interface FundRollingReturnsProps {
 export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
   const [activeWindow, setActiveWindow] = useState<'1Y' | '3Y' | '5Y'>('3Y');
 
-  const rollingData: IRollingReturnPoint[] =
+  const rollingData =
     activeWindow === '1Y'
       ? metrics?.rollingReturn1Y || []
       : activeWindow === '3Y'
@@ -34,28 +34,28 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
   }));
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+    <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4 text-[#222A2A] select-none">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+          <h3 className="text-xs font-black text-black uppercase tracking-wider">
             Rolling Return Distribution
           </h3>
-          <p className="text-xs text-[#9B9BB4] mt-0.5">
+          <p className="text-xs text-[#525866] font-mono font-bold mt-0.5">
             Consistency of annualized returns across rolling holding periods
           </p>
         </div>
 
-        <div className="flex items-center gap-1 bg-[#13141F] p-1 rounded-xl border border-white/5">
+        <div className="flex items-center gap-1 bg-[#FBF7EE] p-1 rounded-xl border-2 border-black">
           {(['1Y', '3Y', '5Y'] as const).map((win) => (
             <button
               key={win}
               type="button"
               onClick={() => setActiveWindow(win)}
               className={cn(
-                'px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all',
+                'px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all border',
                 activeWindow === win
-                  ? 'bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] text-white shadow-md'
-                  : 'text-[#9B9BB4] hover:text-white',
+                  ? 'bg-neo-mint text-black border-black shadow-[1px_1px_0px_#000] font-black'
+                  : 'text-[#525866] border-transparent hover:text-black hover:bg-neo-yellow/40',
               )}
             >
               {win} Rolling
@@ -65,7 +65,7 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-[220px] w-full rounded-2xl bg-[#13141F]/40 border border-white/5 flex items-center justify-center text-xs text-[#9B9BB4]">
+        <div className="h-[220px] w-full rounded-2xl bg-[#FBF7EE] border-2 border-black flex items-center justify-center text-xs font-mono font-bold text-[#525866]">
           Rolling return data is being calculated for this time horizon.
         </div>
       ) : (
@@ -74,10 +74,10 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
             <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <XAxis
                 dataKey="date"
-                stroke="#9B9BB4"
+                stroke="#525866"
                 fontSize={10}
                 tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                axisLine={{ stroke: '#000000' }}
                 tickFormatter={(val) => {
                   try {
                     const d = new Date(val);
@@ -91,25 +91,25 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
 
               <YAxis
                 orientation="right"
-                stroke="#9B9BB4"
+                stroke="#525866"
                 fontSize={10}
                 tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                axisLine={{ stroke: '#000000' }}
                 tickFormatter={(val) => `${val}%`}
               />
 
-              <ReferenceLine y={0} stroke="#9B9BB4" strokeDasharray="3 3" opacity={0.3} />
+              <ReferenceLine y={0} stroke="#000000" strokeDasharray="3 3" opacity={0.5} />
 
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     const p = payload[0].payload;
                     return (
-                      <div className="p-3 rounded-xl bg-[#13141F] border border-white/10 shadow-2xl space-y-1 font-mono text-xs">
-                        <div className="text-[11px] text-[#9B9BB4] font-sans">
+                      <div className="p-3 rounded-xl bg-white border-2 border-black shadow-neo space-y-1 font-mono text-xs text-[#222A2A]">
+                        <div className="text-[11px] text-[#525866] font-bold">
                           {formatDate(p.date)}
                         </div>
-                        <div className="text-sm font-bold text-[#00D084]">
+                        <div className="text-sm font-black text-[#059669]">
                           {activeWindow} CAGR: {p.cagr.toFixed(2)}%
                         </div>
                       </div>
@@ -122,8 +122,8 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
               <Line
                 type="monotone"
                 dataKey="cagr"
-                stroke="#00D2FF"
-                strokeWidth={2}
+                stroke="#4FBBBC"
+                strokeWidth={2.5}
                 dot={false}
               />
             </LineChart>
@@ -133,3 +133,4 @@ export function FundRollingReturns({ metrics }: FundRollingReturnsProps) {
     </div>
   );
 }
+export default FundRollingReturns;

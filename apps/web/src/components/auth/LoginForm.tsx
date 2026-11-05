@@ -57,15 +57,15 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
   };
 
   return (
-    <div className="w-full max-w-md space-y-6">
+    <div className="w-full max-w-md space-y-6 text-[#222A2A]">
       <div className="space-y-2 text-center sm:text-left">
-        <div className="inline-block px-2.5 py-0.5 rounded bg-neo-yellow text-black border border-black text-xs font-mono font-black uppercase shadow-[1px_1px_0px_0px_#000] mb-1">
+        <div className="inline-block px-2.5 py-0.5 rounded-md bg-neo-yellow text-black border-2 border-black text-xs font-mono font-black uppercase shadow-[1px_1px_0px_0px_#000] mb-1">
           Investor Access
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-black">
           Welcome Back
         </h1>
-        <p className="text-xs sm:text-sm text-[#A0A0B2] font-medium">
+        <p className="text-xs sm:text-sm text-[#525866] font-bold">
           Enter your credentials to access your AI investment dashboard.
         </p>
       </div>
@@ -73,31 +73,31 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
       <GoogleAuthButton mode="signin" redirectTo={redirectTo} />
 
       <div className="flex items-center justify-center my-4">
-        <div className="flex-grow border-t-2 border-black/40 dark:border-white/15" />
-        <span className="shrink-0 px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#A0A0B2] bg-[#161620]">
+        <div className="flex-grow border-t-2 border-black/20" />
+        <span className="shrink-0 px-3 text-xs uppercase tracking-wider font-mono font-bold text-[#525866] bg-white">
           Or continue with email
         </span>
-        <div className="flex-grow border-t-2 border-black/40 dark:border-white/15" />
+        <div className="flex-grow border-t-2 border-black/20" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Email Field */}
         <div className="space-y-1.5">
-          <Label htmlFor="email" className="font-bold text-xs uppercase tracking-wider text-white">
+          <Label htmlFor="email" className="font-black text-xs uppercase tracking-wider text-black">
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#525866] pointer-events-none" />
             <Input
               id="email"
               type="email"
               placeholder="investor@example.com"
-              className={`pl-10 ${errors.email ? 'border-[#FF4D6D] focus-visible:border-[#FF4D6D]' : ''}`}
+              className={`pl-10 ${errors.email ? 'border-neo-rust focus-visible:border-neo-rust' : ''}`}
               {...register('email')}
             />
           </div>
           {errors.email && (
-            <p className="text-xs text-[#FF4D6D] font-mono font-bold">
+            <p className="text-xs text-neo-rust font-mono font-bold">
               {errors.email.message}
             </p>
           )}
@@ -106,29 +106,29 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
         {/* Password Field */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="font-bold text-xs uppercase tracking-wider text-white">
+            <Label htmlFor="password" className="font-black text-xs uppercase tracking-wider text-black">
               Password
             </Label>
             <Link
               href="/forgot-password"
-              className="text-xs font-mono font-bold text-neo-yellow hover:underline"
+              className="text-xs font-mono font-bold text-[#EC4624] hover:underline"
             >
               Forgot?
             </Link>
           </div>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A0A0B2] pointer-events-none" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#525866] pointer-events-none" />
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className={`pl-10 pr-10 ${errors.password ? 'border-[#FF4D6D] focus-visible:border-[#FF4D6D]' : ''}`}
+              className={`pl-10 pr-10 ${errors.password ? 'border-neo-rust focus-visible:border-neo-rust' : ''}`}
               {...register('password')}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A0A0B2] hover:text-white focus:outline-none transition-colors p-1"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#525866] hover:text-black focus:outline-none transition-colors p-1"
               tabIndex={-1}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
@@ -136,7 +136,7 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
             </button>
           </div>
           {errors.password && (
-            <p className="text-xs text-[#FF4D6D] font-mono font-bold">
+            <p className="text-xs text-neo-rust font-mono font-bold">
               {errors.password.message}
             </p>
           )}
@@ -148,9 +148,9 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 rounded border-2 border-black bg-[#16161D] text-neo-yellow accent-[#FFDE59] focus:ring-0 cursor-pointer"
+            className="h-4 w-4 rounded border-2 border-black bg-white text-black accent-[#7BED9F] focus:ring-0 cursor-pointer"
           />
-          <Label htmlFor="rememberMe" className="text-xs font-mono font-bold text-[#A0A0B2] cursor-pointer select-none">
+          <Label htmlFor="rememberMe" className="text-xs font-mono font-bold text-[#525866] cursor-pointer select-none">
             Remember this session
           </Label>
         </div>
@@ -176,9 +176,9 @@ export function LoginForm({ redirectTo = '/ai' }: LoginFormProps) {
         </Button>
       </form>
 
-      <div className="text-center text-xs font-mono text-[#A0A0B2] pt-2">
+      <div className="text-center text-xs font-mono font-bold text-[#525866] pt-2">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-bold text-neo-yellow hover:underline">
+        <Link href="/register" className="font-black text-[#EC4624] hover:underline">
           REGISTER HERE
         </Link>
       </div>

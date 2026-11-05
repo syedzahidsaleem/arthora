@@ -275,33 +275,33 @@ export default function ResearchHubPage() {
     <div className="space-y-8">
       {/* Top Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
+        <h1 className="text-2xl sm:text-3xl font-black text-[#222A2A] uppercase tracking-tight flex items-center gap-2.5">
           <span>Investment Research Hub</span>
-          <span className="px-2 py-0.5 rounded-md bg-neo-lime text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
+          <span className="px-2.5 py-0.5 rounded-lg bg-neo-mint text-black text-xs font-mono font-black border-2 border-black shadow-[2px_2px_0px_0px_#000]">
             LIVE DATA
           </span>
         </h1>
-        <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
+        <p className="text-xs sm:text-sm font-mono text-[#525866] font-bold mt-1">
           Explore 40,000+ AMFI mutual funds and NSE listed stocks with quantitative analytics.
         </p>
       </div>
 
       {/* Prominent Search Bar & Category Chips */}
-      <div className="p-4 sm:p-5 rounded-xl bg-[#161620] border-[3px] border-black shadow-neo-lg space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-neo-lilac border-[3px] border-black shadow-neo-lg space-y-4">
         <div className="relative flex items-center">
-          <Search className="w-5 h-5 text-neo-yellow absolute left-4 pointer-events-none stroke-[2.5]" />
+          <Search className="w-5 h-5 text-black absolute left-4 pointer-events-none stroke-[2.5]" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search mutual funds by name, AMC, category or stocks by NSE ticker..."
-            className="w-full pl-12 pr-12 py-3.5 rounded-lg bg-[#121218] border-2 border-black text-sm sm:text-base font-medium text-white placeholder-[#A0A0B2] focus:outline-none focus:border-black focus:shadow-neo transition-all"
+            className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white border-2 border-black text-sm sm:text-base font-bold text-[#222A2A] placeholder-[#717684] focus:outline-none focus:shadow-neo shadow-neo-sm transition-all"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery('')}
               aria-label="Clear search input"
-              className="absolute right-4 p-1 rounded border border-black bg-neo-yellow text-black hover:bg-[#FFE570]"
+              className="absolute right-4 p-1 rounded-lg border-2 border-black bg-neo-yellow text-black hover:bg-neo-mint shadow-[1px_1px_0px_0px_#000]"
             >
               <X className="w-4 h-4 stroke-[2.5]" />
             </button>
@@ -337,8 +337,8 @@ export default function ResearchHubPage() {
           {/* Popular Mutual Funds */}
           <section className="space-y-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#00D2FF]" />
-              <h2 className="text-base font-bold text-white uppercase tracking-wider">
+              <Sparkles className="w-5 h-5 text-[#EC4624] stroke-[2.5]" />
+              <h2 className="text-base font-black text-[#222A2A] uppercase tracking-wider">
                 Popular Indian Mutual Funds
               </h2>
             </div>
@@ -353,8 +353,8 @@ export default function ResearchHubPage() {
           {/* Popular NSE Stocks */}
           <section className="space-y-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[#6C63FF]" />
-              <h2 className="text-base font-bold text-white uppercase tracking-wider">
+              <TrendingUp className="w-5 h-5 text-[#4FBBBC] stroke-[2.5]" />
+              <h2 className="text-base font-black text-[#222A2A] uppercase tracking-wider">
                 Top Nifty 50 Stocks
               </h2>
             </div>

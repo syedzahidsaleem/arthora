@@ -15,12 +15,12 @@ export function StockHoldingPattern({ metrics }: StockHoldingPatternProps) {
   const publicHolding = Math.max(0, Number((100 - promoter - fii - dii).toFixed(1)));
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-6">
+    <div className="neo-box p-5 sm:p-6 bg-white space-y-6">
       <div>
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+        <h3 className="text-xs font-black text-black uppercase tracking-wider">
           Shareholding Pattern Breakdown
         </h3>
-        <p className="text-xs text-[#9B9BB4] mt-0.5">
+        <p className="text-xs font-mono text-black/70 mt-0.5">
           Distribution of institutional and promoter equity ownership
         </p>
       </div>
@@ -52,27 +52,27 @@ export function StockHoldingPattern({ metrics }: StockHoldingPatternProps) {
       </div>
 
       {/* Horizontal Stacked Bar */}
-      <div className="space-y-2 pt-2 border-t border-white/5">
-        <div className="flex items-center justify-between text-xs font-mono text-[#9B9BB4]">
-          <span className="flex items-center gap-1.5 text-[#00D2FF]">
-            <span className="w-2 h-2 rounded-full bg-[#00D2FF]" /> Promoter: {promoter.toFixed(1)}%
+      <div className="space-y-2 pt-3 border-t-2 border-black">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-black">
+          <span className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-mint border border-black" /> Promoter: {promoter.toFixed(1)}%
           </span>
-          <span className="flex items-center gap-1.5 text-[#6C63FF]">
-            <span className="w-2 h-2 rounded-full bg-[#6C63FF]" /> FII: {fii.toFixed(1)}%
+          <span className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-aqua border border-black" /> FII: {fii.toFixed(1)}%
           </span>
-          <span className="flex items-center gap-1.5 text-amber-400">
-            <span className="w-2 h-2 rounded-full bg-amber-400" /> DII: {dii.toFixed(1)}%
+          <span className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-yellow border border-black" /> DII: {dii.toFixed(1)}%
           </span>
-          <span className="flex items-center gap-1.5 text-[#9B9BB4]">
-            <span className="w-2 h-2 rounded-full bg-[#9B9BB4]" /> Public: {publicHolding.toFixed(1)}%
+          <span className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-lilac border border-black" /> Public: {publicHolding.toFixed(1)}%
           </span>
         </div>
 
-        <div className="h-4 w-full rounded-full bg-[#13141F] overflow-hidden flex border border-white/5">
-          <div style={{ width: `${promoter}%` }} className="bg-[#00D2FF] h-full" />
-          <div style={{ width: `${fii}%` }} className="bg-[#6C63FF] h-full" />
-          <div style={{ width: `${dii}%` }} className="bg-amber-400 h-full" />
-          <div style={{ width: `${publicHolding}%` }} className="bg-[#9B9BB4]" />
+        <div className="h-5 w-full rounded-md bg-neo-cream overflow-hidden flex border-2 border-black">
+          <div style={{ width: `${promoter}%` }} className="bg-neo-mint h-full border-r-2 border-black" />
+          <div style={{ width: `${fii}%` }} className="bg-neo-aqua h-full border-r-2 border-black" />
+          <div style={{ width: `${dii}%` }} className="bg-neo-yellow h-full border-r-2 border-black" />
+          <div style={{ width: `${publicHolding}%` }} className="bg-neo-lilac h-full" />
         </div>
       </div>
     </div>

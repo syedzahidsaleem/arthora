@@ -1,41 +1,47 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
-import { ArrowLeft, BarChart3, TrendingUp, PieChart, Users, Calculator } from 'lucide-react';
+import {
+  TrendingUp,
+  Activity,
+  PieChart as PieIcon,
+  Users,
+  Calculator,
+} from 'lucide-react';
 import { useFund } from '@/hooks/useFund';
-import { useFundHoldings } from '@/hooks/useFundHoldings';
 import { useFundPeers } from '@/hooks/useFundPeers';
-import { FundHeader } from './FundHeader';
-import { FundNAVChart } from './FundNAVChart';
-import { FundMetricsGrid } from './FundMetricsGrid';
-import { FundDrawdownChart } from './FundDrawdownChart';
-import { FundRollingReturns } from './FundRollingReturns';
-import { FundSectorPie } from './FundSectorPie';
-import { MarketCapBar } from './MarketCapBar';
-import { FundHoldingsTable } from './FundHoldingsTable';
-import { FundPeerComparison } from './FundPeerComparison';
-import { SIPCalculator } from './SIPCalculator';
-import { PageSkeleton } from '../common/PageSkeleton';
-import { DisclaimerBanner } from '../common/DisclaimerBanner';
+import { useFundHoldings } from '@/hooks/useFundHoldings';
+import { FundHeader } from '@/components/fund/FundHeader';
+import { FundNAVChart } from '@/components/fund/FundNAVChart';
+import { FundMetricsGrid } from '@/components/fund/FundMetricsGrid';
+import { FundDrawdownChart } from '@/components/fund/FundDrawdownChart';
+import { FundRollingReturns } from '@/components/fund/FundRollingReturns';
+import { FundSectorPie } from '@/components/fund/FundSectorPie';
+import { FundHoldingsTable } from '@/components/fund/FundHoldingsTable';
+import { FundPeerComparison } from '@/components/fund/FundPeerComparison';
+import { SIPCalculator } from '@/components/fund/SIPCalculator';
+import { MarketCapBar } from '@/components/fund/MarketCapBar';
+import { DisclaimerBanner } from '@/components/common/DisclaimerBanner';
+import { PageSkeleton } from '@/components/common/PageSkeleton';
 import { cn } from '@/lib/utils';
 
 interface FundDetailViewProps {
-  schemeCode: string;
+  schemeCode: number | string;
 }
 
 export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailViewProps) {
   const nextParams = useParams();
   const pathname = usePathname();
-  const rawCode = (nextParams?.schemeCode as string) || initialSchemeCode || '';
-  const schemeCode = (rawCode && rawCode !== '_') ? rawCode : (pathname?.match(/\/research\/fund\/([^/?#]+)/)?.[1] || initialSchemeCode);
-  const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'holdings' | 'peers' | 'calculator'>('overview');
-  const [selectedSector, setSelectedSector] = useState<string | undefined>(undefined);
+  const rawCode = (nextParams?.schemeCode as string) || String(initialSchemeCode);
+  const schemeCode = Number((rawCode && rawCode !== '_') ? rawCode : (pathname?.match(/\/research\/fund\/(\d+)/)?.[1] || initialSchemeCode));
 
-  const { fund, metrics, metricsCalculating, isLoading, error, refetch } = useFund(schemeCode);
-  const { holdings, sectorAlloc } = useFundHoldings(schemeCode);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedSector, setSelectedSector] = useState<string | undefined>();
+
+  const { fund, metrics, metricsCalculating, isLoading, error } = useFund(schemeCode);
   const { peers } = useFundPeers(schemeCode);
+  const { holdings, sectorAlloc } = useFundHoldings(schemeCode);
 
   if (isLoading && !fund) {
     return <PageSkeleton />;
@@ -44,45 +50,29 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
   if (error || !fund) {
     return (
       <div className="py-20 text-center space-y-4">
-        <h3 className="text-xl font-bold text-white">Mutual Fund not found</h3>
-        <p className="text-xs text-[#9B9BB4] max-w-sm mx-auto">
-          {error || 'The requested mutual fund could not be found or is inactive.'}
+        <h3 className="text-xl font-black text-[#222A2A] uppercase">Fund Not Found</h3>
+        <p className="text-xs text-[#525866] font-mono font-bold max-w-sm mx-auto">
+          The requested mutual fund scheme could not be found or has been merged.
         </p>
-        <div className="flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => refetch()}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF]"
-          >
-            Retry
-          </button>
-          <Link
-            href="/research"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Research</span>
-          </Link>
-        </div>
       </div>
     );
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'performance', label: 'Performance & Risk', icon: TrendingUp },
-    { id: 'holdings', label: 'Holdings & Sectors', icon: PieChart },
-    { id: 'peers', label: 'Category Peers', icon: Users },
+    { id: 'overview', label: 'Overview & NAV', icon: TrendingUp },
+    { id: 'performance', label: 'Risk & Drawdown', icon: Activity },
+    { id: 'holdings', label: 'Holdings & Sectors', icon: PieIcon },
+    { id: 'peers', label: 'Peer Comparison', icon: Users },
     { id: 'calculator', label: 'SIP Calculator', icon: Calculator },
-  ] as const;
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 select-none text-[#222A2A]">
       {/* Sticky Header */}
       <FundHeader fund={fund} />
 
       {/* Tabs Navigation Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b-2 border-black/40 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b-2 border-black scrollbar-none">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -92,13 +82,13 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-black uppercase whitespace-nowrap transition-all shrink-0 border-2 border-black',
+                'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase whitespace-nowrap transition-all shrink-0 border-2 border-black',
                 isActive
-                  ? 'bg-neo-yellow text-black shadow-neo'
-                  : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white hover:border-white/30',
+                  ? 'bg-neo-mint text-black shadow-neo'
+                  : 'bg-white text-[#525866] hover:text-black hover:bg-neo-yellow shadow-neo-sm',
               )}
             >
-              <Icon className={cn('w-3.5 h-3.5', isActive ? 'text-black fill-black' : 'text-[#A0A0B2]')} />
+              <Icon className={cn('w-3.5 h-3.5 stroke-[2.5]', isActive ? 'text-black fill-black' : 'text-[#525866]')} />
               <span>{tab.label}</span>
             </button>
           );
@@ -125,8 +115,8 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
         {activeTab === 'holdings' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-6 p-5 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+              <div className="lg:col-span-6 p-5 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4">
+                <h3 className="text-xs font-black text-black uppercase tracking-wider">
                   Sector Breakdown
                 </h3>
                 <FundSectorPie
@@ -135,19 +125,19 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
                 />
               </div>
 
-              <div className="lg:col-span-6 p-5 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-6 flex flex-col justify-between">
+              <div className="lg:col-span-6 p-5 rounded-2xl bg-white border-2 border-black shadow-neo space-y-6 flex flex-col justify-between">
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                  <h3 className="text-xs font-black text-black uppercase tracking-wider">
                     Market Capitalization Allocation
                   </h3>
                   <MarketCapBar holdings={holdings?.holdings || []} />
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#13141F] border border-white/5 text-xs text-[#9B9BB4] space-y-1">
-                  <span className="font-semibold text-white">Portfolio Concentration:</span>
+                <div className="p-4 rounded-xl bg-[#FBF7EE] border-2 border-black text-xs text-[#525866] space-y-1">
+                  <span className="font-black text-black">Portfolio Concentration:</span>
                   <p>
                     Top 10 holdings represent approximately{' '}
-                    <strong className="text-[#00D2FF]">
+                    <strong className="text-black font-black bg-neo-yellow px-1.5 py-0.5 rounded border border-black">
                       {(holdings?.holdings || [])
                         .slice(0, 10)
                         .reduce((acc, h) => acc + (h.percentage || 0), 0)
@@ -160,16 +150,16 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
               </div>
             </div>
 
-            <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                <h3 className="text-xs font-black text-black uppercase tracking-wider">
                   Complete Holdings Portfolio ({holdings?.holdings?.length || 0} Assets)
                 </h3>
                 {selectedSector && (
                   <button
                     type="button"
                     onClick={() => setSelectedSector(undefined)}
-                    className="text-xs text-[#00D2FF] hover:underline"
+                    className="text-xs text-neo-rust font-bold hover:underline"
                   >
                     Filter: {selectedSector} (Clear)
                   </button>
@@ -184,12 +174,12 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
         )}
 
         {activeTab === 'peers' && (
-          <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4">
             <div>
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+              <h3 className="text-xs font-black text-black uppercase tracking-wider">
                 Category Peer Group Benchmark
               </h3>
-              <p className="text-xs text-[#9B9BB4] mt-0.5">
+              <p className="text-xs text-[#525866] font-bold mt-0.5">
                 Compare performance and expense ratio against top competing funds in{' '}
                 {fund.category || 'this category'}
               </p>
@@ -207,3 +197,4 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
     </div>
   );
 }
+export default FundDetailView;

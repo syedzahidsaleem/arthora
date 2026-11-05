@@ -26,10 +26,10 @@ export function SearchResultList({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 animate-pulse">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-44 bg-[#1A1B2E] border border-white/5 rounded-2xl p-4 space-y-3">
-            <div className="h-4 w-3/4 bg-white/10 rounded" />
-            <div className="h-3 w-1/2 bg-white/5 rounded" />
-            <div className="h-8 w-full bg-white/5 rounded mt-4" />
+          <div key={i} className="h-44 bg-[#E2DAC2]/60 border-2 border-black rounded-2xl p-4 space-y-3 shadow-neo-sm">
+            <div className="h-4 w-3/4 bg-black/20 rounded" />
+            <div className="h-3 w-1/2 bg-black/10 rounded" />
+            <div className="h-8 w-full bg-black/10 rounded mt-4" />
           </div>
         ))}
       </div>
@@ -53,19 +53,19 @@ export function SearchResultList({
   return (
     <div className="space-y-4">
       {/* Tab Switcher */}
-      <div className="flex items-center gap-2 border-b border-white/5 pb-2">
+      <div className="flex items-center gap-2 pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('funds')}
           className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all',
+            'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all border-2 border-black',
             activeTab === 'funds'
-              ? 'bg-white/10 text-white shadow-sm'
-              : 'text-[#9B9BB4] hover:text-white',
+              ? 'bg-neo-mint text-black shadow-[2px_2px_0px_#000]'
+              : 'bg-white text-[#525866] hover:bg-neo-yellow hover:text-black',
           )}
         >
           <span>Mutual Funds</span>
-          <span className="px-1.5 py-0.2 rounded-md bg-white/5 text-[10px] font-mono">
+          <span className="px-1.5 py-0.2 rounded-md bg-black text-white text-[10px] font-mono">
             {fundResults.length}
           </span>
         </button>
@@ -74,14 +74,14 @@ export function SearchResultList({
           type="button"
           onClick={() => setActiveTab('stocks')}
           className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all',
+            'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all border-2 border-black',
             activeTab === 'stocks'
-              ? 'bg-white/10 text-white shadow-sm'
-              : 'text-[#9B9BB4] hover:text-white',
+              ? 'bg-neo-mint text-black shadow-[2px_2px_0px_#000]'
+              : 'bg-white text-[#525866] hover:bg-neo-yellow hover:text-black',
           )}
         >
           <span>NSE Stocks</span>
-          <span className="px-1.5 py-0.2 rounded-md bg-white/5 text-[10px] font-mono">
+          <span className="px-1.5 py-0.2 rounded-md bg-black text-white text-[10px] font-mono">
             {stockResults.length}
           </span>
         </button>
@@ -96,7 +96,7 @@ export function SearchResultList({
             ))}
           </div>
         ) : (
-          <div className="py-12 text-center text-xs text-[#9B9BB4]">
+          <div className="py-12 text-center text-xs font-mono font-bold text-[#525866]">
             No mutual fund schemes matching &quot;{searchQuery}&quot;
           </div>
         )
@@ -107,10 +107,11 @@ export function SearchResultList({
           ))}
         </div>
       ) : (
-        <div className="py-12 text-center text-xs text-[#9B9BB4]">
+        <div className="py-12 text-center text-xs font-mono font-bold text-[#525866]">
           No NSE stocks matching &quot;{searchQuery}&quot;
         </div>
       )}
     </div>
   );
 }
+export default SearchResultList;

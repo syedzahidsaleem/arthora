@@ -13,15 +13,14 @@ import { api } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { formatDate } from '@arthora/shared';
 
-interface DrawdownData {
+interface FundDrawdownChartProps {
   schemeCode: number;
+}
+
+interface DrawdownData {
   dates: string[];
   drawdowns: number[];
   maxDrawdown: number;
-}
-
-interface FundDrawdownChartProps {
-  schemeCode: number | string;
 }
 
 export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
@@ -54,21 +53,21 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
   }));
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+    <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4 text-[#222A2A] select-none">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+          <h3 className="text-xs font-black text-black uppercase tracking-wider">
             Underwater Drawdown Curve
           </h3>
-          <p className="text-xs text-[#9B9BB4] mt-0.5">
+          <p className="text-xs text-[#525866] font-mono font-bold mt-0.5">
             Historical peak-to-trough drawdowns and recovery periods
           </p>
         </div>
 
         {data?.maxDrawdown !== undefined && (
           <div className="text-right font-mono text-xs">
-            <span className="text-[#9B9BB4] text-[10px] block">Max Historical DD</span>
-            <span className="font-bold text-[#FF4D6D]">
+            <span className="text-[#525866] text-[10px] font-bold uppercase block">Max Historical DD</span>
+            <span className="font-black text-neo-rust bg-neo-rust/15 px-2 py-0.5 rounded border border-black inline-block mt-0.5">
               -{data.maxDrawdown.toFixed(2)}%
             </span>
           </div>
@@ -76,11 +75,11 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
       </div>
 
       {isLoading ? (
-        <div className="h-[240px] w-full rounded-2xl bg-white/5 animate-pulse flex items-center justify-center text-xs text-[#9B9BB4]">
+        <div className="h-[240px] w-full rounded-2xl bg-[#FBF7EE] border-2 border-black animate-pulse flex items-center justify-center text-xs font-mono font-bold text-[#525866]">
           Loading drawdown series...
         </div>
       ) : chartData.length === 0 ? (
-        <div className="h-[240px] w-full rounded-2xl bg-[#13141F]/40 border border-white/5 flex items-center justify-center text-xs text-[#9B9BB4]">
+        <div className="h-[240px] w-full rounded-2xl bg-[#FBF7EE] border-2 border-black flex items-center justify-center text-xs font-mono font-bold text-[#525866]">
           Drawdown data is not yet computed for this scheme.
         </div>
       ) : (
@@ -89,17 +88,17 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="drawdownGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF4D6D" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#FF4D6D" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#EC4624" stopOpacity={0.6} />
+                  <stop offset="95%" stopColor="#EC4624" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
 
               <XAxis
                 dataKey="date"
-                stroke="#9B9BB4"
+                stroke="#525866"
                 fontSize={10}
                 tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                axisLine={{ stroke: '#000000' }}
                 tickFormatter={(val) => {
                   try {
                     const d = new Date(val);
@@ -113,10 +112,10 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
 
               <YAxis
                 orientation="right"
-                stroke="#9B9BB4"
+                stroke="#525866"
                 fontSize={10}
                 tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                axisLine={{ stroke: '#000000' }}
                 tickFormatter={(val) => `${val}%`}
               />
 
@@ -125,11 +124,11 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
                   if (active && payload && payload.length) {
                     const p = payload[0].payload;
                     return (
-                      <div className="p-3 rounded-xl bg-[#13141F] border border-white/10 shadow-2xl space-y-1 font-mono text-xs">
-                        <div className="text-[11px] text-[#9B9BB4] font-sans">
+                      <div className="p-3 rounded-xl bg-white border-2 border-black shadow-neo space-y-1 font-mono text-xs text-[#222A2A]">
+                        <div className="text-[11px] text-[#525866] font-bold">
                           {formatDate(p.date)}
                         </div>
-                        <div className="text-sm font-bold text-[#FF4D6D]">
+                        <div className="text-sm font-black text-neo-rust">
                           Drawdown: {p.drawdown.toFixed(2)}%
                         </div>
                       </div>
@@ -142,8 +141,8 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
               <Area
                 type="monotone"
                 dataKey="drawdown"
-                stroke="#FF4D6D"
-                strokeWidth={1.5}
+                stroke="#EC4624"
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#drawdownGradient)"
               />
@@ -154,3 +153,4 @@ export function FundDrawdownChart({ schemeCode }: FundDrawdownChartProps) {
     </div>
   );
 }
+export default FundDrawdownChart;

@@ -16,18 +16,18 @@ export function CompareTable({ items, onClose }: CompareTableProps) {
   const isFunds = items[0].assetType === 'mutual_fund';
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-[#6C63FF]/30 shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
+    <div className="neo-box p-5 sm:p-6 bg-white space-y-4 animate-in fade-in zoom-in-95">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6C63FF] to-[#00D2FF] flex items-center justify-center text-white">
-            <Sparkles className="w-4 h-4" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-neo-mint border-2 border-black flex items-center justify-center text-black shadow-sm">
+            <Sparkles className="w-4 h-4 fill-black" />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-white">
+            <h3 className="font-black text-sm text-black uppercase">
               Side-by-Side Comparison ({items.length} of 3)
             </h3>
-            <p className="text-xs text-[#9B9BB4]">
+            <p className="text-xs font-mono text-black/70">
               {isFunds ? 'Mutual Fund Metrics Comparison' : 'Equity Stocks Benchmark'}
             </p>
           </div>
@@ -37,48 +37,48 @@ export function CompareTable({ items, onClose }: CompareTableProps) {
           type="button"
           onClick={onClose}
           aria-label="Close comparison view"
-          className="p-1.5 rounded-xl text-[#9B9BB4] hover:text-white hover:bg-white/5 transition-colors"
+          className="p-1.5 rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Comparison Grid Table */}
-      <div className="overflow-x-auto rounded-2xl border border-white/5 bg-[#13141F]">
+      <div className="overflow-x-auto rounded-lg border-2 border-black bg-white">
         <table className="w-full text-xs text-left">
-          <thead className="border-b border-white/5 text-[#9B9BB4] font-semibold text-[11px]">
+          <thead className="border-b-2 border-black bg-neo-cream text-black font-mono font-bold text-[11px]">
             <tr>
               <th className="py-3 px-4 w-1/4">Metric</th>
               {items.map((it) => (
-                <th key={it._id} className="py-3 px-4 font-bold text-white max-w-[200px] truncate">
+                <th key={it._id} className="py-3 px-4 font-black text-black max-w-[200px] truncate">
                   {it.name}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5 text-white font-mono">
+          <tbody className="divide-y-2 divide-black text-black font-mono">
             {isFunds ? (
               <>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">Latest NAV</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">Latest NAV</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 font-bold text-[#00D2FF]">
+                    <td key={it._id} className="py-2.5 px-4 font-black text-black">
                       {it.latestNAV ? formatINR(it.latestNAV) : '—'}
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">1Y CAGR</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">1Y CAGR</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 text-[#00D084] font-bold">
+                    <td key={it._id} className="py-2.5 px-4 font-black text-[#059669]">
                       {it.cagr1Y !== undefined ? `${it.cagr1Y >= 0 ? '+' : ''}${it.cagr1Y.toFixed(1)}%` : '—'}
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">Category</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">Category</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 text-white/90 font-sans capitalize">
+                    <td key={it._id} className="py-2.5 px-4 text-black font-sans capitalize font-semibold">
                       {it.category?.replace(/_/g, ' ') || 'Mutual Fund'}
                     </td>
                   ))}
@@ -87,17 +87,17 @@ export function CompareTable({ items, onClose }: CompareTableProps) {
             ) : (
               <>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">Current Price</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">Current Price</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 font-bold text-[#00D2FF]">
+                    <td key={it._id} className="py-2.5 px-4 font-black text-black">
                       {it.currentPrice ? formatINR(it.currentPrice) : '—'}
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">1D Change</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">1D Change</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 text-[#00D084] font-bold">
+                    <td key={it._id} className="py-2.5 px-4 font-black text-[#059669]">
                       {it.priceChangePercent !== undefined
                         ? `${it.priceChangePercent >= 0 ? '+' : ''}${it.priceChangePercent.toFixed(2)}%`
                         : '—'}
@@ -105,9 +105,9 @@ export function CompareTable({ items, onClose }: CompareTableProps) {
                   ))}
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-4 text-[#9B9BB4] font-sans">Ticker (NSE)</td>
+                  <td className="py-2.5 px-4 text-black/70 font-sans font-bold">Ticker (NSE)</td>
                   {items.map((it) => (
-                    <td key={it._id} className="py-2.5 px-4 text-white/90 font-mono font-bold">
+                    <td key={it._id} className="py-2.5 px-4 text-black font-mono font-black">
                       {it.symbol}
                     </td>
                   ))}

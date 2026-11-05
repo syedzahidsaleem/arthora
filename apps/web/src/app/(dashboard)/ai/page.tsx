@@ -46,13 +46,13 @@ export default function AIPage() {
       {/* Top Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#222A2A] uppercase tracking-tight flex items-center gap-2.5">
             <span>AI Portfolio Builder</span>
-            <span className="px-2 py-0.5 rounded-md bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
+            <span className="px-2.5 py-0.5 rounded-lg bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[2px_2px_0px_0px_#000]">
               PRO
             </span>
           </h1>
-          <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
+          <p className="text-xs sm:text-sm font-mono font-bold text-[#525866] mt-1">
             Build custom, goal-based portfolios backed by 10,000 Monte Carlo simulations.
           </p>
         </div>
@@ -73,20 +73,20 @@ export default function AIPage() {
             <PortfolioResult portfolio={currentPortfolio} onReset={handleReset} />
           ) : (
             /* Empty state preview */
-            <div className="p-8 sm:p-12 rounded-xl bg-[#161620] border-[3px] border-black shadow-neo-lg flex flex-col items-center justify-center text-center space-y-6">
-              <div className="w-16 h-16 rounded-xl bg-neo-yellow border-2 border-black flex items-center justify-center text-black shadow-neo-sm">
+            <div className="p-8 sm:p-12 rounded-2xl bg-white border-[3px] border-black shadow-neo-lg flex flex-col items-center justify-center text-center space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-neo-yellow border-2 border-black flex items-center justify-center text-black shadow-neo">
                 <Sparkles className="w-8 h-8 fill-black" />
               </div>
 
               <div className="space-y-2 max-w-sm">
-                <h3 className="text-xl font-black uppercase text-white">Your portfolio will appear here</h3>
-                <p className="text-xs font-mono text-[#A0A0B2] leading-relaxed">
+                <h3 className="text-xl font-black uppercase text-[#222A2A]">Your portfolio will appear here</h3>
+                <p className="text-xs font-mono font-bold text-[#525866] leading-relaxed">
                   Fill in your investment goal, time horizon, and monthly budget to generate a customized mutual fund portfolio.
                 </p>
               </div>
 
               {/* Blurred Placeholder Demo Cards */}
-              <div className="w-full grid grid-cols-3 gap-3 opacity-40 select-none pointer-events-none pt-4">
+              <div className="w-full grid grid-cols-3 gap-3 opacity-60 select-none pointer-events-none pt-4">
                 <MetricCard label="Expected CAGR" value="~15.2%" size="sm" />
                 <MetricCard label="Sharpe Ratio" value="1.48" size="sm" />
                 <MetricCard label="Target Corpus" value="₹1.25 Cr" size="sm" />
@@ -98,11 +98,11 @@ export default function AIPage() {
 
       {/* Portfolio History Section */}
       {portfolios.length > 0 && (
-        <section className="space-y-4 pt-6 border-t border-white/5">
+        <section className="space-y-4 pt-6 border-t-2 border-black">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FolderKanban className="w-4 h-4 text-[#00D2FF]" />
-              <h2 className="text-base font-bold text-white uppercase tracking-wider">
+              <FolderKanban className="w-5 h-5 text-black stroke-[2.5]" />
+              <h2 className="text-base font-black text-[#222A2A] uppercase tracking-wider">
                 Your Saved Portfolios ({portfolios.length})
               </h2>
             </div>
@@ -110,10 +110,10 @@ export default function AIPage() {
             {portfolios.length > 4 && (
               <Link
                 href="/portfolios"
-                className="text-xs font-semibold text-[#00D2FF] hover:underline inline-flex items-center gap-1"
+                className="text-xs font-mono font-black text-neo-rust hover:underline inline-flex items-center gap-1"
               >
                 <span>View All</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </Link>
             )}
           </div>

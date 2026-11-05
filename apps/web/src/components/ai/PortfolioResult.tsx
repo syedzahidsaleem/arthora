@@ -28,20 +28,20 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
   }, 0);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-6 animate-in fade-in duration-300 select-none">
       {/* Portfolio Result Header */}
-      <div className="p-5 sm:p-6 rounded-xl bg-[#161620] border-2 border-black shadow-neo space-y-4">
+      <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo-lg space-y-4 text-[#222A2A]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-neo-yellow text-black text-xs font-mono font-black border border-black shadow-[1px_1px_0px_0px_#000]">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
               <Sparkles className="w-3.5 h-3.5 fill-black" />
               <span>AI ASSET ALLOCATION</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-[#222A2A] uppercase tracking-tight">
               {portfolio.name}
             </h2>
-            <p className="text-xs font-mono text-[#A0A0B2] leading-relaxed">
-              Targeting: <span className="text-white font-bold">{portfolio.goal}</span>
+            <p className="text-xs font-mono font-bold text-[#525866] leading-relaxed">
+              Targeting: <span className="text-[#222A2A] font-black">{portfolio.goal}</span>
             </p>
           </div>
 
@@ -50,9 +50,9 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
               <button
                 type="button"
                 onClick={onReset}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-black uppercase text-white bg-[#0E0E14] hover:bg-white/5 border-2 border-black transition-all"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase text-black bg-white hover:bg-neo-yellow border-2 border-black transition-all shadow-neo-sm active:translate-x-0.5 active:translate-y-0.5"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>New Goal</span>
               </button>
             )}
@@ -60,48 +60,48 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
             <button
               type="button"
               onClick={() => window.print()}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold uppercase text-white bg-[#1A1B28] hover:bg-[#25273A] border-2 border-black transition-all shadow-[2px_2px_0px_0px_#000]"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase text-black bg-neo-aqua hover:bg-neo-mint border-2 border-black transition-all shadow-neo-sm active:translate-x-0.5 active:translate-y-0.5"
               title="Print or save client portfolio report as PDF"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Printer className="w-3.5 h-3.5 stroke-[2.5]" />
               <span className="hidden sm:inline">Export PDF</span>
             </button>
             <Link
               href="/ai"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black uppercase text-black bg-neo-mint border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <PlusCircle className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Build Another</span>
             </Link>
           </div>
         </div>
 
         {/* Highlight Key Metrics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t-2 border-black/40 text-xs">
-          <div className="p-3 rounded-lg bg-[#0E0E14] border-2 border-black">
-            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Projected Value</span>
-            <span className="font-mono text-base font-black text-white">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t-2 border-black text-xs">
+          <div className="p-3 rounded-xl bg-[#FBF7EE] border-2 border-black shadow-neo-sm">
+            <span className="text-[#525866] text-[10px] font-mono font-bold uppercase tracking-wider block">Projected Value</span>
+            <span className="font-mono text-base font-black text-[#222A2A]">
               {formatINR(suggestion.projectedValue)}
             </span>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#0E0E14] border-2 border-black">
-            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Expected CAGR</span>
-            <span className="font-mono text-base font-black text-neo-green">
+          <div className="p-3 rounded-xl bg-[#FBF7EE] border-2 border-black shadow-neo-sm">
+            <span className="text-[#525866] text-[10px] font-mono font-bold uppercase tracking-wider block">Expected CAGR</span>
+            <span className="font-mono text-base font-black text-[#059669]">
               ~{weightedReturn.toFixed(1)}%
             </span>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#0E0E14] border-2 border-black">
-            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Time Horizon</span>
-            <span className="font-mono text-base font-black text-neo-cyan">
+          <div className="p-3 rounded-xl bg-[#FBF7EE] border-2 border-black shadow-neo-sm">
+            <span className="text-[#525866] text-[10px] font-mono font-bold uppercase tracking-wider block">Time Horizon</span>
+            <span className="font-mono text-base font-black text-[#222A2A]">
               {portfolio.timePeriod} Yrs
             </span>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#0E0E14] border-2 border-black">
-            <span className="text-[#A0A0B2] text-[10px] font-black uppercase tracking-wider block">Created Date</span>
-            <span className="font-mono text-xs font-bold text-white">
+          <div className="p-3 rounded-xl bg-[#FBF7EE] border-2 border-black shadow-neo-sm">
+            <span className="text-[#525866] text-[10px] font-mono font-bold uppercase tracking-wider block">Created Date</span>
+            <span className="font-mono text-xs font-black text-[#222A2A]">
               {formatDate(portfolio.createdAt)}
             </span>
           </div>
@@ -111,9 +111,9 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
       {/* Charts Section: Projected Growth & Asset Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Wealth Trajectory Chart */}
-        <div className="lg:col-span-7 p-5 sm:p-6 rounded-xl bg-[#161620] border-2 border-black shadow-neo space-y-3">
-          <div className="flex items-center gap-2 text-xs font-black uppercase text-white tracking-wider">
-            <TrendingUp className="w-4 h-4 text-neo-cyan" />
+        <div className="lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-3">
+          <div className="flex items-center gap-2 text-xs font-black uppercase text-[#222A2A] tracking-wider">
+            <TrendingUp className="w-4 h-4 text-[#EC4624] stroke-[2.5]" />
             <span>Monte Carlo Projected Wealth Trajectory</span>
           </div>
           <ProjectedValueChart
@@ -125,9 +125,9 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
         </div>
 
         {/* Asset Distribution Pie */}
-        <div className="lg:col-span-5 p-5 sm:p-6 rounded-xl bg-[#161620] border-2 border-black shadow-neo space-y-3">
-          <div className="flex items-center gap-2 text-xs font-black uppercase text-white tracking-wider">
-            <PieIcon className="w-4 h-4 text-neo-yellow" />
+        <div className="lg:col-span-5 p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-3">
+          <div className="flex items-center gap-2 text-xs font-black uppercase text-[#222A2A] tracking-wider">
+            <PieIcon className="w-4 h-4 text-[#F39120] stroke-[2.5]" />
             <span>Portfolio Asset Breakdown</span>
           </div>
           <AllocationPieChart allocation={allocation} />
@@ -137,10 +137,10 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
       {/* Allocation Cards List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <h3 className="text-sm font-black text-white uppercase tracking-wider">
+          <h3 className="text-sm font-black text-[#222A2A] uppercase tracking-wider">
             Curated Schemes & Allocation Weights ({allocation.length})
           </h3>
-          <span className="text-xs font-mono text-[#A0A0B2]">Direct Growth Plans</span>
+          <span className="text-xs font-mono font-bold text-[#525866]">Direct Growth Plans</span>
         </div>
 
         <div className="space-y-3">
@@ -164,3 +164,4 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
     </div>
   );
 }
+export default PortfolioResult;

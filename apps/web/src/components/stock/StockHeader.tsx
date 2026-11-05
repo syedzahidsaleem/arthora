@@ -67,19 +67,19 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
     high52 > low52 ? Math.min(100, Math.max(0, ((current - low52) / (high52 - low52)) * 100)) : 50;
 
   return (
-    <div className="sticky top-0 z-20 bg-[#0D0E1A]/95 backdrop-blur-xl border-b border-white/5 py-4 space-y-4">
+    <div className="sticky top-0 z-20 bg-[#FBF7EE]/95 backdrop-blur-md border-b-2 border-black py-4 space-y-4 select-none">
       {/* Breadcrumb & Actions */}
       <div className="flex items-center justify-between gap-4">
-        <nav className="flex items-center gap-2 text-xs text-[#9B9BB4] truncate">
-          <Link href="/research" className="hover:text-white transition-colors">
+        <nav className="flex items-center gap-2 text-xs font-mono font-bold text-[#525866] truncate">
+          <Link href="/research" className="hover:text-black hover:underline transition-colors">
             Research
           </Link>
           <span>/</span>
-          <Link href="/research" className="hover:text-white transition-colors">
+          <Link href="/research" className="hover:text-black hover:underline transition-colors">
             NSE Stocks
           </Link>
           <span>/</span>
-          <span className="text-white font-medium truncate">{stock.symbol}</span>
+          <span className="text-[#222A2A] font-black truncate">{stock.symbol}</span>
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -87,22 +87,22 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
             type="button"
             onClick={handleFavoriteClick}
             className={cn(
-              'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all',
+              'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all',
               favorited
-                ? 'bg-neo-green text-black'
-                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white',
+                ? 'bg-neo-mint text-black'
+                : 'bg-white text-black hover:bg-neo-yellow',
             )}
           >
-            {favorited ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+            {favorited ? <BookmarkCheck className="w-3.5 h-3.5 stroke-[2.5]" /> : <Bookmark className="w-3.5 h-3.5 stroke-[2.5]" />}
             <span className="hidden sm:inline">{favorited ? 'WATCHLIST' : 'ADD WATCHLIST'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => router.back()}
-            className="p-1.5 rounded-lg bg-[#0E0E14] border-2 border-black text-[#A0A0B2] hover:text-white shadow-neo-sm hover:shadow-neo transition-all"
+            className="p-1.5 rounded-xl bg-white border-2 border-black text-black hover:bg-neo-yellow shadow-neo-sm hover:shadow-neo transition-all"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
           </button>
         </div>
       </div>
@@ -111,27 +111,27 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-[#222A2A] uppercase tracking-tight">
               {stock.companyName}
             </h1>
-            <span className="px-2 py-0.5 rounded bg-neo-cyan text-black font-mono font-black text-xs border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
+            <span className="px-2 py-0.5 rounded-md bg-neo-aqua text-black font-mono font-black text-xs border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
               {stock.symbol}
             </span>
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap text-xs">
             {stock.sector && (
-              <span className="text-[#A0A0B2] font-mono font-bold capitalize">
+              <span className="text-[#525866] font-mono font-bold capitalize">
                 {stock.sector}
               </span>
             )}
             {stock.marketCapType && (
-              <span className="px-2 py-0.5 rounded bg-neo-yellow text-black font-mono font-black text-[10px] border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
+              <span className="px-2 py-0.5 rounded-md bg-neo-yellow text-black font-mono font-black text-[10px] border border-black uppercase shadow-[1px_1px_0px_0px_#000]">
                 {stock.marketCapType} Cap
               </span>
             )}
             {stock.isin && (
-              <span className="font-mono text-[10px] text-[#A0A0B2] px-2 py-0.5 rounded bg-[#0E0E14] border border-black">
+              <span className="font-mono text-[10px] font-bold text-[#525866] px-2 py-0.5 rounded-md bg-white border border-black">
                 ISIN: {stock.isin}
               </span>
             )}
@@ -140,32 +140,32 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
 
         {/* Live Price Quote */}
         <div className="text-left md:text-right shrink-0">
-          <div className="flex items-center md:justify-end gap-2 text-[11px] text-[#9B9BB4] font-semibold uppercase tracking-wider">
+          <div className="flex items-center md:justify-end gap-2 text-[11px] text-[#525866] font-mono font-bold uppercase tracking-wider">
             <span
               className={cn(
                 'w-2 h-2 rounded-full',
-                marketLive ? 'bg-[#00D084] animate-pulse' : 'bg-[#9B9BB4]'
+                marketLive ? 'bg-emerald-500 animate-pulse' : 'bg-gray-500'
               )}
             />
             <span>{marketLive ? 'NSE Live Price' : 'NSE Close Price'}</span>
           </div>
 
           <div className="flex items-baseline md:justify-end gap-2.5 mt-0.5">
-            <span className="font-mono text-2xl sm:text-3xl font-extrabold text-white">
+            <span className="font-mono text-2xl sm:text-3xl font-black text-[#222A2A]">
               {stock.currentPrice ? formatINR(stock.currentPrice) : '—'}
             </span>
 
             {stock.changePercent !== undefined && (
               <span
                 className={cn(
-                  'font-mono text-xs font-bold inline-flex items-center px-1.5 py-0.5 rounded',
-                  isPositive ? 'bg-[#00D084]/10 text-[#00D084]' : 'bg-[#FF4D6D]/10 text-[#FF4D6D]',
+                  'font-mono text-xs font-black inline-flex items-center px-1.5 py-0.5 rounded-md border border-black shadow-[1px_1px_0px_0px_#000]',
+                  isPositive ? 'bg-neo-mint text-black' : 'bg-neo-rust text-white',
                 )}
               >
                 {isPositive ? (
-                  <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
+                  <TrendingUp className="w-3.5 h-3.5 mr-0.5 stroke-[2.5]" />
                 ) : (
-                  <TrendingDown className="w-3.5 h-3.5 mr-0.5" />
+                  <TrendingDown className="w-3.5 h-3.5 mr-0.5 stroke-[2.5]" />
                 )}
                 {isPositive ? `+${stock.change?.toFixed(2)}` : stock.change?.toFixed(2)} ({isPositive ? '+' : ''}
                 {stock.changePercent?.toFixed(2)}%)
@@ -176,14 +176,14 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
           {/* 52W Range Progress */}
           {low52 > 0 && high52 > 0 && (
             <div className="mt-2 w-48 ml-auto space-y-1">
-              <div className="flex justify-between text-[10px] font-mono text-[#9B9BB4]">
+              <div className="flex justify-between text-[10px] font-mono font-bold text-[#525866]">
                 <span>52W L: {formatINR(low52)}</span>
                 <span>52W H: {formatINR(high52)}</span>
               </div>
-              <div className="h-1.5 w-full bg-[#13141F] rounded-full overflow-hidden border border-white/5">
+              <div className="h-2 w-full bg-[#E2DAC2] rounded-full overflow-hidden border border-black shadow-[inset_1px_1px_0px_#000]">
                 <div
                   style={{ width: `${progress52}%` }}
-                  className="h-full bg-gradient-to-r from-[#6C63FF] to-[#00D2FF]"
+                  className="h-full bg-neo-mint border-r border-black"
                 />
               </div>
             </div>
@@ -193,3 +193,4 @@ export function StockHeader({ stock, metrics }: StockHeaderProps) {
     </div>
   );
 }
+export default StockHeader;

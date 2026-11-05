@@ -34,22 +34,22 @@ export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps)
 
   if (error || !stock) {
     return (
-      <div className="py-20 text-center space-y-4">
-        <h3 className="text-xl font-bold text-white">Stock not found</h3>
-        <p className="text-xs text-[#9B9BB4] max-w-sm mx-auto">
+      <div className="py-16 text-center space-y-4 neo-box p-8 bg-white max-w-lg mx-auto">
+        <h3 className="text-xl font-black text-black">Stock not found</h3>
+        <p className="text-xs text-black/70 max-w-sm mx-auto font-mono">
           {error || `Unable to fetch stock data for ticker symbol "${symbol}".`}
         </p>
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3 pt-2">
           <button
             type="button"
             onClick={() => refetch()}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF]"
+            className="neo-btn bg-neo-mint text-black font-bold text-xs"
           >
             Retry
           </button>
           <Link
             href="/research"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15"
+            className="neo-btn bg-white text-black font-bold text-xs inline-flex items-center gap-2"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Research</span>
@@ -73,7 +73,7 @@ export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps)
       <StockHeader stock={stock} metrics={metrics} />
 
       {/* Tabs Navigation Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b-2 border-black/40 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b-2 border-black scrollbar-none">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -85,11 +85,11 @@ export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps)
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-black uppercase whitespace-nowrap transition-all shrink-0 border-2 border-black',
                 isActive
-                  ? 'bg-neo-yellow text-black shadow-neo'
-                  : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white hover:border-white/30',
+                  ? 'bg-neo-mint text-black shadow-neo'
+                  : 'bg-white text-black/70 hover:text-black hover:bg-neo-cream',
               )}
             >
-              <Icon className={cn('w-3.5 h-3.5', isActive ? 'text-black fill-black' : 'text-[#A0A0B2]')} />
+              <Icon className={cn('w-3.5 h-3.5', isActive ? 'text-black fill-black' : 'text-black/70')} />
               <span>{tab.label}</span>
             </button>
           );

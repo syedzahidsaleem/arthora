@@ -40,24 +40,20 @@ export function PollingLoader() {
   const StepIcon = STEPS[currentStep].icon;
 
   return (
-    <div className="p-8 md:p-12 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-2xl flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden">
-      {/* Background Animated Pulse Glow */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#6C63FF]/10 via-[#00D2FF]/10 to-transparent animate-pulse pointer-events-none" />
-
+    <div className="neo-box p-8 md:p-12 bg-white flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden">
       {/* Animated Icon Circle */}
       <div className="relative">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#6C63FF] to-[#00D2FF] flex items-center justify-center text-white shadow-2xl shadow-[#6C63FF]/40 animate-bounce duration-1000">
-          <StepIcon className="w-10 h-10" />
+        <div className="w-20 h-20 rounded-2xl bg-neo-mint border-[3px] border-black flex items-center justify-center text-black shadow-neo animate-bounce duration-1000">
+          <StepIcon className="w-10 h-10 stroke-[2.5]" />
         </div>
-        <div className="absolute -inset-2 rounded-3xl border border-[#00D2FF]/40 animate-ping opacity-25 pointer-events-none" />
       </div>
 
       {/* Dynamic Text Step */}
       <div className="space-y-2 max-w-md relative z-10">
-        <h3 className="text-xl font-bold text-white tracking-tight animate-in fade-in duration-300">
+        <h3 className="text-xl font-black text-black tracking-tight animate-in fade-in duration-300 uppercase">
           {STEPS[currentStep].title}
         </h3>
-        <p className="text-xs text-[#9B9BB4] leading-relaxed animate-in fade-in duration-300">
+        <p className="text-xs font-mono text-black/70 leading-relaxed animate-in fade-in duration-300">
           {STEPS[currentStep].subtitle}
         </p>
       </div>
@@ -67,10 +63,10 @@ export function PollingLoader() {
         {STEPS.map((_, idx) => (
           <div
             key={idx}
-            className={`h-2 rounded-full transition-all duration-500 ${
+            className={`h-2.5 rounded-full border border-black transition-all duration-500 ${
               idx === currentStep
-                ? 'w-8 bg-gradient-to-r from-[#6C63FF] to-[#00D2FF]'
-                : 'w-2 bg-white/10'
+                ? 'w-8 bg-neo-yellow shadow-sm'
+                : 'w-2.5 bg-neo-cream'
             }`}
           />
         ))}

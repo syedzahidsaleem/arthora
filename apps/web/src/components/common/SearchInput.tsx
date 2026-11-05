@@ -89,11 +89,11 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
           onClick={() => setOpen(true)}
           aria-label="Open search"
           className={cn(
-            'p-2 rounded-xl text-[#9B9BB4] hover:text-white hover:bg-white/5 transition-colors',
+            'p-2 rounded-xl border-2 border-black bg-white text-black hover:bg-neo-yellow shadow-neo-sm transition-all',
             triggerClassName,
           )}
         >
-          <Search className="w-5 h-5" />
+          <Search className="w-4 h-4 stroke-[2.5]" />
         </button>
       ) : (
         <button
@@ -101,15 +101,15 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
           onClick={() => setOpen(true)}
           aria-label="Search mutual funds and stocks"
           className={cn(
-            'flex items-center justify-between w-full px-3.5 py-2 rounded-xl bg-[#1A1B2E] border border-white/5 text-[#9B9BB4] hover:border-white/10 hover:text-white transition-all text-xs font-medium group',
+            'flex items-center justify-between w-full px-3 py-2 rounded-xl bg-white border-2 border-black text-[#525866] hover:text-black hover:bg-neo-yellow shadow-neo-sm hover:shadow-neo transition-all text-xs font-bold group',
             triggerClassName,
           )}
         >
           <div className="flex items-center gap-2.5">
-            <Search className="w-4 h-4 text-[#9B9BB4] group-hover:text-[#6C63FF] transition-colors" />
-            <span>Search funds, stocks...</span>
+            <Search className="w-3.5 h-3.5 text-black stroke-[2.5]" />
+            <span className="truncate">Search funds, stocks...</span>
           </div>
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-[#9B9BB4]">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-neo-yellow border border-black text-[10px] font-mono font-bold text-black shadow-[1px_1px_0px_#000]">
             ⌘K
           </kbd>
         </button>
@@ -117,18 +117,18 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
 
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 animate-in fade-in duration-200" />
-          <Dialog.Content className="fixed top-[15%] left-[50%] translate-x-[-50%] w-full max-w-xl bg-[#13141F] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 focus:outline-none">
+          <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200" />
+          <Dialog.Content className="fixed top-[15%] left-[50%] translate-x-[-50%] w-full max-w-xl bg-[#FBF7EE] border-[3px] border-black rounded-2xl shadow-neo-lg z-50 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 focus:outline-none text-[#222A2A]">
             {/* Search Input Box */}
-            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/5 bg-[#1A1B2E]/50">
-              <Search className="w-5 h-5 text-[#6C63FF] shrink-0" />
+            <div className="flex items-center gap-3 px-4 py-3.5 border-b-2 border-black bg-white">
+              <Search className="w-5 h-5 text-black stroke-[2.5] shrink-0" />
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search by fund name, AMC, stock ticker..."
-                className="flex-1 bg-transparent text-white placeholder-[#9B9BB4]/60 text-sm font-medium focus:outline-none"
+                className="flex-1 bg-transparent text-[#222A2A] placeholder-[#717684] text-sm font-bold focus:outline-none"
                 autoFocus
               />
               {isLoading ? (
@@ -138,33 +138,33 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                   type="button"
                   onClick={() => clearResults()}
                   aria-label="Clear search"
-                  className="p-1 text-[#9B9BB4] hover:text-white"
+                  className="p-1 rounded border border-black bg-neo-yellow text-black hover:bg-neo-mint shadow-[1px_1px_0px_#000]"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 stroke-[2.5]" />
                 </button>
               ) : (
-                <kbd className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] font-mono text-[#9B9BB4]">
+                <kbd className="px-1.5 py-0.5 rounded bg-neo-yellow border border-black text-[10px] font-mono font-bold text-black shadow-[1px_1px_0px_#000]">
                   ESC
                 </kbd>
               )}
             </div>
 
             {/* Search Results / History body */}
-            <div className="max-h-[60vh] overflow-y-auto p-2 space-y-4">
+            <div className="max-h-[60vh] overflow-y-auto p-3 space-y-4">
               {!debouncedQuery.trim() ? (
                 /* Recent searches */
                 <div>
                   {recentSearches.length > 0 ? (
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between px-3 py-1.5 text-[11px] font-semibold text-[#9B9BB4] uppercase tracking-wider">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between px-2 py-1 text-[11px] font-mono font-bold text-[#525866] uppercase tracking-wider">
                         <span className="flex items-center gap-1.5">
-                          <History className="w-3.5 h-3.5 text-[#9B9BB4]" />
+                          <History className="w-3.5 h-3.5 stroke-[2.5]" />
                           Recent Searches
                         </span>
                         <button
                           type="button"
                           onClick={() => clearRecentSearches()}
-                          className="text-[10px] lowercase text-[#9B9BB4]/70 hover:text-[#FF4D6D] transition-colors"
+                          className="text-[10px] lowercase text-neo-rust hover:underline font-bold"
                         >
                           Clear
                         </button>
@@ -175,22 +175,22 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                           key={idx}
                           type="button"
                           onClick={() => setQuery(searchTerm)}
-                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-[#F8F9FA] hover:bg-white/5 transition-colors text-left"
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-[#222A2A] bg-white border-2 border-black hover:bg-neo-lilac shadow-neo-sm hover:shadow-neo transition-all text-left"
                         >
                           <span className="truncate">{searchTerm}</span>
-                          <ChevronRight className="w-3.5 h-3.5 text-[#9B9BB4]" />
+                          <ChevronRight className="w-3.5 h-3.5 text-black stroke-[2.5]" />
                         </button>
                       ))}
                     </div>
                   ) : (
-                    <div className="py-12 text-center text-xs text-[#9B9BB4]">
-                      <Sparkles className="w-6 h-6 text-[#6C63FF] mx-auto mb-2 opacity-60" />
+                    <div className="py-12 text-center text-xs font-mono font-bold text-[#525866]">
+                      <Sparkles className="w-6 h-6 text-black mx-auto mb-2" />
                       Type a fund house (e.g. HDFC, Parag Parikh) or stock symbol (e.g. RELIANCE, TCS)
                     </div>
                   )}
                 </div>
               ) : totalResults === 0 && !isLoading ? (
-                <div className="py-10 text-center text-xs text-[#9B9BB4]">
+                <div className="py-10 text-center text-xs font-mono font-bold text-[#525866]">
                   No matching mutual funds or stocks found for &quot;{query}&quot;
                 </div>
               ) : (
@@ -198,10 +198,10 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                   {/* Mutual Funds section */}
                   {fundResults.length > 0 && (
                     <div>
-                      <div className="px-3 py-1 text-[11px] font-semibold text-[#9B9BB4] uppercase tracking-wider">
+                      <div className="px-2 py-1 text-[11px] font-mono font-bold text-[#525866] uppercase tracking-wider">
                         Mutual Funds
                       </div>
-                      <div className="space-y-1 mt-1">
+                      <div className="space-y-1.5 mt-1">
                         {fundResults.map((fund, idx) => {
                           const isSelected = selectedIndex === idx;
                           return (
@@ -213,22 +213,24 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                                 setOpen(false);
                               }}
                               className={cn(
-                                'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all',
-                                isSelected ? 'bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/10 text-white' : 'hover:bg-white/5 text-[#F8F9FA]',
+                                'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all border-2 border-black',
+                                isSelected
+                                  ? 'bg-neo-mint text-black shadow-neo font-black'
+                                  : 'bg-white hover:bg-neo-lilac/50 text-[#222A2A] shadow-neo-sm',
                               )}
                             >
                               <div className="min-w-0 pr-3">
-                                <div className="text-xs font-medium truncate">{fund.schemeName}</div>
-                                <div className="text-[11px] text-[#9B9BB4] capitalize">
+                                <div className="text-xs font-black truncate">{fund.schemeName}</div>
+                                <div className="text-[11px] text-[#525866] font-mono capitalize">
                                   {fund.category?.replace(/_/g, ' ') || 'Mutual Fund'} • {fund.fundHouse}
                                 </div>
                               </div>
                               {fund.latestNAV ? (
                                 <div className="text-right shrink-0">
-                                  <div className="text-xs font-mono font-semibold text-white">
+                                  <div className="text-xs font-mono font-black text-[#222A2A]">
                                     {formatINR(fund.latestNAV)}
                                   </div>
-                                  <div className="text-[10px] text-[#9B9BB4]">NAV</div>
+                                  <div className="text-[10px] font-mono font-bold text-[#525866]">NAV</div>
                                 </div>
                               ) : null}
                             </button>
@@ -241,10 +243,10 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                   {/* Stocks section */}
                   {stockResults.length > 0 && (
                     <div>
-                      <div className="px-3 py-1 text-[11px] font-semibold text-[#9B9BB4] uppercase tracking-wider">
+                      <div className="px-2 py-1 text-[11px] font-mono font-bold text-[#525866] uppercase tracking-wider">
                         NSE Stocks
                       </div>
-                      <div className="space-y-1 mt-1">
+                      <div className="space-y-1.5 mt-1">
                         {stockResults.map((stock, idx) => {
                           const itemIndex = fundResults.length + idx;
                           const isSelected = selectedIndex === itemIndex;
@@ -257,25 +259,27 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
                                 setOpen(false);
                               }}
                               className={cn(
-                                'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all',
-                                isSelected ? 'bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/10 text-white' : 'hover:bg-white/5 text-[#F8F9FA]',
+                                'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all border-2 border-black',
+                                isSelected
+                                  ? 'bg-neo-mint text-black shadow-neo font-black'
+                                  : 'bg-white hover:bg-neo-lilac/50 text-[#222A2A] shadow-neo-sm',
                               )}
                             >
                               <div className="flex items-center gap-2.5 min-w-0 pr-3">
-                                <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-[#00D2FF]">
-                                  <TrendingUp className="w-3.5 h-3.5" />
+                                <div className="w-7 h-7 rounded-lg bg-neo-aqua border border-black flex items-center justify-center shrink-0 text-black shadow-[1px_1px_0px_#000]">
+                                  <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
                                 </div>
                                 <div className="truncate">
-                                  <div className="text-xs font-mono font-bold text-white">{stock.symbol}</div>
-                                  <div className="text-[11px] text-[#9B9BB4] truncate">{stock.companyName}</div>
+                                  <div className="text-xs font-mono font-black text-[#222A2A]">{stock.symbol}</div>
+                                  <div className="text-[11px] font-medium text-[#525866] truncate">{stock.companyName}</div>
                                 </div>
                               </div>
                               {stock.currentPrice ? (
                                 <div className="text-right shrink-0">
-                                  <div className="text-xs font-mono font-semibold text-white">
+                                  <div className="text-xs font-mono font-black text-[#222A2A]">
                                     {formatINR(stock.currentPrice)}
                                   </div>
-                                  <div className="text-[10px] text-[#9B9BB4]">NSE</div>
+                                  <div className="text-[10px] font-mono font-bold text-[#525866]">NSE</div>
                                 </div>
                               ) : null}
                             </button>
@@ -289,12 +293,12 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
             </div>
 
             {/* Footer with keyboard guidance */}
-            <div className="px-4 py-2.5 border-t border-white/5 bg-[#1A1B2E]/50 flex items-center justify-between text-[11px] text-[#9B9BB4]">
+            <div className="px-4 py-2.5 border-t-2 border-black bg-[#E2DAC2] flex items-center justify-between text-[11px] font-mono font-bold text-[#222A2A]">
               <div className="flex items-center gap-3">
-                <span><kbd className="px-1 py-0.5 rounded bg-white/5 font-mono">↑↓</kbd> navigate</span>
-                <span><kbd className="px-1 py-0.5 rounded bg-white/5 font-mono">↵</kbd> select</span>
+                <span><kbd className="px-1.5 py-0.5 rounded bg-white border border-black shadow-[1px_1px_0px_#000]">↑↓</kbd> navigate</span>
+                <span><kbd className="px-1.5 py-0.5 rounded bg-white border border-black shadow-[1px_1px_0px_#000]">↵</kbd> select</span>
               </div>
-              <span>Powered by Arthora Search</span>
+              <span>Arthora Terminal</span>
             </div>
           </Dialog.Content>
         </Dialog.Portal>
@@ -302,3 +306,4 @@ export function SearchInput({ triggerClassName, isMobileTrigger = false }: Searc
     </>
   );
 }
+export default SearchInput;

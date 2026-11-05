@@ -32,26 +32,26 @@ export function StockPeerComparison({
     ['RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK'];
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+    <div className="neo-box p-5 sm:p-6 bg-white space-y-4">
       <div>
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+        <h3 className="text-xs font-black text-black uppercase tracking-wider">
           Sector Industry Peers ({sector || 'Market Leaders'})
         </h3>
-        <p className="text-xs text-[#9B9BB4] mt-0.5">
+        <p className="text-xs font-mono text-black/70 mt-0.5">
           Benchmark valuation and market cap against top sector rivals
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-white/5 bg-[#13141F]/40">
+      <div className="overflow-x-auto rounded-lg border-2 border-black bg-white">
         <table className="w-full text-left text-xs">
-          <thead className="bg-[#13141F] text-[#9B9BB4] font-semibold border-b border-white/5 uppercase tracking-wider text-[10px]">
+          <thead className="bg-neo-cream text-black font-mono font-bold border-b-2 border-black uppercase tracking-wider text-[11px]">
             <tr>
               <th className="py-3 px-3.5">Company Symbol</th>
               <th className="py-3 px-3.5">Exchange</th>
               <th className="py-3 px-3.5 text-right font-mono">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5 text-white">
+          <tbody className="divide-y-2 divide-black text-black">
             {peerSymbols.map((sym) => {
               const isCurrent = sym.toUpperCase() === currentSymbol.toUpperCase();
 
@@ -61,28 +61,28 @@ export function StockPeerComparison({
                   className={cn(
                     'transition-colors',
                     isCurrent
-                      ? 'bg-gradient-to-r from-[#6C63FF]/20 to-[#00D2FF]/10 font-semibold border-l-2 border-[#6C63FF]'
-                      : 'hover:bg-white/5',
+                      ? 'bg-neo-mint/30 font-bold border-l-4 border-black'
+                      : 'hover:bg-neo-cream/50',
                   )}
                 >
                   <td className="py-3 px-3.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-white">{sym}</span>
+                      <span className="font-mono font-black text-black">{sym}</span>
                       {isCurrent && (
-                        <span className="px-1.5 py-0.2 rounded bg-[#6C63FF]/30 text-[10px] uppercase font-bold text-[#00D2FF]">
+                        <span className="px-2 py-0.5 rounded bg-neo-mint border border-black text-[10px] uppercase font-black text-black">
                           Current
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="py-3 px-3.5 text-[#9B9BB4] font-mono">NSE</td>
+                  <td className="py-3 px-3.5 text-black/70 font-mono font-bold">NSE</td>
                   <td className="py-3 px-3.5 text-right">
                     {isCurrent ? (
-                      <span className="text-xs text-[#9B9BB4]">Viewing</span>
+                      <span className="text-xs text-black/50 font-mono">Viewing</span>
                     ) : (
                       <Link
                         href={`/research/stock/${sym}`}
-                        className="text-xs font-semibold text-[#00D2FF] hover:underline"
+                        className="neo-btn bg-neo-yellow text-black font-bold text-[11px] px-2.5 py-1 inline-block"
                       >
                         Research ↗
                       </Link>

@@ -24,8 +24,8 @@ export function StockQuarterlyResults({
   return (
     <div className="space-y-6">
       {/* Annual Summary Metrics */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+      <div className="neo-box p-5 sm:p-6 bg-white space-y-4">
+        <h3 className="text-xs font-black text-black uppercase tracking-wider">
           Annual Financial Summary
         </h3>
 
@@ -49,11 +49,11 @@ export function StockQuarterlyResults({
       </div>
 
       {/* Info notice + External NSE filings link */}
-      <div className="p-5 rounded-2xl bg-[#13141F] border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="neo-lilac-panel p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-[#00D2FF] shrink-0 mt-0.5" />
-          <div className="space-y-0.5 text-xs text-[#9B9BB4]">
-            <span className="font-semibold text-white">Official Regulatory Filings & Results</span>
+          <Info className="w-5 h-5 text-black shrink-0 mt-0.5" />
+          <div className="space-y-0.5 text-xs text-black/80 font-mono">
+            <span className="font-black text-black font-sans block text-sm">Official Regulatory Filings & Results</span>
             <p>
               For detailed quarterly balance sheet items, audited cash flows, and investor presentation decks, visit the official NSE India filings page.
             </p>
@@ -64,7 +64,7 @@ export function StockQuarterlyResults({
           href={nseUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] hover:opacity-90 transition-all shrink-0 shadow-md shadow-[#6C63FF]/20"
+          className="neo-btn bg-neo-mint text-black font-bold text-xs inline-flex items-center gap-1.5 shrink-0"
         >
           <span>View on NSE India</span>
           <ExternalLink className="w-3.5 h-3.5" />

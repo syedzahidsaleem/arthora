@@ -50,17 +50,17 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
   const finalCorpus = Math.round(futureValue);
 
   const chartData = [
-    { name: 'Total Invested', value: totalInvested, color: '#6C63FF' },
-    { name: 'Estimated Returns', value: totalReturns, color: '#00D084' },
+    { name: 'Total Invested', value: totalInvested, color: '#4FBBBC' },
+    { name: 'Estimated Returns', value: totalReturns, color: '#7BED9F' },
   ];
 
   return (
-    <div className="p-5 sm:p-6 rounded-2xl bg-[#13141F] border border-white/[0.08] shadow-2xl space-y-6">
-      <div className="border-b border-white/[0.08] pb-3">
-        <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+    <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-6 text-[#222A2A] select-none">
+      <div className="border-b-2 border-black pb-3">
+        <h3 className="text-sm font-black text-black uppercase tracking-wider">
           Systematic Investment Plan (SIP) Calculator
         </h3>
-        <p className="text-xs text-[#9B9BB4] mt-0.5">
+        <p className="text-xs text-[#525866] font-mono font-bold mt-0.5">
           Simulate compound wealth creation by investing monthly in this mutual fund
         </p>
       </div>
@@ -71,8 +71,8 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
           {/* Monthly Investment Slider */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#9B9BB4] uppercase font-mono">Monthly Investment</span>
-              <span className="font-mono font-bold text-white text-sm tabular-nums">
+              <span className="font-black text-black uppercase font-mono">Monthly Investment</span>
+              <span className="font-mono font-black text-black text-base tabular-nums bg-neo-yellow px-2 py-0.5 rounded border border-black shadow-[1px_1px_0px_#000]">
                 {formatINR(monthlyAmount)}
               </span>
             </div>
@@ -92,8 +92,8 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
           {/* Investment Period Slider */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#9B9BB4] uppercase font-mono">Investment Horizon</span>
-              <span className="font-mono font-bold text-[#00D2FF] text-sm tabular-nums">
+              <span className="font-black text-black uppercase font-mono">Investment Horizon</span>
+              <span className="font-mono font-black text-black text-base tabular-nums bg-neo-aqua px-2 py-0.5 rounded border border-black shadow-[1px_1px_0px_#000]">
                 {years} {years === 1 ? 'Year' : 'Years'}
               </span>
             </div>
@@ -113,8 +113,8 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
           {/* Expected Return Rate */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#9B9BB4] uppercase font-mono">Expected Annual Return (CAGR)</span>
-              <span className="font-mono font-bold text-[#00D084] text-sm tabular-nums">
+              <span className="font-black text-black uppercase font-mono">Expected Annual Return (CAGR)</span>
+              <span className="font-mono font-black text-black text-base tabular-nums bg-neo-mint px-2 py-0.5 rounded border border-black shadow-[1px_1px_0px_#000]">
                 {rate}%
               </span>
             </div>
@@ -133,12 +133,12 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
         </div>
 
         {/* Right Output & Donut (col-span-5) */}
-        <div className="lg:col-span-5 p-5 rounded-2xl bg-[#0D0E1A] border border-white/[0.08] space-y-4">
+        <div className="lg:col-span-5 p-5 rounded-2xl bg-neo-lilac border-2 border-black shadow-neo space-y-4 text-black">
           <div className="space-y-1">
-            <span className="text-[11px] font-medium text-[#9B9BB4] uppercase font-mono">
+            <span className="text-[11px] font-mono font-bold text-black uppercase tracking-wider">
               Total Expected Corpus
             </span>
-            <div className="text-2xl sm:text-3xl font-mono font-black bg-gradient-to-r from-[#6C63FF] via-[#00D2FF] to-[#00D084] bg-clip-text text-transparent tabular-nums">
+            <div className="text-2xl sm:text-3xl font-mono font-black text-black tabular-nums">
               {formatINR(finalCorpus)}
             </div>
           </div>
@@ -152,9 +152,9 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
                     if (active && payload && payload.length) {
                       const d = payload[0].payload;
                       return (
-                        <div className="p-2.5 rounded-xl bg-[#13141F] border border-white/10 text-xs font-mono shadow-xl">
-                          <span className="text-[#9B9BB4]">{d.name}: </span>
-                          <span className="font-bold text-[#00D2FF] tabular-nums">{formatINR(d.value)}</span>
+                        <div className="p-2.5 rounded-xl bg-white border-2 border-black text-xs font-mono font-bold shadow-neo text-black">
+                          <span>{d.name}: </span>
+                          <span className="font-black tabular-nums">{formatINR(d.value)}</span>
                         </div>
                       );
                     }
@@ -171,28 +171,28 @@ export function SIPCalculator({ initialCAGR = 14.0 }: SIPCalculatorProps) {
                   dataKey="value"
                 >
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#0D0E1A" strokeWidth={2} />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#000000" strokeWidth={2} />
                   ))}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="space-y-2 pt-2 border-t border-white/[0.06] text-xs font-mono">
-            <div className="flex items-center justify-between text-[#9B9BB4]">
+          <div className="space-y-2 pt-2 border-t-2 border-black text-xs font-mono">
+            <div className="flex items-center justify-between text-black font-bold">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#6C63FF]" />
+                <span className="w-3 h-3 rounded-md bg-neo-aqua border border-black shadow-[1px_1px_0px_#000]" />
                 Invested Amount:
               </span>
-              <span className="font-bold text-white tabular-nums">{formatINR(totalInvested)}</span>
+              <span className="font-black text-black tabular-nums">{formatINR(totalInvested)}</span>
             </div>
 
-            <div className="flex items-center justify-between text-[#00D084]">
+            <div className="flex items-center justify-between text-black font-bold">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#00D084]" />
+                <span className="w-3 h-3 rounded-md bg-neo-mint border border-black shadow-[1px_1px_0px_#000]" />
                 Estimated Growth:
               </span>
-              <span className="font-bold tabular-nums">{formatINR(totalReturns)}</span>
+              <span className="font-black text-black tabular-nums">{formatINR(totalReturns)}</span>
             </div>
           </div>
         </div>

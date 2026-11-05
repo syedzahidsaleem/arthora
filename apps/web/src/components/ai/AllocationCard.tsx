@@ -7,14 +7,14 @@ import { useFavorites } from '@/hooks/useFavorites';
 import type { IAssetAllocation } from '@arthora/shared';
 
 const CHART_COLORS = [
-  '#6C63FF',
-  '#00D2FF',
-  '#00D084',
-  '#FFB800',
-  '#FF4D6D',
-  '#A78BFA',
-  '#38BDF8',
-  '#34D399',
+  '#7BED9F',
+  '#4FBBBC',
+  '#F39120',
+  '#EC4624',
+  '#DDD3FF',
+  '#FFF7C2',
+  '#222A2A',
+  '#FF6B6B',
 ];
 
 interface AllocationCardProps {
@@ -55,7 +55,7 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
         : '/research';
 
   return (
-    <div className="relative p-4 sm:p-5 rounded-xl bg-[#161620] border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all space-y-3 overflow-hidden">
+    <div className="relative p-4 sm:p-5 rounded-2xl bg-white border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all space-y-3 overflow-hidden text-[#222A2A]">
       {/* Left Colored Accent Bar */}
       <div
         className="absolute top-0 bottom-0 left-0 w-2.5 border-r-2 border-black"
@@ -66,27 +66,27 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pl-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-mono text-xl sm:text-2xl font-black text-neo-yellow">
+            <span className="font-mono text-lg sm:text-xl font-black text-black bg-neo-yellow px-2 py-0.5 rounded-lg border-2 border-black shadow-[1px_1px_0px_#000]">
               {item.allocationPercent}%
             </span>
-            <h4 className="font-black text-sm sm:text-base text-white uppercase tracking-wide">{item.name}</h4>
+            <h4 className="font-black text-sm sm:text-base text-[#222A2A] uppercase tracking-wide">{item.name}</h4>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-xs">
             {item.isin && (
-              <span className="px-2 py-0.5 rounded bg-[#0E0E14] font-mono text-[10px] text-[#A0A0B2] border border-black">
+              <span className="px-2 py-0.5 rounded-md bg-[#FBF7EE] font-mono text-[10px] text-[#525866] border border-black font-bold">
                 {item.isin}
               </span>
             )}
             {item.ticker && (
-              <span className="px-2 py-0.5 rounded bg-neo-cyan text-black font-mono text-[10px] border border-black font-black uppercase">
+              <span className="px-2 py-0.5 rounded-md bg-neo-aqua text-black font-mono text-[10px] border border-black font-black uppercase shadow-[1px_1px_0px_#000]">
                 {item.ticker} (NSE)
               </span>
             )}
-            <span className="px-2 py-0.5 rounded bg-[#0E0E14] text-[10px] font-mono text-[#A0A0B2] border border-black uppercase">
+            <span className="px-2 py-0.5 rounded-md bg-neo-lilac text-black text-[10px] font-mono font-bold border border-black uppercase shadow-[1px_1px_0px_#000]">
               {item.category?.replace(/_/g, ' ')}
             </span>
-            <span className="px-2 py-0.5 rounded bg-neo-green text-black text-[10px] font-mono font-black border border-black">
+            <span className="px-2 py-0.5 rounded-md bg-neo-mint text-black text-[10px] font-mono font-black border border-black shadow-[1px_1px_0px_#000]">
               ~{item.expectedReturn}% CAGR
             </span>
           </div>
@@ -97,21 +97,20 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
           <button
             type="button"
             onClick={handleToggleWatchlist}
-            
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase transition-all border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
               favorited
-                ? 'bg-neo-green text-black'
-                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white'
+                ? 'bg-neo-mint text-black'
+                : 'bg-white text-black hover:bg-neo-yellow'
             }`}
           >
             {favorited ? (
               <>
-                <BookmarkCheck className="w-3.5 h-3.5" />
+                <BookmarkCheck className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>SAVED</span>
               </>
             ) : (
               <>
-                <Bookmark className="w-3.5 h-3.5" />
+                <Bookmark className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>WATCHLIST</span>
               </>
             )}
@@ -119,22 +118,23 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
 
           <Link
             href={researchUrl}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
           >
             <span>Research</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-black" />
+            <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
         </div>
       </div>
 
       {/* Rationale Text */}
-      <div className="pl-3 pt-2 border-t-2 border-black/40 text-xs text-[#A0A0B2] font-mono leading-relaxed flex items-start gap-2">
-        <Shield className="w-3.5 h-3.5 text-neo-cyan shrink-0 mt-0.5" />
+      <div className="pl-3 pt-2.5 border-t-2 border-black/30 text-xs text-[#525866] font-mono leading-relaxed flex items-start gap-2">
+        <Shield className="w-3.5 h-3.5 text-black stroke-[2.5] shrink-0 mt-0.5" />
         <p>
-          <strong className="text-white uppercase font-black">Thesis: </strong>
+          <strong className="text-black uppercase font-black">Thesis: </strong>
           {item.reason}
         </p>
       </div>
     </div>
   );
 }
+export default AllocationCard;

@@ -30,14 +30,14 @@ export function MetricCard({
     return (
       <div
         className={cn(
-          'bg-[#1A1B2E] border border-white/5 rounded-2xl animate-pulse flex flex-col justify-between',
+          'bg-[#E2DAC2]/50 border-2 border-black rounded-xl animate-pulse flex flex-col justify-between shadow-neo-sm',
           size === 'sm' ? 'p-3' : 'p-4',
           className,
         )}
       >
-        <div className="h-3 w-20 bg-white/10 rounded mb-3" />
-        <div className="h-7 w-28 bg-white/10 rounded mb-2" />
-        <div className="h-3 w-16 bg-white/10 rounded" />
+        <div className="h-3 w-20 bg-black/20 rounded mb-3" />
+        <div className="h-7 w-28 bg-black/20 rounded mb-2" />
+        <div className="h-3 w-16 bg-black/10 rounded" />
       </div>
     );
   }
@@ -48,13 +48,13 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'bg-[#1A1A26] border-2 border-black rounded-xl flex flex-col justify-between transition-all duration-150 shadow-neo hover:shadow-neo-lg hover:-translate-y-0.5',
+        'bg-white border-2 border-black rounded-xl flex flex-col justify-between transition-all duration-150 shadow-neo hover:shadow-neo-lg hover:-translate-y-0.5',
         size === 'sm' ? 'p-3' : 'p-4',
         className,
       )}
     >
       <div className="flex items-center justify-between gap-1 mb-2">
-        <span className="text-xs font-mono font-black text-[#A0A0B2] tracking-wider uppercase truncate">
+        <span className="text-xs font-mono font-bold text-[#525866] tracking-wider uppercase truncate">
           {label}
         </span>
 
@@ -65,9 +65,9 @@ export function MetricCard({
                 <button
                   type="button"
                   aria-label={`Info about ${label}`}
-                  className="text-[#A0A0B2] hover:text-white transition-colors cursor-help p-0.5"
+                  className="text-[#525866] hover:text-black transition-colors cursor-help p-0.5"
                 >
-                  <HelpCircle className="w-3.5 h-3.5" />
+                  <HelpCircle className="w-3.5 h-3.5 stroke-[2.5]" />
                 </button>
               </Tooltip.Trigger>
               <Tooltip.Portal>
@@ -88,7 +88,7 @@ export function MetricCard({
 
       <div
         className={cn(
-          'font-mono font-black text-white tracking-tight truncate my-0.5',
+          'font-mono font-black text-[#222A2A] tracking-tight truncate my-0.5',
           size === 'sm' ? 'text-lg' : 'text-2xl',
         )}
       >
@@ -101,9 +101,9 @@ export function MetricCard({
             <span
               className={cn(
                 'inline-flex items-center font-mono font-black text-xs px-2 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_#000]',
-                isPositive && 'bg-neo-lime text-black',
-                isNegative && 'bg-[#FF4D6D] text-white',
-                !isPositive && !isNegative && 'bg-black text-[#A0A0B2]',
+                isPositive && 'bg-neo-mint text-black',
+                isNegative && 'bg-neo-rust text-white',
+                !isPositive && !isNegative && 'bg-[#E2DAC2] text-black',
               )}
             >
               {isPositive && <ArrowUpRight className="w-3 h-3 mr-0.5 stroke-[2.5]" />}
@@ -113,7 +113,7 @@ export function MetricCard({
           )}
 
           {changeLabel && (
-            <span className="text-[#9B9BB4]/70 text-[11px] truncate">
+            <span className="text-[#525866] font-mono text-[11px] truncate">
               {changeLabel}
             </span>
           )}

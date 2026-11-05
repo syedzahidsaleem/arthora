@@ -44,13 +44,13 @@ export default function WatchlistPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight flex items-center gap-2.5">
             <span>Your Investment Watchlist</span>
             <span className="px-2 py-0.5 rounded-md bg-neo-yellow text-black text-xs font-mono font-black border-2 border-black shadow-[1px_1px_0px_0px_#000]">
               {favorites.length} SAVED
             </span>
           </h1>
-          <p className="text-xs sm:text-sm font-mono text-[#A0A0B2] mt-1">
+          <p className="text-xs sm:text-sm font-mono text-black/70 mt-1">
             Track live NAVs, stock quotes, and compare metrics side-by-side.
           </p>
         </div>
@@ -59,7 +59,7 @@ export default function WatchlistPage() {
           <button
             type="button"
             onClick={() => setShowCompare(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase text-black bg-neo-yellow border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all animate-in fade-in"
+            className="neo-btn bg-neo-yellow text-black font-black uppercase text-xs inline-flex items-center gap-2 animate-in fade-in"
           >
             <Sparkles className="w-4 h-4 fill-black" />
             <span>Compare Selected ({selectedIds.length})</span>
@@ -96,12 +96,14 @@ export default function WatchlistPage() {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#00D2FF]" />
-                  <h2 className="text-base font-bold text-white uppercase tracking-wider">
+                  <div className="w-7 h-7 rounded bg-neo-mint border-2 border-black flex items-center justify-center">
+                    <Building2 className="w-4 h-4 text-black" />
+                  </div>
+                  <h2 className="text-base font-black text-black uppercase tracking-wider">
                     Mutual Funds ({fundFavorites.length})
                   </h2>
                 </div>
-                <span className="text-[11px] text-[#9B9BB4]">
+                <span className="text-[11px] font-mono text-black/70">
                   Select up to 3 to compare
                 </span>
               </div>
@@ -125,12 +127,14 @@ export default function WatchlistPage() {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-[#6C63FF]" />
-                  <h2 className="text-base font-bold text-white uppercase tracking-wider">
+                  <div className="w-7 h-7 rounded bg-neo-aqua border-2 border-black flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-black" />
+                  </div>
+                  <h2 className="text-base font-black text-black uppercase tracking-wider">
                     NSE Stocks ({stockFavorites.length})
                   </h2>
                 </div>
-                <span className="text-[11px] text-[#9B9BB4]">
+                <span className="text-[11px] font-mono text-black/70">
                   Select up to 3 to compare
                 </span>
               </div>

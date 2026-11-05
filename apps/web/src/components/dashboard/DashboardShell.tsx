@@ -12,7 +12,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebarStore();
 
   return (
-    <div className="min-h-screen bg-[#0B0D17] text-[#F8F9FA] flex flex-col">
+    <div className="min-h-screen bg-[#FBF7EE] text-[#222A2A] flex flex-col selection:bg-neo-mint selection:text-black">
       {/* Desktop Sidebar */}
       <Sidebar />
 

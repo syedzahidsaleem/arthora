@@ -13,7 +13,7 @@ const Slider = React.forwardRef<
   SliderProps
 >(({ className, ticks, showTicks = false, min = 0, max = 100, ...props }, ref) => {
   return (
-    <div className="relative w-full space-y-1.5">
+    <div className="relative w-full space-y-2 select-none">
       <SliderPrimitive.Root
         ref={ref}
         min={min}
@@ -24,10 +24,10 @@ const Slider = React.forwardRef<
         )}
         {...props}
       >
-        <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-white/[0.08] dark:bg-white/[0.08] border border-white/[0.06]">
-          <SliderPrimitive.Range className="absolute h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full" />
+        <SliderPrimitive.Track className="relative h-3 w-full grow overflow-hidden rounded-full bg-white border-2 border-black shadow-[inset_1px_1px_0px_#000]">
+          <SliderPrimitive.Range className="absolute h-full bg-neo-mint border-r-2 border-black" />
         </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-brand-primary bg-white ring-offset-background transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing shadow-[0_0_12px_rgba(108,99,255,0.4)]" />
+        <SliderPrimitive.Thumb className="block h-6 w-6 rounded-full border-2 border-black bg-neo-yellow transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing shadow-[2px_2px_0px_#000] active:bg-neo-mint" />
       </SliderPrimitive.Root>
 
       {showTicks && ticks && ticks.length > 0 && (
@@ -43,7 +43,7 @@ const Slider = React.forwardRef<
                   left: `${pct}%`,
                   transform: pct === 0 ? 'translateX(0)' : pct === 100 ? 'translateX(-100%)' : 'translateX(-50%)',
                 }}
-                className="absolute text-[10px] font-mono tabular-nums text-content-muted whitespace-nowrap select-none"
+                className="absolute text-[10px] font-mono font-bold tabular-nums text-[#222A2A] whitespace-nowrap select-none"
               >
                 {tick.label ?? tick.value}
               </span>

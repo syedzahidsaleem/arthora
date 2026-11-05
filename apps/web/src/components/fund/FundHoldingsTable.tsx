@@ -21,7 +21,7 @@ export function FundHoldingsTable({
 
   if (holdings.length === 0) {
     return (
-      <div className="py-12 text-center text-xs text-[#9B9BB4] bg-[#13141F]/40 rounded-2xl border border-white/5">
+      <div className="py-12 text-center text-xs font-mono font-bold text-[#525866] bg-[#FBF7EE] rounded-xl border-2 border-black">
         Holdings data is not yet available for this scheme.
       </div>
     );
@@ -52,49 +52,49 @@ export function FundHoldingsTable({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-[#222A2A]">
       {/* Table Container */}
-      <div className="overflow-x-auto rounded-2xl border border-white/5 bg-[#13141F]/40">
+      <div className="overflow-x-auto rounded-xl border-2 border-black bg-white shadow-neo-sm">
         <table className="w-full text-left text-xs">
-          <thead className="bg-[#13141F] text-[#9B9BB4] font-semibold border-b border-white/5 uppercase tracking-wider text-[10px]">
+          <thead className="bg-[#FBF7EE] text-black font-black border-b-2 border-black uppercase tracking-wider text-[10px]">
             <tr>
               <th className="py-3 px-3.5 w-10">#</th>
               <th
                 onClick={() => toggleSort('name')}
-                className="py-3 px-3.5 cursor-pointer hover:text-white transition-colors"
+                className="py-3 px-3.5 cursor-pointer hover:text-neo-rust transition-colors"
               >
                 <div className="flex items-center gap-1">
                   <span>Stock Name</span>
-                  <ArrowUpDown className="w-3 h-3" />
+                  <ArrowUpDown className="w-3 h-3 stroke-[2.5]" />
                 </div>
               </th>
               <th className="py-3 px-3.5">Sector</th>
               <th className="py-3 px-3.5">Market Cap</th>
               <th
                 onClick={() => toggleSort('percentage')}
-                className="py-3 px-3.5 text-right cursor-pointer hover:text-white transition-colors"
+                className="py-3 px-3.5 text-right cursor-pointer hover:text-neo-rust transition-colors"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Weight %</span>
-                  <ArrowUpDown className="w-3 h-3" />
+                  <ArrowUpDown className="w-3 h-3 stroke-[2.5]" />
                 </div>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5 text-white">
+          <tbody className="divide-y-2 divide-black/10 text-[#222A2A]">
             {displayed.map((item, idx) => (
               <tr
                 key={idx}
-                className="hover:bg-white/5 transition-colors group"
+                className="hover:bg-neo-lilac/30 transition-colors group"
               >
-                <td className="py-2.5 px-3.5 font-mono text-[#9B9BB4] text-[11px]">
+                <td className="py-2.5 px-3.5 font-mono text-[#525866] font-bold text-[11px]">
                   {idx + 1}
                 </td>
-                <td className="py-2.5 px-3.5 font-medium max-w-[200px] truncate">
+                <td className="py-2.5 px-3.5 font-bold max-w-[200px] truncate text-black">
                   {item.symbol ? (
                     <Link
                       href={`/research/stock/${item.symbol}`}
-                      className="hover:text-[#00D2FF] hover:underline"
+                      className="hover:text-neo-rust hover:underline"
                     >
                       {item.name}
                     </Link>
@@ -102,23 +102,23 @@ export function FundHoldingsTable({
                     <span>{item.name}</span>
                   )}
                 </td>
-                <td className="py-2.5 px-3.5 text-[#9B9BB4] capitalize">
+                <td className="py-2.5 px-3.5 text-[#525866] capitalize font-medium">
                   {item.sector || '—'}
                 </td>
                 <td className="py-2.5 px-3.5">
                   <span
                     className={cn(
-                      'px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-semibold',
-                      item.marketCapType === 'large' && 'bg-[#00D2FF]/10 text-[#00D2FF]',
-                      item.marketCapType === 'mid' && 'bg-[#6C63FF]/10 text-[#A78BFA]',
-                      item.marketCapType === 'small' && 'bg-amber-400/10 text-amber-400',
-                      !item.marketCapType && 'bg-white/5 text-[#9B9BB4]',
+                      'px-2 py-0.5 rounded border border-black text-[10px] uppercase font-mono font-black shadow-[1px_1px_0px_#000]',
+                      item.marketCapType === 'large' && 'bg-neo-aqua text-black',
+                      item.marketCapType === 'mid' && 'bg-neo-yellow text-black',
+                      item.marketCapType === 'small' && 'bg-neo-mint text-black',
+                      !item.marketCapType && 'bg-[#FBF7EE] text-black',
                     )}
                   >
                     {item.marketCapType || 'Large'}
                   </span>
                 </td>
-                <td className="py-2.5 px-3.5 text-right font-mono font-bold text-[#00D2FF]">
+                <td className="py-2.5 px-3.5 text-right font-mono font-black text-black">
                   {item.percentage.toFixed(2)}%
                 </td>
               </tr>
@@ -133,13 +133,14 @@ export function FundHoldingsTable({
           <button
             type="button"
             onClick={() => setShowAll(!showAll)}
-            className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-semibold text-[#00D2FF] hover:text-white bg-white/5 hover:bg-white/10 transition-all border border-white/5"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-black bg-white hover:bg-neo-yellow border-2 border-black shadow-neo-sm hover:shadow-neo transition-all active:translate-x-0.5 active:translate-y-0.5"
           >
             <span>{showAll ? 'Show Top 10 Holdings' : `Show All ${filtered.length} Holdings`}</span>
-            {showAll ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {showAll ? <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" /> : <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />}
           </button>
         </div>
       )}
     </div>
   );
 }
+export default FundHoldingsTable;

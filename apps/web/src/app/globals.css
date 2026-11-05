@@ -4,33 +4,33 @@
 
 @layer base {
   :root {
-    --background: 236 34% 7%; /* #0D0E1A */
-    --foreground: 240 33% 96%; /* #F0F0FA */
+    --background: 42 56% 96%; /* #FBF7EE Architectural Cream */
+    --foreground: 180 11% 15%; /* #222A2A Iron Core */
 
-    --card: 237 24% 10%; /* #13141F */
-    --card-foreground: 240 33% 96%;
+    --card: 0 0% 100%; /* #FFFFFF Paper White */
+    --card-foreground: 180 11% 15%;
 
-    --popover: 237 24% 10%;
-    --popover-foreground: 240 33% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 11% 15%;
 
-    --primary: 244 100% 69%; /* #6C63FF */
-    --primary-foreground: 0 0% 100%;
+    --primary: 139 74% 71%; /* #7BED9F Pastel Mint */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 191 100% 50%; /* #00D2FF */
-    --secondary-foreground: 236 34% 7%;
+    --secondary: 181 44% 52%; /* #4FBBBC Industrial Aqua */
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 237 27% 14%; /* #1A1B2E */
-    --muted-foreground: 240 14% 66%; /* #9B9BB4 */
+    --muted: 42 30% 90%; /* #E2DAC2 Architectural Sand */
+    --muted-foreground: 220 11% 37%; /* #525866 */
 
-    --accent: 359 100% 71%; /* #FF6B6B */
+    --accent: 14 84% 53%; /* #EC4624 Rust Signal */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 349 100% 65%; /* #FF4D6D */
+    --destructive: 14 84% 53%; /* #EC4624 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 237 25% 18%; /* #22233A */
-    --input: 237 25% 18%;
-    --ring: 244 100% 69%;
+    --border: 0 0% 0%; /* #000000 Solid Black */
+    --input: 0 0% 0%;
+    --ring: 139 74% 71%;
 
     --radius: 0.75rem;
   }
@@ -41,10 +41,10 @@
     @apply border-border;
   }
   body {
-    @apply bg-neo-canvas text-content-primary font-sans antialiased selection:bg-neo-yellow selection:text-neo-black;
+    @apply bg-neo-cream text-[#222A2A] font-sans antialiased selection:bg-neo-mint selection:text-black;
     min-height: 100vh;
-    background-color: #0D0E15;
-    color: #F0F0FA;
+    background-color: #FBF7EE;
+    color: #222A2A;
   }
 }
 
@@ -105,17 +105,22 @@
   gap: 1rem;
 }
 
-/* Custom shimmer animation utility */
+/* Neo Shimmer utility */
 .shimmer-bg {
-  background: linear-gradient(90deg, #13141F 0%, #22233A 50%, #13141F 100%);
+  background: linear-gradient(90deg, #FBF7EE 0%, #E2DAC2 50%, #FBF7EE 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
 
-/* Glassmorphic card styling */
+/* Clean Neubrutalist card styling */
 .glass-panel {
-  background: rgba(19, 20, 31, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-lilac-panel {
+  background: #DDD3FF;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
 }

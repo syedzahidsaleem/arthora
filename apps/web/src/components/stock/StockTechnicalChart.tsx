@@ -56,12 +56,12 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
   const getSignalBadge = (status?: string) => {
     const s = status?.toLowerCase() || 'neutral';
     if (s.includes('bull')) {
-      return 'bg-[#00D084]/10 text-[#00D084] border-[#00D084]/20';
+      return 'bg-neo-mint text-black border-2 border-black shadow-sm font-black';
     }
     if (s.includes('bear')) {
-      return 'bg-[#FF4D6D]/10 text-[#FF4D6D] border-[#FF4D6D]/20';
+      return 'bg-neo-rust text-white border-2 border-black shadow-sm font-black';
     }
-    return 'bg-white/5 text-[#9B9BB4] border-white/10';
+    return 'bg-neo-yellow text-black border-2 border-black shadow-sm font-black';
   };
 
   const isLoading = isTechLoading || isHistLoading;
@@ -69,52 +69,52 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
   return (
     <div className="space-y-6">
       {/* Technical Summary Signals Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+      <div className="neo-box p-5 sm:p-6 bg-white space-y-4">
+        <h3 className="text-xs font-black text-black uppercase tracking-wider">
           Technical Momentum & Trend Signals
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-[#13141F] space-y-1">
-            <span className="text-[#9B9BB4] text-[10px] block">RSI (14 Period)</span>
+          <div className="p-3 rounded-lg bg-neo-cream border-2 border-black space-y-1">
+            <span className="text-black/70 text-[10px] font-mono block">RSI (14 Period)</span>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-white text-base">
+              <span className="font-mono font-black text-black text-base">
                 {technical?.rsi14 ? technical.rsi14.toFixed(1) : '52.4'}
               </span>
-              <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-semibold border capitalize', getSignalBadge(technical?.signals?.rsiSignal))}>
+              <span className={cn('px-2 py-0.5 rounded text-[10px] capitalize', getSignalBadge(technical?.signals?.rsiSignal))}>
                 {technical?.signals?.rsiSignal || 'Neutral'}
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#13141F] space-y-1">
-            <span className="text-[#9B9BB4] text-[10px] block">MACD Signal</span>
+          <div className="p-3 rounded-lg bg-neo-cream border-2 border-black space-y-1">
+            <span className="text-black/70 text-[10px] font-mono block">MACD Signal</span>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-white text-base">
+              <span className="font-mono font-black text-black text-base">
                 {technical?.macd?.macd ? technical.macd.macd.toFixed(1) : '+4.2'}
               </span>
-              <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-semibold border capitalize', getSignalBadge(technical?.signals?.macdSignal))}>
+              <span className={cn('px-2 py-0.5 rounded text-[10px] capitalize', getSignalBadge(technical?.signals?.macdSignal))}>
                 {technical?.signals?.macdSignal || 'Bullish'}
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#13141F] space-y-1">
-            <span className="text-[#9B9BB4] text-[10px] block">SMA Trend</span>
+          <div className="p-3 rounded-lg bg-neo-cream border-2 border-black space-y-1">
+            <span className="text-black/70 text-[10px] font-mono block">SMA Trend</span>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold text-white text-base">
+              <span className="font-mono font-black text-black text-base">
                 50 vs 200
               </span>
-              <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-semibold border capitalize', getSignalBadge(technical?.signals?.smaSignal))}>
+              <span className={cn('px-2 py-0.5 rounded text-[10px] capitalize', getSignalBadge(technical?.signals?.smaSignal))}>
                 {technical?.signals?.smaSignal || 'Bullish'}
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#13141F] space-y-1">
-            <span className="text-[#9B9BB4] text-[10px] block">Overall Rating</span>
+          <div className="p-3 rounded-lg bg-neo-cream border-2 border-black space-y-1">
+            <span className="text-black/70 text-[10px] font-mono block">Overall Rating</span>
             <div className="flex items-center gap-2">
-              <span className={cn('px-2.5 py-1 rounded-lg text-xs font-bold font-mono border capitalize', getSignalBadge(technical?.signals?.overallSignal || technical?.trend))}>
+              <span className={cn('px-2.5 py-1 rounded text-xs capitalize', getSignalBadge(technical?.signals?.overallSignal || technical?.trend))}>
                 {technical?.signals?.overallSignal || technical?.trend || 'Bullish'}
               </span>
             </div>
@@ -123,49 +123,49 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
       </div>
 
       {/* Price + SMA Chart */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+      <div className="neo-box p-5 sm:p-6 bg-white space-y-4">
         {/* Toggle Overlays */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+          <h4 className="text-xs font-black text-black uppercase tracking-wider">
             Moving Average Overlays (1 Year)
           </h4>
 
-          <div className="flex items-center gap-4 text-xs">
-            <label className="flex items-center gap-1.5 cursor-pointer select-none text-[#00D2FF]">
+          <div className="flex items-center gap-4 text-xs font-mono font-bold">
+            <label className="flex items-center gap-1.5 cursor-pointer select-none text-black">
               <input
                 type="checkbox"
                 checked={showSMA20}
                 onChange={(e) => setShowSMA20(e.target.checked)}
-                className="rounded border-white/20 text-[#00D2FF] focus:ring-0"
+                className="rounded border-2 border-black text-[#4FBBBC] focus:ring-0"
               />
-              <span>SMA 20</span>
+              <span className="text-[#4FBBBC]">SMA 20</span>
             </label>
 
-            <label className="flex items-center gap-1.5 cursor-pointer select-none text-amber-400">
+            <label className="flex items-center gap-1.5 cursor-pointer select-none text-black">
               <input
                 type="checkbox"
                 checked={showSMA50}
                 onChange={(e) => setShowSMA50(e.target.checked)}
-                className="rounded border-white/20 text-amber-400 focus:ring-0"
+                className="rounded border-2 border-black text-[#F39120] focus:ring-0"
               />
-              <span>SMA 50</span>
+              <span className="text-[#F39120]">SMA 50</span>
             </label>
 
-            <label className="flex items-center gap-1.5 cursor-pointer select-none text-[#FF4D6D]">
+            <label className="flex items-center gap-1.5 cursor-pointer select-none text-black">
               <input
                 type="checkbox"
                 checked={showSMA200}
                 onChange={(e) => setShowSMA200(e.target.checked)}
-                className="rounded border-white/20 text-[#FF4D6D] focus:ring-0"
+                className="rounded border-2 border-black text-[#EC4624] focus:ring-0"
               />
-              <span>SMA 200</span>
+              <span className="text-[#EC4624]">SMA 200</span>
             </label>
           </div>
         </div>
 
         {/* Chart */}
         {isLoading ? (
-          <div className="h-[280px] w-full bg-white/5 animate-pulse rounded-2xl flex items-center justify-center text-xs text-[#9B9BB4]">
+          <div className="h-[280px] w-full bg-neo-cream/50 border-2 border-black animate-pulse rounded-xl flex items-center justify-center text-xs font-mono text-black/70">
             Computing technical indicators...
           </div>
         ) : (
@@ -174,10 +174,10 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
               <LineChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <XAxis
                   dataKey="date"
-                  stroke="#9B9BB4"
+                  stroke="#222A2A"
                   fontSize={10}
                   tickLine={false}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                  axisLine={{ stroke: '#000000' }}
                   tickFormatter={(val) => {
                     try {
                       const d = new Date(val);
@@ -190,10 +190,10 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
                 />
                 <YAxis
                   orientation="right"
-                  stroke="#9B9BB4"
+                  stroke="#222A2A"
                   fontSize={10}
                   tickLine={false}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                  axisLine={{ stroke: '#000000' }}
                   tickFormatter={(val) => `₹${val}`}
                 />
                 <Tooltip
@@ -201,24 +201,24 @@ export function StockTechnicalChart({ symbol }: StockTechnicalChartProps) {
                     if (active && payload && payload.length) {
                       const p = payload[0].payload;
                       return (
-                        <div className="p-3 rounded-xl bg-[#13141F] border border-white/10 shadow-2xl space-y-1 font-mono text-xs">
-                          <div className="text-[11px] text-[#9B9BB4] font-sans">
+                        <div className="p-3 rounded-xl bg-white border-2 border-black shadow-neo space-y-1 font-mono text-xs text-black">
+                          <div className="text-[11px] text-black/60 font-sans font-bold">
                             {formatDate(p.date)}
                           </div>
-                          <div className="text-white font-bold">Close: {formatINR(p.close)}</div>
-                          {p.sma20 && <div className="text-[#00D2FF]">SMA 20: {formatINR(p.sma20)}</div>}
-                          {p.sma50 && <div className="text-amber-400">SMA 50: {formatINR(p.sma50)}</div>}
-                          {p.sma200 && <div className="text-[#FF4D6D]">SMA 200: {formatINR(p.sma200)}</div>}
+                          <div className="text-black font-black">Close: {formatINR(p.close)}</div>
+                          {p.sma20 && <div className="text-[#4FBBBC] font-bold">SMA 20: {formatINR(p.sma20)}</div>}
+                          {p.sma50 && <div className="text-[#F39120] font-bold">SMA 50: {formatINR(p.sma50)}</div>}
+                          {p.sma200 && <div className="text-[#EC4624] font-bold">SMA 200: {formatINR(p.sma200)}</div>}
                         </div>
                       );
                     }
                     return null;
                   }}
                 />
-                <Line type="monotone" dataKey="close" stroke="#FFFFFF" strokeWidth={2} dot={false} />
-                {showSMA20 && <Line type="monotone" dataKey="sma20" stroke="#00D2FF" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />}
-                {showSMA50 && <Line type="monotone" dataKey="sma50" stroke="#FBBF24" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />}
-                {showSMA200 && <Line type="monotone" dataKey="sma200" stroke="#FF4D6D" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />}
+                <Line type="monotone" dataKey="close" stroke="#222A2A" strokeWidth={2.5} dot={false} />
+                {showSMA20 && <Line type="monotone" dataKey="sma20" stroke="#4FBBBC" strokeWidth={2} strokeDasharray="4 4" dot={false} />}
+                {showSMA50 && <Line type="monotone" dataKey="sma50" stroke="#F39120" strokeWidth={2} strokeDasharray="4 4" dot={false} />}
+                {showSMA200 && <Line type="monotone" dataKey="sma200" stroke="#EC4624" strokeWidth={2} strokeDasharray="4 4" dot={false} />}
               </LineChart>
             </ResponsiveContainer>
           </div>

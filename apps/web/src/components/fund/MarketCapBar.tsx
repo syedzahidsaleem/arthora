@@ -28,30 +28,36 @@ export function MarketCapBar({ holdings }: MarketCapBarProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold">
-        <span className="text-[#9B9BB4] uppercase tracking-wider">Market Cap Bias</span>
-        <div className="flex items-center gap-3 font-mono text-[11px]">
-          <span className="text-[#00D2FF]">Large: {largePct}%</span>
-          <span className="text-[#6C63FF]">Mid: {midPct}%</span>
-          <span className="text-amber-400">Small: {smallPct}%</span>
+      <div className="flex items-center justify-between text-xs font-mono">
+        <span className="text-black/70 uppercase tracking-wider font-bold">Market Cap Bias</span>
+        <div className="flex items-center gap-3 font-bold text-[11px] text-black">
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-neo-mint border border-black" /> Large: {largePct}%
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-neo-aqua border border-black" /> Mid: {midPct}%
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-neo-yellow border border-black" /> Small: {smallPct}%
+          </span>
         </div>
       </div>
 
       {/* Horizontal Stacked Bar */}
-      <div className="h-3 w-full rounded-full bg-[#13141F] overflow-hidden flex border border-white/5">
+      <div className="h-4 w-full rounded-md bg-neo-cream overflow-hidden flex border-2 border-black">
         <div
           style={{ width: `${largePct}%` }}
-          className="bg-[#00D2FF] h-full transition-all"
+          className="bg-neo-mint h-full border-r-2 border-black transition-all"
           title={`Large Cap: ${largePct}%`}
         />
         <div
           style={{ width: `${midPct}%` }}
-          className="bg-[#6C63FF] h-full transition-all"
+          className="bg-neo-aqua h-full border-r-2 border-black transition-all"
           title={`Mid Cap: ${midPct}%`}
         />
         <div
           style={{ width: `${smallPct}%` }}
-          className="bg-amber-400 h-full transition-all"
+          className="bg-neo-yellow h-full transition-all"
           title={`Small Cap: ${smallPct}%`}
         />
       </div>

@@ -74,22 +74,22 @@ export function ProjectedValueChart({
   return (
     <div className="space-y-4">
       {/* Chart Header Badges */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00D2FF]" />
-            <span className="text-[#9B9BB4]">Expected (P50):</span>
-            <span className="font-mono font-bold text-white">{formatINR(finalPoint.p50)}</span>
+          <div className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-mint border border-black" />
+            <span className="text-black/70">Expected (P50):</span>
+            <span className="font-black text-black">{formatINR(finalPoint.p50)}</span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00D084]" />
-            <span className="text-[#9B9BB4]">Optimistic (P75):</span>
-            <span className="font-mono font-medium text-[#00D084]">{formatINR(finalPoint.p75)}</span>
+          <div className="flex items-center gap-1.5 font-bold">
+            <span className="w-3 h-3 rounded-sm bg-neo-yellow border border-black" />
+            <span className="text-black/70">Optimistic (P75):</span>
+            <span className="font-black text-[#059669]">{formatINR(finalPoint.p75)}</span>
           </div>
         </div>
 
-        <div className="text-[11px] text-[#9B9BB4]/70 font-mono">
+        <div className="text-[11px] text-black/70 font-mono font-bold">
           Compound Projection • {years}Y Horizon
         </div>
       </div>
@@ -100,28 +100,28 @@ export function ProjectedValueChart({
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="areaGradientP75" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00D2FF" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#6C63FF" stopOpacity={0.02} />
+                <stop offset="5%" stopColor="#7BED9F" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#7BED9F" stopOpacity={0.05} />
               </linearGradient>
               <linearGradient id="areaGradientP50" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#6C63FF" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#DDD3FF" stopOpacity={0.5} />
+                <stop offset="95%" stopColor="#DDD3FF" stopOpacity={0.05} />
               </linearGradient>
             </defs>
 
             <XAxis
               dataKey="year"
-              stroke="#9B9BB4"
+              stroke="#222A2A"
               fontSize={10}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+              axisLine={{ stroke: '#000000' }}
             />
 
             <YAxis
-              stroke="#9B9BB4"
+              stroke="#222A2A"
               fontSize={10}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+              axisLine={{ stroke: '#000000' }}
               tickFormatter={formatYAxis}
             />
 
@@ -130,21 +130,21 @@ export function ProjectedValueChart({
                 if (active && payload && payload.length) {
                   const data = payload[0].payload;
                   return (
-                    <div className="p-3 rounded-xl bg-[#13141F] border border-white/10 shadow-xl text-xs space-y-1.5 font-mono">
-                      <div className="font-sans font-bold text-white border-b border-white/10 pb-1">
+                    <div className="p-3 rounded-xl bg-white border-2 border-black shadow-neo text-xs space-y-1.5 font-mono text-black">
+                      <div className="font-sans font-black text-black border-b-2 border-black pb-1 uppercase">
                         {label} Projection
                       </div>
-                      <div className="text-[#00D084] flex justify-between gap-4">
+                      <div className="text-[#059669] flex justify-between gap-4 font-bold">
                         <span>P75 (Optimistic):</span>
-                        <span className="font-bold">{formatINR(data.p75)}</span>
+                        <span>{formatINR(data.p75)}</span>
                       </div>
-                      <div className="text-[#00D2FF] flex justify-between gap-4">
+                      <div className="text-black flex justify-between gap-4 font-black">
                         <span>P50 (Expected):</span>
-                        <span className="font-bold">{formatINR(data.p50)}</span>
+                        <span>{formatINR(data.p50)}</span>
                       </div>
-                      <div className="text-[#9B9BB4] flex justify-between gap-4">
+                      <div className="text-black/70 flex justify-between gap-4">
                         <span>P25 (Conservative):</span>
-                        <span className="font-bold">{formatINR(data.p25)}</span>
+                        <span>{formatINR(data.p25)}</span>
                       </div>
                     </div>
                   );
@@ -157,7 +157,7 @@ export function ProjectedValueChart({
             <Area
               type="monotone"
               dataKey="p75"
-              stroke="#00D2FF"
+              stroke="#059669"
               strokeWidth={1.5}
               strokeDasharray="4 4"
               fillOpacity={1}
@@ -168,7 +168,7 @@ export function ProjectedValueChart({
             <Area
               type="monotone"
               dataKey="p50"
-              stroke="#6C63FF"
+              stroke="#222A2A"
               strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#areaGradientP50)"

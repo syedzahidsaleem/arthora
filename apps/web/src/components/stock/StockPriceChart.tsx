@@ -45,24 +45,24 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
   ];
 
   return (
-    <div className="p-5 sm:p-6 rounded-3xl bg-[#1A1B2E] border border-white/10 shadow-xl space-y-4">
+    <div className="p-5 sm:p-6 rounded-2xl bg-white border-2 border-black shadow-neo space-y-4">
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+        <h3 className="text-xs font-black text-black uppercase tracking-wider">
           Stock Price & Volume History
         </h3>
 
-        <div className="flex items-center gap-1 bg-[#13141F] p-1 rounded-xl border border-white/5">
+        <div className="flex items-center gap-1 bg-neo-cream p-1 rounded-lg border-2 border-black">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf}
               type="button"
               onClick={() => setTimeframe(tf)}
               className={cn(
-                'px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all',
+                'px-2.5 py-1 rounded text-xs font-mono font-bold transition-all border border-transparent',
                 timeframe === tf
-                  ? 'bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] text-white shadow-md'
-                  : 'text-[#9B9BB4] hover:text-white',
+                  ? 'bg-neo-mint text-black border-black shadow-sm'
+                  : 'text-black/70 hover:text-black',
               )}
             >
               {tf}
@@ -73,11 +73,11 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
 
       {/* Chart Body */}
       {isLoading ? (
-        <div className="h-[360px] w-full rounded-2xl bg-white/5 animate-pulse flex items-center justify-center text-xs text-[#9B9BB4]">
+        <div className="h-[360px] w-full rounded-xl bg-neo-cream/60 border-2 border-black animate-pulse flex items-center justify-center text-xs font-mono text-black/70">
           Loading stock chart data...
         </div>
       ) : error || chartData.length === 0 ? (
-        <div className="h-[360px] w-full rounded-2xl bg-[#13141F]/40 border border-white/5 flex items-center justify-center text-xs text-[#9B9BB4]">
+        <div className="h-[360px] w-full rounded-xl bg-neo-cream/40 border-2 border-black flex items-center justify-center text-xs font-mono text-black/70">
           Historical stock price data is unavailable.
         </div>
       ) : (
@@ -88,17 +88,17 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
               <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="stockPriceGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00D2FF" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#6C63FF" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#4FBBBC" stopOpacity={0.45} />
+                    <stop offset="95%" stopColor="#4FBBBC" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
 
                 <XAxis
                   dataKey="date"
-                  stroke="#9B9BB4"
+                  stroke="#222A2A"
                   fontSize={10}
                   tickLine={false}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                  axisLine={{ stroke: '#000000' }}
                   tickFormatter={(val) => {
                     try {
                       const d = new Date(val);
@@ -112,11 +112,11 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
 
                 <YAxis
                   orientation="right"
-                  stroke="#9B9BB4"
+                  stroke="#222A2A"
                   fontSize={10}
                   domain={yDomain}
                   tickLine={false}
-                  axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
+                  axisLine={{ stroke: '#000000' }}
                   tickFormatter={(val) => `₹${val}`}
                 />
 
@@ -125,14 +125,14 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
                     if (active && payload && payload.length) {
                       const p = payload[0].payload;
                       return (
-                        <div className="p-3 rounded-xl bg-[#13141F] border border-white/10 shadow-2xl space-y-1 font-mono text-xs">
-                          <div className="text-[11px] text-[#9B9BB4] font-sans">
+                        <div className="p-3 rounded-xl bg-white border-2 border-black shadow-neo space-y-1 font-mono text-xs text-black">
+                          <div className="text-[11px] text-black/60 font-sans font-bold">
                             {formatDate(p.date)}
                           </div>
-                          <div className="text-base font-bold text-white">
+                          <div className="text-base font-black text-black">
                             Close: {formatINR(p.close)}
                           </div>
-                          <div className="text-[#9B9BB4] text-[11px]">
+                          <div className="text-black/70 text-[11px]">
                             Volume: {p.volume ? p.volume.toLocaleString('en-IN') : '—'}
                           </div>
                         </div>
@@ -145,8 +145,8 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
                 <Area
                   type="monotone"
                   dataKey="close"
-                  stroke="#00D2FF"
-                  strokeWidth={2}
+                  stroke="#222A2A"
+                  strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#stockPriceGradient)"
                 />
@@ -155,14 +155,16 @@ export function StockPriceChart({ symbol }: StockPriceChartProps) {
           </div>
 
           {/* Volume Lower Panel */}
-          <div className="h-[90px] w-full pt-1 border-t border-white/5">
+          <div className="h-[90px] w-full pt-1 border-t-2 border-black/20">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData} margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
                 <YAxis orientation="right" hide />
                 <Bar
                   dataKey="volume"
-                  fill="#6C63FF"
-                  opacity={0.6}
+                  fill="#DDD3FF"
+                  stroke="#000000"
+                  strokeWidth={1}
+                  opacity={0.85}
                   radius={[2, 2, 0, 0]}
                 />
               </ComposedChart>

@@ -21,8 +21,8 @@ export function FundMetricsGrid({ metrics, calculating = false }: FundMetricsGri
     return (
       <div className="space-y-4">
         {calculating && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-[#6C63FF]/10 border border-[#6C63FF]/20 text-xs text-[#00D2FF] animate-pulse">
-            <Sparkles className="w-4 h-4" />
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-neo-lilac border-2 border-black text-xs font-bold text-black shadow-neo-sm animate-pulse">
+            <Sparkles className="w-4 h-4 fill-black" />
             <span>Institutional quantitative metrics are currently being calculated in the background...</span>
           </div>
         )}

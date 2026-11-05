@@ -23,40 +23,41 @@ const config: Config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         brand: {
-          primary: '#6C63FF',
-          secondary: '#00D2FF',
-          accent: '#FF6B6B',
-          DEFAULT: '#6C63FF',
+          primary: '#7BED9F', // Pastel Mint Green
+          secondary: '#4FBBBC', // Industrial Aqua
+          accent: '#EC4624', // Rust Signal
+          DEFAULT: '#7BED9F',
         },
         surface: {
-          1: '#0D0E1A', // Base canvas dark background
-          2: '#13141F', // Card & elevated surface
-          3: '#1A1B2E', // Hover state & active component
-          4: '#22233A', // Highlighted border / overlay
-          DEFAULT: '#13141F',
+          1: '#FBF7EE', // Architectural Cream
+          2: '#FFFFFF', // Crisp Paper White
+          3: '#DDD3FF', // Soft Lilac Container
+          4: '#E2DAC2', // Architectural Sand
+          iron: '#222A2A', // Iron Core Dark
+          DEFAULT: '#FFFFFF',
         },
         content: {
-          primary: '#F0F0FA',
-          secondary: '#9B9BB4',
-          muted: '#5A5A7A',
+          primary: '#18181B', // Deep Charcoal
+          secondary: '#525866', // Slate Muted
+          muted: '#717684',
         },
         feedback: {
-          success: '#00D084',
-          warning: '#FFB344',
-          error: '#FF4D6D',
+          success: '#7BED9F',
+          warning: '#F39120',
+          error: '#EC4624',
         },
-        success: '#00D084',
-        warning: '#FFB344',
-        error: '#FF4D6D',
+        success: '#7BED9F',
+        warning: '#F39120',
+        error: '#EC4624',
         chart: {
-          1: '#6C63FF',
-          2: '#00D2FF',
-          3: '#00D084',
-          4: '#FFB344',
-          5: '#FF6B6B',
-          6: '#9B51E0',
-          7: '#F2994A',
-          8: '#56CCF2',
+          1: '#7BED9F', // Mint
+          2: '#4FBBBC', // Aqua
+          3: '#F39120', // Heat Marker
+          4: '#EC4624', // Rust Signal
+          5: '#C9BAF8', // Lilac
+          6: '#222A2A', // Iron Core
+          7: '#FFF7C2', // Butter
+          8: '#FF6B6B', // Coral
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -87,19 +88,26 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         neo: {
-          yellow: '#FFDE59',
-          lime: '#00F59B',
-          green: '#00F59B',
-          cyan: '#38E1FF',
-          pink: '#FF66C4',
-          purple: '#A259FF',
-          orange: '#FF7A00',
-          black: '#121214',
-          canvas: '#0D0E15',
-          card: '#18181F',
+          cream: '#FBF7EE', // Base Architectural Canvas
+          sand: '#E2DAC2', // Warm Architectural Sand
+          mint: '#7BED9F', // Pastel Mint Green
+          green: '#7BED9F',
+          lime: '#7BED9F',
+          yellow: '#FFF7C2', // Butter Yellow
+          aqua: '#4FBBBC', // Industrial Aqua
+          cyan: '#4FBBBC',
+          rust: '#EC4624', // Rust Signal
+          coral: '#FF6B6B',
+          orange: '#F39120', // Heat Marker
+          pink: '#FF9F89', // Warm Peach
+          lilac: '#DDD3FF', // Soft Lilac
+          purple: '#C9BAF8',
+          iron: '#222A2A', // Iron Core Deep Contrast
+          black: '#18181B',
+          canvas: '#FBF7EE',
+          card: '#FFFFFF',
           border: '#000000',
           white: '#FFFFFF',
-          cream: '#FFFDF8',
         },
       },
       boxShadow: {
@@ -107,10 +115,12 @@ const config: Config = {
         neo: '4px 4px 0px 0px #000000',
         'neo-lg': '6px 6px 0px 0px #000000',
         'neo-xl': '8px 8px 0px 0px #000000',
-        'neo-yellow': '4px 4px 0px 0px #FFDE59',
-        'neo-cyan': '4px 4px 0px 0px #38E1FF',
-        'neo-pink': '4px 4px 0px 0px #FF66C4',
-        'neo-lime': '4px 4px 0px 0px #00F59B',
+        'neo-yellow': '4px 4px 0px 0px #FFF7C2',
+        'neo-cyan': '4px 4px 0px 0px #4FBBBC',
+        'neo-mint': '4px 4px 0px 0px #7BED9F',
+        'neo-pink': '4px 4px 0px 0px #FF9F89',
+        'neo-lilac': '4px 4px 0px 0px #DDD3FF',
+        'neo-lime': '4px 4px 0px 0px #7BED9F',
         'neo-white': '4px 4px 0px 0px #FFFFFF',
         'neo-inset': 'inset 2px 2px 0px 0px #000000',
       },
@@ -123,9 +133,6 @@ const config: Config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-        xl: '12px',
-        '2xl': '16px',
-        '3xl': '24px',
       },
       keyframes: {
         'accordion-down': {
@@ -136,40 +143,34 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(12px)', opacity: '0' },
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
         },
         marquee: {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
         },
-        'marquee-reverse': {
-          '0%': { transform: 'translateX(-50%)' },
-          '100%': { transform: 'translateX(0%)' },
-        },
         wiggle: {
-          '0%, 100%': { transform: 'rotate(-2deg)' },
-          '50%': { transform: 'rotate(2deg)' },
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        shimmer: 'shimmer 2s infinite linear',
         fadeIn: 'fadeIn 0.3s ease-in-out',
         slideUp: 'slideUp 0.4s ease-out',
+        pulseGlow: 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         marquee: 'marquee 25s linear infinite',
-        'marquee-fast': 'marquee 15s linear infinite',
-        'marquee-reverse': 'marquee-reverse 25s linear infinite',
         wiggle: 'wiggle 1s ease-in-out infinite',
       },
     },

@@ -14,5 +14,6 @@ interface FundDetailPageProps {
 }
 
 export default function FundDetailPage({ params }: FundDetailPageProps) {
-  return <FundDetailView schemeCode={params.schemeCode} />;
+  const code = Number(params.schemeCode) || params.schemeCode;
+  return <FundDetailView schemeCode={code} />;
 }

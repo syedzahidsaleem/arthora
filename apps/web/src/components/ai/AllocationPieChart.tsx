@@ -5,14 +5,14 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { IAssetAllocation } from '@arthora/shared';
 
 const CHART_COLORS = [
-  '#6C63FF',
-  '#00D2FF',
-  '#00D084',
-  '#FFB800',
-  '#FF4D6D',
-  '#A78BFA',
-  '#38BDF8',
-  '#34D399',
+  '#7BED9F',
+  '#FFF7C2',
+  '#4FBBBC',
+  '#DDD3FF',
+  '#EC4624',
+  '#F39120',
+  '#222A2A',
+  '#E2DAC2',
 ];
 
 interface AllocationPieChartProps {
@@ -37,9 +37,9 @@ export function AllocationPieChart({ allocation }: AllocationPieChartProps) {
                 if (active && payload && payload.length) {
                   const d = payload[0].payload;
                   return (
-                    <div className="p-2.5 rounded-xl bg-[#13141F] border border-white/10 shadow-xl text-xs space-y-1">
-                      <div className="font-semibold text-white truncate max-w-xs">{d.name}</div>
-                      <div className="font-mono text-[#00D2FF] font-bold">
+                    <div className="p-2.5 rounded-xl bg-white border-2 border-black shadow-neo text-xs space-y-1 text-black font-mono">
+                      <div className="font-black text-black truncate max-w-xs">{d.name}</div>
+                      <div className="text-black font-bold">
                         {d.value}% Allocation
                       </div>
                     </div>
@@ -58,7 +58,7 @@ export function AllocationPieChart({ allocation }: AllocationPieChartProps) {
               dataKey="value"
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} stroke="#1A1B2E" strokeWidth={2} />
+                <Cell key={`cell-${index}`} fill={entry.color} stroke="#000000" strokeWidth={2} />
               ))}
             </Pie>
           </PieChart>
@@ -66,25 +66,25 @@ export function AllocationPieChart({ allocation }: AllocationPieChartProps) {
 
         {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="font-mono text-2xl font-extrabold text-white tracking-tight">100%</span>
-          <span className="text-[10px] text-[#9B9BB4] uppercase tracking-wider font-semibold">
+          <span className="font-mono text-2xl font-black text-black tracking-tight">100%</span>
+          <span className="text-[10px] text-black/70 uppercase tracking-wider font-mono font-bold">
             Allocated
           </span>
         </div>
       </div>
 
       {/* 2-Column Custom Legend */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-white/5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t-2 border-black">
         {data.map((item, idx) => (
-          <div key={idx} className="flex items-center justify-between text-xs p-1.5 rounded-lg bg-[#13141F]/60">
+          <div key={idx} className="flex items-center justify-between text-xs p-2 rounded-lg bg-neo-cream border border-black font-mono">
             <div className="flex items-center gap-2 min-w-0 pr-2">
               <span
-                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm"
+                className="w-3 h-3 rounded-sm shrink-0 border border-black"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-white truncate font-medium">{item.name}</span>
+              <span className="text-black truncate font-bold">{item.name}</span>
             </div>
-            <span className="font-mono font-bold text-[#00D2FF] shrink-0">{item.value}%</span>
+            <span className="font-mono font-black text-black shrink-0">{item.value}%</span>
           </div>
         ))}
       </div>

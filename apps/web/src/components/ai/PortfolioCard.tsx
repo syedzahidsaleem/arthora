@@ -45,15 +45,15 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
     <Link
       href={`/ai/${portfolio._id}`}
       className={cn(
-        'group block p-5 rounded-xl bg-[#161620] border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all relative overflow-hidden',
-        portfolio.isPinned && 'bg-[#1C1C2A] border-neo-yellow',
+        'group block p-5 rounded-2xl bg-white border-2 border-black shadow-neo hover:shadow-neo-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all relative overflow-hidden text-[#222A2A]',
+        portfolio.isPinned && 'bg-[#FFFDF7] border-black shadow-neo-lg',
       )}
     >
       {/* Top Meta Row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h4 className="font-black text-sm text-white uppercase tracking-wide truncate group-hover:text-neo-yellow transition-colors">
+            <h4 className="font-black text-sm text-[#222A2A] uppercase tracking-wide truncate group-hover:text-black transition-colors">
               {portfolio.name}
             </h4>
 
@@ -64,7 +64,7 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
             )}
           </div>
 
-          <p className="text-xs font-mono text-[#A0A0B2] truncate">{portfolio.goal}</p>
+          <p className="text-xs font-mono font-bold text-[#525866] truncate">{portfolio.goal}</p>
         </div>
 
         {/* Action Controls */}
@@ -74,10 +74,10 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
             onClick={handlePin}
             aria-label={portfolio.isPinned ? 'Unpin portfolio' : 'Pin portfolio'}
             className={cn(
-              'p-1.5 rounded-md border-2 border-black transition-all shrink-0',
+              'p-1.5 rounded-lg border-2 border-black transition-all shrink-0 shadow-neo-sm',
               portfolio.isPinned
-                ? 'bg-neo-yellow text-black shadow-[1px_1px_0px_0px_#000]'
-                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white hover:bg-white/10',
+                ? 'bg-neo-yellow text-black'
+                : 'bg-[#FBF7EE] text-[#525866] hover:text-black hover:bg-neo-yellow',
             )}
             title={portfolio.isPinned ? 'Unpin' : 'Pin to top'}
           >
@@ -89,7 +89,7 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
             onClick={handleDelete}
             disabled={isDeleting}
             aria-label="Remove portfolio"
-            className="p-1.5 rounded-md border-2 border-black bg-[#0E0E14] text-[#A0A0B2] hover:text-[#FF4D6D] hover:bg-[#FF4D6D]/15 hover:border-[#FF4D6D] transition-all shrink-0"
+            className="p-1.5 rounded-lg border-2 border-black bg-[#FBF7EE] text-[#525866] hover:text-white hover:bg-neo-rust transition-all shrink-0 shadow-neo-sm"
             title="Delete this portfolio"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -98,21 +98,21 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
       </div>
 
       {/* Metric Middle Row */}
-      <div className="grid grid-cols-2 gap-3 py-3 my-2 border-y-2 border-black/40">
+      <div className="grid grid-cols-2 gap-3 py-2.5 my-2 border-2 border-black bg-[#FBF7EE] px-3 rounded-xl">
         <div>
-          <span className="text-[10px] font-black text-[#A0A0B2] uppercase tracking-wider block">
+          <span className="text-[10px] font-black text-[#525866] uppercase tracking-wider block">
             Target Corpus
           </span>
-          <span className="font-mono text-base font-black text-white">
+          <span className="font-mono text-base font-black text-[#222A2A]">
             {projectedCorpus > 0 ? formatINR(projectedCorpus) : 'Calculating...'}
           </span>
         </div>
 
         <div>
-          <span className="text-[10px] font-black text-[#A0A0B2] uppercase tracking-wider block">
+          <span className="text-[10px] font-black text-[#525866] uppercase tracking-wider block">
             Horizon & Risk
           </span>
-          <span className="font-mono text-xs text-neo-cyan font-bold capitalize">
+          <span className="font-mono text-xs text-black font-black capitalize bg-neo-lilac/60 px-1.5 py-0.5 rounded border border-black/20 inline-block mt-0.5">
             {portfolio.timePeriod}Y • {portfolio.riskLevel}
           </span>
         </div>
@@ -123,38 +123,39 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
         {/* Status Badge */}
         <div>
           {status === 'completed' && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-green text-black border border-black font-mono font-black text-[10px]">
-              <CheckCircle2 className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-neo-mint text-black border border-black font-mono font-black text-[10px] shadow-[1px_1px_0px_#000]">
+              <CheckCircle2 className="w-3 h-3 stroke-[2.5]" />
               <span>{allocation.length} FUNDS</span>
             </span>
           )}
 
           {status === 'generating' && (
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-neo-cyan text-black border border-black font-mono font-black text-[10px] animate-pulse">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-neo-aqua text-black border border-black font-mono font-black text-[10px] animate-pulse shadow-[1px_1px_0px_#000]">
               <Sparkles className="w-3 h-3" />
               <span>GENERATING...</span>
             </span>
           )}
 
           {status === 'pending' && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-yellow text-black border border-black font-mono font-black text-[10px]">
-              <Clock className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-neo-yellow text-black border border-black font-mono font-black text-[10px] shadow-[1px_1px_0px_#000]">
+              <Clock className="w-3 h-3 stroke-[2.5]" />
               <span>QUEUED</span>
             </span>
           )}
 
           {status === 'failed' && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-neo-coral text-black border border-black font-mono font-black text-[10px]">
-              <AlertCircle className="w-3 h-3" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-neo-rust text-white border border-black font-mono font-black text-[10px] shadow-[1px_1px_0px_#000]">
+              <AlertCircle className="w-3 h-3 stroke-[2.5]" />
               <span>FAILED</span>
             </span>
           )}
         </div>
 
-        <span className="text-[11px] text-[#A0A0B2] font-mono">
+        <span className="text-[11px] text-[#525866] font-mono font-bold">
           {formatDate(portfolio.createdAt)}
         </span>
       </div>
     </Link>
   );
 }
+export default PortfolioCard;

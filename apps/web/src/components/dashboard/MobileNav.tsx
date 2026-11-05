@@ -19,7 +19,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#121218] border-t-2 border-black px-2 pb-[env(safe-area-inset-bottom)] select-none"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FFFDF7] border-t-2 border-black px-2 pb-[env(safe-area-inset-bottom)] select-none shadow-[0_-2px_0_0_#000]"
     >
       <div className="flex items-center justify-around h-16">
         {tabs.map((tab) => {
@@ -32,21 +32,21 @@ export function MobileNav() {
               href={tab.href}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 h-full py-1 text-xs font-bold transition-all active:scale-95',
-                isActive ? 'text-white' : 'text-[#A0A0B2] hover:text-white',
+                isActive ? 'text-black' : 'text-[#525866] hover:text-black',
               )}
             >
               <div
                 className={cn(
                   'p-1.5 rounded-lg border-2 transition-all',
                   isActive
-                    ? 'bg-neo-yellow text-black border-black shadow-neo-sm'
-                    : 'border-transparent text-[#A0A0B2]',
+                    ? 'bg-neo-mint text-black border-black shadow-neo-sm'
+                    : 'border-transparent text-[#525866]',
                 )}
               >
                 <Icon
                   className={cn(
                     'w-5 h-5 stroke-[2.5]',
-                    isActive ? 'text-black' : 'text-[#A0A0B2]',
+                    isActive ? 'text-black' : 'text-[#525866]',
                   )}
                 />
               </div>
@@ -54,7 +54,7 @@ export function MobileNav() {
               <span
                 className={cn(
                   'text-[10px] font-mono font-black uppercase tracking-wider mt-0.5',
-                  isActive ? 'text-neo-yellow' : 'text-[#A0A0B2]',
+                  isActive ? 'text-black' : 'text-[#525866]',
                 )}
               >
                 {tab.label}

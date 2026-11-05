@@ -25,16 +25,16 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center text-center p-8 md:p-12 rounded-2xl bg-[#1A1B2E]/60 border border-white/5',
+        'neo-box p-8 md:p-12 bg-white flex flex-col items-center justify-center text-center',
         className,
       )}
     >
-      <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#6C63FF] shadow-inner">
-        <Icon className="w-8 h-8" />
+      <div className="w-16 h-16 rounded-xl bg-neo-yellow border-2 border-black flex items-center justify-center mb-4 text-black shadow-neo">
+        <Icon className="w-8 h-8 stroke-[2.5]" />
       </div>
 
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-sm text-[#9B9BB4] max-w-sm mb-6 leading-relaxed">
+      <h3 className="text-xl font-black text-black mb-2 uppercase tracking-tight">{title}</h3>
+      <p className="text-sm font-mono text-black/70 max-w-sm mb-6 leading-relaxed">
         {description}
       </p>
 
@@ -43,7 +43,7 @@ export function EmptyState({
           {action.href ? (
             <Link
               href={action.href}
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C63FF]/20"
+              className="neo-btn bg-neo-mint text-black font-bold text-sm px-6 py-2.5 inline-flex items-center justify-center"
             >
               {action.label}
             </Link>
@@ -51,7 +51,7 @@ export function EmptyState({
             <button
               type="button"
               onClick={action.onClick}
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#6C63FF] to-[#00D2FF] hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#6C63FF]/20"
+              className="neo-btn bg-neo-mint text-black font-bold text-sm px-6 py-2.5 inline-flex items-center justify-center"
             >
               {action.label}
             </button>
