@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles } from 'lucide-react';
+import { ArthoraLogo } from '../common/ArthoraLogo';
 import { SearchInput } from '../common/SearchInput';
 import { ThemeToggle } from '../common/ThemeToggle';
 
@@ -21,11 +21,9 @@ export function MobileHeader() {
   return (
     <header className="md:hidden sticky top-0 z-30 flex items-center justify-between h-14 px-4 bg-[#121218] border-b-2 border-black select-none">
       <Link href="/ai" className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-md bg-neo-yellow border-2 border-black flex items-center justify-center text-black shadow-neo-sm">
-          <Sparkles className="w-3.5 h-3.5 fill-black" />
-        </div>
+        <ArthoraLogo size={28} />
         <span className="font-black text-base text-white uppercase tracking-tight">
-          Arthora<span className="text-neo-yellow font-mono text-xs ml-0.5">.IN</span>
+          Arthora<span className="text-brand-primary font-mono text-xs ml-0.5">.IN</span>
         </span>
       </Link>
 

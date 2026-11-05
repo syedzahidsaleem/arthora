@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Bookmark, BookmarkCheck, ArrowUpRight, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { useFavorites } from '@/hooks/useFavorites';
 import { api } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import type { IAssetAllocation } from '@arthora/shared';
@@ -25,30 +26,27 @@ interface AllocationCardProps {
 }
 
 export function AllocationCard({ item, index }: AllocationCardProps) {
-  const [isSaved, setIsSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
+  const { isFavorited, addFavorite, removeFavorite, favorites } = useFavorites();
+  const favorited = isFavorited(item.schemeCode, item.ticker);
   const accentColor = CHART_COLORS[index % CHART_COLORS.length];
 
   const handleToggleWatchlist = async () => {
-    if (isSaved) return;
-
-    setIsSaving(true);
-    try {
-      await api.post(API_ENDPOINTS.FAVORITES.ADD, {
+    if (favorited) {
+      const match = favorites.find((f) =>
+        (item.schemeCode && f.schemeCode === item.schemeCode) ||
+        (item.ticker && f.symbol?.toUpperCase() === item.ticker.toUpperCase())
+      );
+      if (match) {
+        await removeFavorite(match._id);
+      }
+    } else {
+      await addFavorite({
         assetType: item.assetType,
         schemeCode: item.schemeCode,
         symbol: item.ticker,
         isin: item.isin,
         name: item.name,
       });
-
-      setIsSaved(true);
-      toast.success(`${item.name} added to your watchlist!`);
-    } catch {
-      toast.error('Asset is already in your watchlist or session expired.');
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -102,14 +100,14 @@ export function AllocationCard({ item, index }: AllocationCardProps) {
           <button
             type="button"
             onClick={handleToggleWatchlist}
-            disabled={isSaving || isSaved}
+            disabled={isSaving || favorited}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black uppercase transition-all border-2 border-black shadow-neo-sm hover:shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-              isSaved
+              favorited
                 ? 'bg-neo-green text-black'
                 : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white'
             }`}
           >
-            {isSaved ? (
+            {favorited ? (
               <>
                 <BookmarkCheck className="w-3.5 h-3.5" />
                 <span>SAVED</span>

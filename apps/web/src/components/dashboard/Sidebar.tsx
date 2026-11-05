@@ -18,6 +18,7 @@ import * as Tooltip from '@radix-ui/react-tooltip';
 import { useAuthStore } from '@/store/authStore';
 import { useSidebarStore } from '@/store/sidebarStore';
 import { ThemeToggle } from '../common/ThemeToggle';
+import { ArthoraLogo } from '../common/ArthoraLogo';
 import { SearchInput } from '../common/SearchInput';
 import { cn } from '@/lib/utils';
 
@@ -57,18 +58,16 @@ export function Sidebar() {
     >
       {/* Top Brand Logo Section */}
       <div className="h-16 flex items-center justify-between px-4 border-b-2 border-black">
-        <Link href="/ai" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-9 h-9 rounded-lg bg-neo-yellow border-2 border-black flex items-center justify-center shrink-0 shadow-neo-sm">
-            <Sparkles className="w-4 h-4 text-black fill-black" />
-          </div>
+        <Link href="/ai" className="flex items-center gap-2.5 overflow-hidden group">
+          <ArthoraLogo size={36} />
 
           {!isCollapsed && (
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-black text-lg tracking-tight text-white uppercase leading-none">
+            <div className="flex items-baseline gap-1.5 min-w-0">
+              <span className="font-black text-lg tracking-tight text-white uppercase leading-none group-hover:text-brand-primary transition-colors">
                 Arthora
               </span>
-              <span className="text-[10px] font-mono font-black px-1 py-0.2 bg-neo-cyan text-black border border-black rounded shadow-[1px_1px_0px_0px_#000]">
-                .IN
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-brand-primary/20 text-[#8B5CF6] border border-brand-primary/30 rounded">
+                INDIA
               </span>
             </div>
           )}

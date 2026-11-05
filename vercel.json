@@ -48,16 +48,16 @@
   ],
   "rewrites": [
     {
-      "source": "/research/fund/:schemeCode(.*)",
-      "destination": "/research/fund/_/index.html"
+      "source": "/research/fund/:path*",
+      "destination": "/research/fund/_"
     },
     {
-      "source": "/research/stock/:symbol(.*)",
-      "destination": "/research/stock/_/index.html"
+      "source": "/research/stock/:path*",
+      "destination": "/research/stock/_"
     },
     {
-      "source": "/ai/:portfolioId([a-zA-Z0-9_-]+)(.*)",
-      "destination": "/ai/_/index.html"
+      "source": "/ai/:id+",
+      "destination": "/ai/_"
     }
   ]
 }

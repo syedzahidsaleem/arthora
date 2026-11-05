@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Pin, Sparkles, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Pin, Sparkles, Clock, CheckCircle2, AlertCircle, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { usePortfolioStore } from '@/store/portfolioStore';
 import { formatINR, formatDate } from '@arthora/shared';
 import type { IPortfolio } from '@arthora/shared';
@@ -13,12 +14,27 @@ interface PortfolioCardProps {
 }
 
 export function PortfolioCard({ portfolio }: PortfolioCardProps) {
-  const { togglePin } = usePortfolioStore();
+  const { togglePin, deletePortfolio } = usePortfolioStore();
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const handlePin = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     void togglePin(portfolio._id);
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isDeleting) return;
+    setIsDeleting(true);
+    try {
+      await deletePortfolio(portfolio._id);
+      toast.success('Portfolio removed from saved list');
+    } catch {
+      toast.error('Failed to remove portfolio');
+      setIsDeleting(false);
+    }
   };
 
   const status = portfolio.aiSuggestion?.status || 'pending';
@@ -51,20 +67,34 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
           <p className="text-xs font-mono text-[#A0A0B2] truncate">{portfolio.goal}</p>
         </div>
 
-        {/* Pin toggle button */}
-        <button
-          type="button"
-          onClick={handlePin}
-          aria-label={portfolio.isPinned ? 'Unpin portfolio' : 'Pin portfolio'}
-          className={cn(
-            'p-1.5 rounded-md border-2 border-black transition-all shrink-0',
-            portfolio.isPinned
-              ? 'bg-neo-yellow text-black shadow-[1px_1px_0px_0px_#000]'
-              : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white',
-          )}
-        >
-          <Pin className={cn('w-3.5 h-3.5', portfolio.isPinned && 'fill-black')} />
-        </button>
+        {/* Action Controls */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={handlePin}
+            aria-label={portfolio.isPinned ? 'Unpin portfolio' : 'Pin portfolio'}
+            className={cn(
+              'p-1.5 rounded-md border-2 border-black transition-all shrink-0',
+              portfolio.isPinned
+                ? 'bg-neo-yellow text-black shadow-[1px_1px_0px_0px_#000]'
+                : 'bg-[#0E0E14] text-[#A0A0B2] hover:text-white hover:bg-white/10',
+            )}
+            title={portfolio.isPinned ? 'Unpin' : 'Pin to top'}
+          >
+            <Pin className={cn('w-3.5 h-3.5', portfolio.isPinned && 'fill-black')} />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            aria-label="Remove portfolio"
+            className="p-1.5 rounded-md border-2 border-black bg-[#0E0E14] text-[#A0A0B2] hover:text-[#FF4D6D] hover:bg-[#FF4D6D]/15 hover:border-[#FF4D6D] transition-all shrink-0"
+            title="Delete this portfolio"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Metric Middle Row */}
