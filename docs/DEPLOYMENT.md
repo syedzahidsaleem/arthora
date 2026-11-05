@@ -54,7 +54,34 @@ The repository includes a Render Blueprint specification deploying both the Node
 
 ---
 
-## 3. Local Verification
+## 3. Deployment Troubleshooting & Verification Guide
+
+### Resolving Past Build Errors
+The previous deployment failures on Render and Vercel (e.g., at commits `1f11ece` and `809a899`) were caused by an intermittent TypeScript compilation error in `AllocationCard.tsx`:
+```text
+Type error: Cannot find name 'isSaving'.
+```
+This has been **completely resolved**:
+- `AllocationCard.tsx` now uses `useFavorites` hook (`isLoading`, `favorited`) without undefined variables.
+- All unused imports (`useState`, `toast`, `api`, `API_ENDPOINTS`, `Filter`, `cn`) have been removed.
+- `next lint` and `tsc --noEmit` pass with **zero warnings and zero errors**.
+- Static export build generates **13 / 13 static pages** cleanly with exit code 0.
+
+### Redeploying on Vercel & Render
+Every push to `main` triggers automated CI/CD builds on both Vercel and Render.
+If your project dashboard previously marked a build as failed and paused automatic triggers:
+1. **On Render (`arthora-web` and `arthora-api`)**:
+   - Navigate to your service dashboard on [dashboard.render.com](https://dashboard.render.com).
+   - Click the **Manual Deploy** button in the upper right.
+   - Select **Deploy latest commit** (or **Clear build cache & deploy**).
+2. **On Vercel (`arthora`)**:
+   - Navigate to [vercel.com/dashboard](https://vercel.com/dashboard).
+   - Under Deployments, click on the three dots `...` next to the latest production deployment.
+   - Select **Redeploy**.
+
+---
+
+## 4. Local Verification
 
 To run and verify the entire stack locally:
 
