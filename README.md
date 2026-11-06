@@ -175,6 +175,28 @@ curl -s https://arthora-api.onrender.com/api/v1/funds/122639/metrics | jq .
 
 ---
 
+## Repository Structure
+
+```text
+arthora/
+├── apps/
+│   ├── web/                   # Next.js 14 App Router client (Static Export, Tailwind CSS, Neo-Brutalism)
+│   └── api/                   # Express.js REST API gateway, Mongoose models, and BullMQ worker queue
+├── packages/
+│   ├── shared/                # Universal TypeScript models, Zod validation schemas, Indian formatters
+│   └── sdk/                   # Isomorphic API client library for frontend, mobile, and third-party consumers
+├── arthora_mobile/            # Cross-platform Flutter 3.29+ mobile application (iOS & Android)
+├── docs/                      # Technical documentation, specifications, and architecture guides
+│   ├── architecture/          # System design, database schemas, and data flow specifications
+│   ├── specs/                 # Product requirements (PRD), API contracts, and design tokens
+│   ├── guides/                # Deployment, verification, contributing, and security policies
+│   └── audits/                # Forensic architecture and UI/E2E test verification reports
+├── scripts/                   # Automated monorepo quality gate runners (verify-all.ps1, verify-all.sh)
+└── .github/                   # CI/CD workflows, release packaging, and brand visual assets
+```
+
+---
+
 ## Roadmap
 
 - [x] Full AMFI 40,000+ mutual fund screener & NAV ingestion
@@ -197,7 +219,9 @@ Contributions make the open-source community an inspiring place to learn and bui
 2. **Create** your feature branch (`git checkout -b feat/quantum-analytics`)
 3. **Commit** your changes (`git commit -m "feat: add quantum risk analytics"`)
 4. **Push** to the branch (`git push origin feat/quantum-analytics`)
-5. **Open** a Pull Request
+5. **Open** a Pull Request against `main`
+
+Please read our [Contribution Guidelines](docs/guides/CONTRIBUTING.md), adhere to our [Code of Conduct](docs/guides/CODE_OF_CONDUCT.md), and review our [Security Policy](docs/guides/SECURITY.md).
 
 If you find Arthora helpful, please consider giving it a ⭐️ on GitHub!
 

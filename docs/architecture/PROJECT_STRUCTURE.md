@@ -16,6 +16,10 @@ arthora/
 │   └── sdk/                   # Isomorphic TypeScript Client SDK
 ├── arthora_mobile/            # Cross-Platform Flutter 3.29+ Mobile Client (iOS & Android)
 ├── docs/                      # Architectural, compliance, deployment, and PRD specifications
+│   ├── architecture/          # High-level architecture, database schemas, and data flow
+│   ├── specs/                 # Product requirements (PRD), API contracts, and design tokens
+│   ├── guides/                # Deployment, smoke test, contributing, and security guides
+│   └── audits/                # Comprehensive forensic architecture and E2E audit reports
 ├── scripts/                   # Automated pre-commit quality gate runners
 ├── .github/                   # Workflows, issue templates, and visual assets
 ├── vercel.json                # Vercel Monorepo deployment specification

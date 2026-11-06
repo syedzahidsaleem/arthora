@@ -64,3 +64,44 @@ arthora_mobile/ios/Flutter/Flutter.podspec
 
 # Sentry
 .sentryclirc
+
+# ==============================================================================
+# Agent Tooling, Skills, MCPs & Ephemeral Scaffolding (Strictly Blocked)
+# ==============================================================================
+.antigravity/
+.agent/
+.agents/
+.gemini/
+.cursor/
+.claude/
+.windsurf/
+.aider*
+.roo*
+.continue/
+.prompts/
+
+# Skills and Agent Rules
+skills/
+.skills/
+agent-skills/
+.cursorrules
+.windsurfrules
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+
+# MCP (Model Context Protocol) Configs
+.mcp/
+mcp.json
+.mcp.json
+mcp-config*
+mcp_config.json
+
+# Agent Scratchpads & Ephemeral Testing
+scratch/
+*.scratch.*
+repro_*
+check_*
+debug_*
+test_*_temp*
+
