@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="100%" height="auto" style="background-color: #0d1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <linearGradient id="mintGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7BED9F" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#4FBBBC" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="goldGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD027" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#F39120" stop-opacity="0.1"/>
+    </linearGradient>
+    <marker id="arrowDark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#7BED9F"/>
+    </marker>
+    <marker id="arrowGoldDark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#FFD027"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="440" y="32" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="700" letter-spacing="1">ARTHORA SYSTEM ARCHITECTURE &amp; DATA PIPELINE</text>
+
+  <!-- Column Headers -->
+  <text x="100" y="65" text-anchor="middle" fill="#8B949E" font-size="11" font-weight="600" letter-spacing="0.5">1. DATA INGESTION</text>
+  <text x="320" y="65" text-anchor="middle" fill="#8B949E" font-size="11" font-weight="600" letter-spacing="0.5">2. CORE API &amp; PERSISTENCE</text>
+  <text x="560" y="65" text-anchor="middle" fill="#8B949E" font-size="11" font-weight="600" letter-spacing="0.5">3. QUANT &amp; AI REASONING</text>
+  <text x="780" y="65" text-anchor="middle" fill="#8B949E" font-size="11" font-weight="600" letter-spacing="0.5">4. CLIENT SURFACES</text>
+
+  <!-- LAYER 1: DATA SOURCES -->
+  <!-- Box 1A -->
+  <rect x="20" y="85" width="160" height="90" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="20" y="85" width="160" height="4" rx="2" fill="#4FBBBC"/>
+  <text x="100" y="112" text-anchor="middle" fill="#7BED9F" font-size="12" font-weight="700">AMFI Mutual Funds</text>
+  <text x="100" y="132" text-anchor="middle" fill="#C9D1D9" font-size="10">40,000+ Live NAV Feeds</text>
+  <text x="100" y="152" text-anchor="middle" fill="#8B949E" font-size="9">mfapi.in REST Engine</text>
+
+  <!-- Box 1B -->
+  <rect x="20" y="220" width="160" height="90" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="20" y="220" width="160" height="4" rx="2" fill="#4FBBBC"/>
+  <text x="100" y="247" text-anchor="middle" fill="#7BED9F" font-size="12" font-weight="700">NSE / BSE Equities</text>
+  <text x="100" y="267" text-anchor="middle" fill="#C9D1D9" font-size="10">Real-Time Quotes</text>
+  <text x="100" y="287" text-anchor="middle" fill="#8B949E" font-size="9">Yahoo Finance API</text>
+
+  <!-- LAYER 2: CORE API & WORKERS -->
+  <!-- Box 2A: Express API -->
+  <rect x="230" y="85" width="180" height="110" rx="8" fill="#161b22" stroke="#7BED9F" stroke-width="1.5"/>
+  <rect x="230" y="85" width="180" height="4" rx="2" fill="#7BED9F"/>
+  <text x="320" y="110" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">Express 4 API Gateway</text>
+  <text x="320" y="130" text-anchor="middle" fill="#7BED9F" font-size="10">Render Web Service (Node)</text>
+  <text x="320" y="150" text-anchor="middle" fill="#8B949E" font-size="9">JWT Auth • Rate Limiting</text>
+  <text x="320" y="170" text-anchor="middle" fill="#8B949E" font-size="9">Zod Validation • CORS</text>
+
+  <!-- Box 2B: Redis & MongoDB -->
+  <rect x="230" y="220" width="180" height="110" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="230" y="220" width="180" height="4" rx="2" fill="#FFD027"/>
+  <text x="320" y="245" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">Storage &amp; Queues</text>
+  <text x="320" y="265" text-anchor="middle" fill="#FFD027" font-size="10">MongoDB Atlas (M0 Cluster)</text>
+  <text x="320" y="285" text-anchor="middle" fill="#C9D1D9" font-size="9">Redis Cache (Upstash)</text>
+  <text x="320" y="305" text-anchor="middle" fill="#8B949E" font-size="9">BullMQ Worker (In-Process)</text>
+
+  <!-- LAYER 3: QUANT & AI -->
+  <!-- Box 3A: Quant Risk Engine -->
+  <rect x="460" y="85" width="200" height="110" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="460" y="85" width="200" height="4" rx="2" fill="#7BED9F"/>
+  <text x="560" y="110" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">Quantitative Risk Engine</text>
+  <text x="560" y="130" text-anchor="middle" fill="#7BED9F" font-size="10">Deterministic Calculations</text>
+  <text x="560" y="150" text-anchor="middle" fill="#8B949E" font-size="9">CAGR • Volatility • Max Drawdown</text>
+  <text x="560" y="170" text-anchor="middle" fill="#8B949E" font-size="9">Sharpe • Sortino • Rolling Returns</text>
+
+  <!-- Box 3B: Gemini AI + Fallback -->
+  <rect x="460" y="220" width="200" height="110" rx="8" fill="#161b22" stroke="#FFD027" stroke-width="1.5"/>
+  <rect x="460" y="220" width="200" height="4" rx="2" fill="#FFD027"/>
+  <text x="560" y="245" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">AI Intelligence Core</text>
+  <text x="560" y="265" text-anchor="middle" fill="#FFD027" font-size="10">Gemini 1.5 Flash Cascading AI</text>
+  <text x="560" y="285" text-anchor="middle" fill="#C9D1D9" font-size="9">Zod Schema Output Guardrails</text>
+  <text x="560" y="305" text-anchor="middle" fill="#7BED9F" font-size="9">Heuristic Deterministic Fallback</text>
+
+  <!-- LAYER 4: CLIENT SURFACES -->
+  <!-- Box 4A: Web Client -->
+  <rect x="710" y="85" width="150" height="110" rx="8" fill="#161b22" stroke="#7BED9F" stroke-width="1.5"/>
+  <rect x="710" y="85" width="150" height="4" rx="2" fill="#7BED9F"/>
+  <text x="785" y="112" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">Next.js 14 Web</text>
+  <text x="785" y="132" text-anchor="middle" fill="#7BED9F" font-size="10">Vercel Edge Global CDN</text>
+  <text x="785" y="152" text-anchor="middle" fill="#C9D1D9" font-size="9">Neo-Brutalism Theme</text>
+  <text x="785" y="172" text-anchor="middle" fill="#8B949E" font-size="9">Interactive Recharts</text>
+
+  <!-- Box 4B: Mobile Client -->
+  <rect x="710" y="220" width="150" height="110" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <rect x="710" y="220" width="150" height="4" rx="2" fill="#4FBBBC"/>
+  <text x="785" y="247" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">Flutter Mobile</text>
+  <text x="785" y="267" text-anchor="middle" fill="#4FBBBC" font-size="10">Cross-Platform (iOS/Android)</text>
+  <text x="785" y="287" text-anchor="middle" fill="#C9D1D9" font-size="9">Riverpod State Flow</text>
+  <text x="785" y="307" text-anchor="middle" fill="#8B949E" font-size="9">apps/mobile Workspace</text>
+
+  <!-- CONNECTING ARROWS -->
+  <!-- Layer 1 to Layer 2 -->
+  <line x1="180" y1="130" x2="225" y2="130" stroke="#7BED9F" stroke-width="1.5" marker-end="url(#arrowDark)"/>
+  <line x1="180" y1="265" x2="225" y2="155" stroke="#7BED9F" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrowDark)"/>
+
+  <!-- Layer 2 internal -->
+  <line x1="320" y1="195" x2="320" y2="215" stroke="#8B949E" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+  <!-- Layer 2 to Layer 3 -->
+  <line x1="410" y1="130" x2="455" y2="130" stroke="#7BED9F" stroke-width="1.5" marker-end="url(#arrowDark)"/>
+  <line x1="410" y1="275" x2="455" y2="275" stroke="#FFD027" stroke-width="1.5" marker-end="url(#arrowGoldDark)"/>
+
+  <!-- Layer 3 to Layer 4 -->
+  <line x1="660" y1="130" x2="705" y2="130" stroke="#7BED9F" stroke-width="1.5" marker-end="url(#arrowDark)"/>
+  <line x1="660" y1="275" x2="705" y2="275" stroke="#FFD027" stroke-width="1.5" marker-end="url(#arrowGoldDark)"/>
+
+  <!-- Footer notice -->
+  <rect x="20" y="365" width="840" height="38" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <text x="440" y="389" text-anchor="middle" fill="#8B949E" font-size="10">🛡️ SEBI Educational Notice: Quantitative screening platform for research &amp; educational purposes. Zero commission bias.</text>
+</svg>
