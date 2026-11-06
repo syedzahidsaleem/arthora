@@ -38,7 +38,7 @@ When importing `syedzahidsaleem/arthora` into Vercel:
 
 ## 2. Render Full-Stack Services (`render.yaml`)
 
-The repository includes a Render Blueprint specification deploying both the Node.js backend and static frontend:
+The repository includes a Render Blueprint specification deploying the Node.js backend:
 
 1. **`arthora-api` (Web Service)**:
    - **Environment**: Node.js
@@ -46,11 +46,7 @@ The repository includes a Render Blueprint specification deploying both the Node
    - **Start Command**: `pnpm --filter @arthora/api start`
    - **Health Probe**: `/api/v1/health`
 
-2. **`arthora-web` (Static Site)**:
-   - **Environment**: Static
-   - **Build Command**: `pnpm install && pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build`
-   - **Publish Directory**: `./apps/web/out`
-   - **Routes**: SPA rewrite rule `/* -> /index.html`
+*(Note: The frontend web client is hosted exclusively on **Vercel** via global Edge CDN).*
 
 ---
 
@@ -70,7 +66,7 @@ This has been **completely resolved**:
 ### Redeploying on Vercel & Render
 Every push to `main` triggers automated CI/CD builds on both Vercel and Render.
 If your project dashboard previously marked a build as failed and paused automatic triggers:
-1. **On Render (`arthora-web` and `arthora-api`)**:
+1. **On Render (`arthora-api`)**:
    - Navigate to your service dashboard on [dashboard.render.com](https://dashboard.render.com).
    - Click the **Manual Deploy** button in the upper right.
    - Select **Deploy latest commit** (or **Clear build cache & deploy**).
