@@ -13,7 +13,7 @@ A clear and concise description of what the bug is.
 - [ ] API Server (`apps/api`)
 - [ ] BullMQ Worker (`apps/worker`)
 - [ ] Web Frontend (`apps/web`)
-- [ ] Flutter Mobile (`arthora_mobile`)
+- [ ] Flutter Mobile (`apps/mobile`)
 - [ ] Shared Library (`packages/shared`)
 
 **To Reproduce**

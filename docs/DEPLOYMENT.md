@@ -4,7 +4,7 @@
 
 ```mermaid
 graph TD
-    Client[Next.js 14 Static Web Client] -->|Vercel / Render Static| CDN[Global Edge CDN]
+    Client[Next.js 14 Static Web Client] -->|Vercel| CDN[Global Edge CDN]
     CDN -->|API Requests| ExpressAPI[Arthora Express API on Render]
     ExpressAPI --> MongoDB[(MongoDB Atlas Cluster)]
     ExpressAPI --> Redis[(Upstash Redis Cache & BullMQ)]

@@ -59,7 +59,7 @@ jobs:
           pnpm --filter @arthora/shared build
           pnpm --filter @arthora/sdk build
 
-      - name: Run Vitest Suite (91 Tests)
+      - name: Run tests
         run: pnpm run test
         env:
           NODE_ENV: test

@@ -40,68 +40,35 @@ Thumbs.db
 coverage/
 .vitest/
 
-# Docker
-.dockerignore
-
 # Temporary
 tmp/
 temp/
 /tmp/reports/
 
-# Flutter
-arthora_mobile/.dart_tool/
-arthora_mobile/.flutter-plugins
-arthora_mobile/.flutter-plugins-dependencies
-arthora_mobile/build/
-arthora_mobile/.packages
-arthora_mobile/pubspec.lock
-arthora_mobile/android/.gradle/
-arthora_mobile/android/local.properties
-arthora_mobile/ios/Pods/
-arthora_mobile/ios/.symlinks/
-arthora_mobile/ios/Flutter/Flutter.framework
-arthora_mobile/ios/Flutter/Flutter.podspec
+# Flutter (apps/mobile)
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/build/
+apps/mobile/.packages
+apps/mobile/pubspec.lock
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/ios/Pods/
+apps/mobile/ios/.symlinks/
+apps/mobile/ios/Flutter/Flutter.framework
+apps/mobile/ios/Flutter/Flutter.podspec
 
 # Sentry
 .sentryclirc
 
-# ==============================================================================
-# Agent Tooling, Skills, MCPs & Ephemeral Scaffolding (Strictly Blocked)
-# ==============================================================================
-.antigravity/
+# Agent & IDE Scaffolding
 .agent/
 .agents/
 .gemini/
+.antigravity/
 .cursor/
 .claude/
-.windsurf/
-.aider*
-.roo*
-.continue/
-.prompts/
-
-# Skills and Agent Rules
-skills/
-.skills/
-agent-skills/
-.cursorrules
-.windsurfrules
 AGENTS.md
 GEMINI.md
 CLAUDE.md
-
-# MCP (Model Context Protocol) Configs
-.mcp/
-mcp.json
-.mcp.json
-mcp-config*
-mcp_config.json
-
-# Agent Scratchpads & Ephemeral Testing
-scratch/
-*.scratch.*
-repro_*
-check_*
-debug_*
-test_*_temp*
-

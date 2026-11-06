@@ -1,7 +1,7 @@
 # Complete API Contract
 
 ## Base URL
-- **Express Backend:** `https://api.arthora.in/v1` (deployed on Railway)
+- **Express Backend:** `https://arthora-api.onrender.com/api/v1` (deployed on Render)
 - **Web App** calls the Express backend via `NEXT_PUBLIC_API_URL` env var
 - **Mobile App** calls the same Express backend directly
 

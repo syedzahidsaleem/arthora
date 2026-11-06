@@ -11,6 +11,7 @@
     "dev:worker": "pnpm --filter @arthora/api run dev:worker",
     "build": "pnpm --filter @arthora/shared run build && pnpm --filter @arthora/api run build && pnpm --filter @arthora/web run build",
     "build:web": "pnpm --filter @arthora/shared build && pnpm --filter @arthora/web build",
+    "verify": "pnpm --filter @arthora/shared build && pnpm lint && pnpm type-check && pnpm test && pnpm build:web",
     "type-check": "pnpm -r run type-check",
     "lint": "pnpm -r run lint",
     "lint:fix": "pnpm -r run lint:fix",

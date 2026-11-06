@@ -221,7 +221,7 @@ Contributions make the open-source community an inspiring place to learn and bui
 4. **Push** to the branch (`git push origin feat/quantum-analytics`)
 5. **Open** a Pull Request against `main`
 
-Please read our [Contribution Guidelines](docs/guides/CONTRIBUTING.md), adhere to our [Code of Conduct](docs/guides/CODE_OF_CONDUCT.md), and review our [Security Policy](docs/guides/SECURITY.md).
+Please read our [Contribution Guidelines](.github/CONTRIBUTING.md), adhere to our [Code of Conduct](.github/CODE_OF_CONDUCT.md), and review our [Security Policy](.github/SECURITY.md).
 
 If you find Arthora helpful, please consider giving it a ⭐️ on GitHub!
 
