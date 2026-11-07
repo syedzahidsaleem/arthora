@@ -9,8 +9,19 @@ import {
   type PortfolioPromptInput,
 } from '../prompts/portfolioSuggestion';
 import { buildFallbackSuggestion } from '../services/fallbackPortfolioEngine';
+import { verifyAllocation } from '../services/allocationVerifier';
 
-const TIMEOUT_MS = 30000;
+export const DEFAULT_TOTAL_TIMEOUT_MS = 45000;
+export const PER_MODEL_TIMEOUT_MS = 30000;
+
+export function getTotalTimeoutMs(): number {
+  const envVal = process.env.GEMINI_TOTAL_TIMEOUT_MS;
+  if (envVal) {
+    const parsed = parseInt(envVal, 10);
+    if (!isNaN(parsed) && parsed > 0) return parsed;
+  }
+  return DEFAULT_TOTAL_TIMEOUT_MS;
+}
 
 export function getGeminiClient(): GoogleGenerativeAI {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -60,7 +71,7 @@ export function cleanJsonText(rawText: string): string {
 }
 
 /**
- * Invokes Gemini model with a hard timeout of 30 seconds, automatically cascading
+ * Invokes Gemini model with a per-model timeout, automatically cascading
  * through available fallback models if the primary model is unavailable or capacity constrained.
  */
 export async function generateWithTimeout(
@@ -84,12 +95,12 @@ export async function generateWithTimeout(
           () =>
             reject(
               new AppError(
-                `Gemini generation timed out after 30s on model "${modelName}"`,
+                `Gemini generation timed out after ${PER_MODEL_TIMEOUT_MS}ms on model "${modelName}"`,
                 504,
                 'GATEWAY_TIMEOUT',
               ),
             ),
-          TIMEOUT_MS,
+          PER_MODEL_TIMEOUT_MS,
         ),
       );
 
@@ -128,8 +139,9 @@ export async function generateWithTimeout(
 
 /**
  * Generates an AI-optimized investment portfolio cascading through available Gemini models.
- * If all candidate models fail, timeout, or fail validation, logs structured warnings and
- * returns the deterministic rules engine fallback.
+ * Enforces an overall total time budget across the chain, per-model timeouts, schema validation,
+ * and strict existence verification against AMFI fund data and market stock quotes without rewriting codes.
+ * If all candidate models fail, timeout, or fail validation, returns deterministic fallback.
  */
 export async function generatePortfolioSuggestion(
   input: PortfolioPromptInput,
@@ -153,7 +165,27 @@ export async function generatePortfolioSuggestion(
     return buildFallbackSuggestion(input);
   }
 
+  const totalTimeoutMs = getTotalTimeoutMs();
+  const startTime = Date.now();
+  const deadline = startTime + totalTimeoutMs;
+
   for (const modelName of candidateModels) {
+    const elapsedMs = Date.now() - startTime;
+    const remainingBudget = deadline - Date.now();
+
+    if (remainingBudget <= 0) {
+      console.warn('⚠️ [Gemini] Total time budget exhausted for model chain:', {
+        model: 'chain',
+        status: 504,
+        error: `Total timeout budget of ${totalTimeoutMs}ms exhausted`,
+        stage: 'timeout',
+        elapsedMs,
+      });
+      break;
+    }
+
+    const currentModelTimeout = Math.min(PER_MODEL_TIMEOUT_MS, remainingBudget);
+
     let rawText = '';
     try {
       const model = ai.getGenerativeModel({
@@ -166,12 +198,12 @@ export async function generatePortfolioSuggestion(
           () =>
             reject(
               new AppError(
-                `Gemini generation timed out after 30s on model "${modelName}"`,
+                `Gemini generation timed out after ${currentModelTimeout}ms on model "${modelName}"`,
                 504,
                 'GATEWAY_TIMEOUT',
               ),
             ),
-          TIMEOUT_MS,
+          currentModelTimeout,
         ),
       );
 
@@ -194,6 +226,7 @@ export async function generatePortfolioSuggestion(
         status,
         error: errorMsg,
         stage,
+        elapsedMs: Date.now() - startTime,
       });
       continue;
     }
@@ -209,6 +242,7 @@ export async function generatePortfolioSuggestion(
         status: 422,
         error: errorMsg,
         stage: 'validation',
+        elapsedMs: Date.now() - startTime,
       });
       continue;
     }
@@ -223,11 +257,27 @@ export async function generatePortfolioSuggestion(
         status: 422,
         error: errorMsg,
         stage: 'validation',
+        elapsedMs: Date.now() - startTime,
       });
       continue;
     }
 
-    // Success! Stamp the actual model name that generated this portfolio
+    // Strict existence check for mutual funds & stocks (no silent rewriting)
+    const verification = await verifyAllocation(validation.data.allocation);
+    if (!verification.isValid) {
+      console.warn('⚠️ [Gemini] Allocation validation failed: asset does not exist or ISIN conflicts:', {
+        model: modelName,
+        status: 422,
+        stage: 'validation',
+        offendingCode: verification.failure?.code,
+        assetType: verification.failure?.assetType,
+        error: verification.failure?.reason,
+        elapsedMs: Date.now() - startTime,
+      });
+      continue;
+    }
+
+    // Success! Stamp active model and return exact suggestion without modifying codes
     return {
       ...validation.data,
       model: modelName,
@@ -236,12 +286,25 @@ export async function generatePortfolioSuggestion(
   }
 
   // All candidate models failed, timed out, or produced invalid output
-  console.warn('⚠️ [Gemini] All candidate models exhausted. Using deterministic fallback engine.', {
-    model: 'all',
-    status: 502,
-    error: 'All candidate models failed or rejected',
-    stage: 'api',
-  });
+  const totalElapsedMs = Date.now() - startTime;
+  if (Date.now() >= deadline) {
+    console.warn('⚠️ [Gemini] Total time budget exhausted before acquiring valid suggestion:', {
+      model: 'all',
+      status: 504,
+      error: `Total timeout budget of ${totalTimeoutMs}ms exhausted`,
+      stage: 'timeout',
+      elapsedMs: totalElapsedMs,
+    });
+  } else {
+    console.warn('⚠️ [Gemini] All candidate models exhausted. Using deterministic fallback engine.', {
+      model: 'all',
+      status: 502,
+      error: 'All candidate models failed or rejected',
+      stage: 'api',
+      elapsedMs: totalElapsedMs,
+    });
+  }
+
   return buildFallbackSuggestion(input);
 }
 
