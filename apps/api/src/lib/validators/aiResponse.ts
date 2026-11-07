@@ -20,6 +20,7 @@ export type AllocationItem = z.infer<typeof AllocationItemSchema>;
 export const PortfolioSuggestionSchema = z
   .object({
     model: z.string(),
+    aiModel: z.string().optional(),
     allocation: z.array(AllocationItemSchema).min(1).max(6),
     projectedValue: z.number().positive(),
     rebalancing: z.enum(['monthly', 'quarterly', 'half-yearly', 'yearly']),

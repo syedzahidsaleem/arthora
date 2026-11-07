@@ -53,7 +53,7 @@ export async function cacheSuggestion(
         goalText: input.goalName || 'Wealth Creation',
         riskLevel: input.riskLevel,
         timePeriod: input.timePeriodYears,
-        aiModel: suggestion.model || 'gemini-1.5-flash',
+        aiModel: suggestion.aiModel || suggestion.model || 'gemini-3.6-flash',
         response: suggestion as unknown as Record<string, unknown>,
         createdAt: new Date(),
       },

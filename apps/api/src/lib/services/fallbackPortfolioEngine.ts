@@ -167,6 +167,7 @@ export function buildFallbackSuggestion(
 
   return {
     model: 'Arthora Deterministic Rules Engine v1.0',
+    aiModel: 'Arthora Deterministic Rules Engine v1.0',
     allocation,
     projectedValue: projectedValue > 0 ? projectedValue : 100000,
     rebalancing: 'quarterly',
