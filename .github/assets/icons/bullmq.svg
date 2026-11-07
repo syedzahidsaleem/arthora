@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="bullmqBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D1215"/>
+      <stop offset="100%" stop-color="#140608"/>
+    </linearGradient>
+    <linearGradient id="bullmqIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5252"/>
+      <stop offset="100%" stop-color="#FF1744"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="10" fill="url(#bullmqBg)" stroke="#30363D" stroke-width="1.5"/>
+  <path d="M12 16 C12 16 14 10 20 11 C20 14 18 16 18 18 C20 19 22 20 24 20 C26 20 28 19 30 18 C30 16 28 14 28 11 C34 10 36 16 36 16 C33 17 31 19 31 22 C31 27 28 30 24 30 C20 30 17 27 17 22 C17 19 15 17 12 16 Z" fill="url(#bullmqIcon)"/>
+  <circle cx="21" cy="22" r="1.5" fill="#FFFFFF"/>
+  <circle cx="27" cy="22" r="1.5" fill="#FFFFFF"/>
+  <rect x="14" y="34" width="5" height="4" rx="1" fill="#FF5252"/>
+  <rect x="21.5" y="34" width="5" height="4" rx="1" fill="#FF5252" opacity="0.8"/>
+  <rect x="29" y="34" width="5" height="4" rx="1" fill="#FF5252" opacity="0.6"/>
+</svg>

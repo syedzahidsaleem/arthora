@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="geminiBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1F2B"/>
+      <stop offset="100%" stop-color="#0E0F14"/>
+    </linearGradient>
+    <linearGradient id="geminiSparkle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4E80EE"/>
+      <stop offset="50%" stop-color="#9B72CF"/>
+      <stop offset="100%" stop-color="#F28B82"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="10" fill="url(#geminiBg)" stroke="#30363D" stroke-width="1.5"/>
+  <path d="M24 8 C24 16.8 16.8 24 8 24 C16.8 24 24 31.2 24 40 C24 31.2 31.2 24 40 24 C31.2 24 24 16.8 24 8 Z" fill="url(#geminiSparkle)"/>
+</svg>
