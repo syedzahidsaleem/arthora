@@ -56,7 +56,7 @@ export default function LandingPage() {
             <span>★ ZERO COMMISSIONS & FEES</span>
             <span>★ INSTITUTIONAL QUANT METRICS</span>
             <span>★ SEBI-REGISTERED SCHEMES</span>
-            <span>★ POWERED BY GEMINI 1.5 FLASH</span>
+            <span>★ POWERED BY GEMINI 3.6 FLASH</span>
           </div>
           <div className="marquee-content flex items-center gap-8" aria-hidden="true">
             <span>★ 40,000+ AMFI MUTUAL FUNDS</span>
@@ -65,7 +65,7 @@ export default function LandingPage() {
             <span>★ ZERO COMMISSIONS & FEES</span>
             <span>★ INSTITUTIONAL QUANT METRICS</span>
             <span>★ SEBI-REGISTERED SCHEMES</span>
-            <span>★ POWERED BY GEMINI 1.5 FLASH</span>
+            <span>★ POWERED BY GEMINI 3.6 FLASH</span>
           </div>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neo-aqua text-black border-2 border-black font-mono font-black text-xs uppercase shadow-neo-sm rotate-[-1.5deg] hover:rotate-0 transition-transform">
               <Sparkles className="w-3.5 h-3.5 fill-black" />
-              <span>Gemini 1.5 Flash AI</span>
+              <span>Gemini 3.6 Flash AI</span>
             </div>
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neo-lilac text-black border-2 border-black font-mono font-black text-xs uppercase shadow-neo-sm rotate-[1.5deg] hover:rotate-0 transition-transform">

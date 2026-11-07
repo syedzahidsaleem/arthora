@@ -187,7 +187,7 @@ curl -s "https://arthora-api.onrender.com/api/v1/funds/118834"
 ### Acknowledgements
 
 - [AMFI India](https://www.amfiindia.com) for official mutual fund NAV data feeds.
-- [Google AI Studio](https://ai.google.dev) for Gemini 1.5 Flash API access.
+- [Google AI Studio](https://ai.google.dev) for Gemini 3.6 Flash API access.
 - [Lucide Icons](https://lucide.dev) & [Skill Icons](https://skillicons.dev) for interface iconography.
 
 <p align="center">
