@@ -5,7 +5,7 @@ import { DashboardShell } from '@/components/dashboard/DashboardShell';
 
 export const metadata: Metadata = {
   title: 'Investor Hub | Arthora',
-  description: 'Institutional AI investment analytics, AMFI mutual funds, and NSE/BSE quant research.',
+  description: 'Institutional AI investment analytics, AMFI mutual funds, and NSE quant research.',
   openGraph: {
     title: 'Arthora Investor Hub',
     description: 'Institutional-grade investment intelligence for Indian retail investors.',

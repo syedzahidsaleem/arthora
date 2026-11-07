@@ -82,7 +82,7 @@ export default function WatchlistPage() {
         <EmptyState
           icon={Bookmark}
           title="Your watchlist is empty"
-          description="Start researching mutual funds and stocks to track them here in real-time."
+          description="Start researching mutual funds and stocks to track them here live (may be delayed)."
           action={{
             label: 'Explore Research Hub',
             href: '/research',

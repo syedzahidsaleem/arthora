@@ -43,7 +43,7 @@ export default function AuthLayout({
               India&apos;s Smartest Investment Research Platform
             </h2>
             <p className="text-[#222A2A] text-sm leading-relaxed font-sans font-medium">
-              Synthesize 40,000+ AMFI mutual funds, deep NSE/BSE fundamental data, and personalized goal-based portfolios with unmatched AI clarity.
+              Synthesize 40,000+ AMFI mutual funds, deep NSE fundamental data, and personalized goal-based portfolios with unmatched AI clarity.
             </p>
           </div>
 
@@ -105,7 +105,7 @@ export default function AuthLayout({
         {/* Bottom Security Badge */}
         <div className="relative z-10 flex items-center space-x-2 text-xs font-mono font-black text-black">
           <ShieldAlert className="h-4 w-4 text-black shrink-0" />
-          <span>256-BIT ENCRYPTION &middot; FIREBASE AUTH &middot; ZERO ADVISOR BIAS</span>
+          <span>256-BIT ENCRYPTION &middot; FIREBASE AUTH &middot; ZERO DISTRIBUTOR BIAS</span>
         </div>
       </div>
 

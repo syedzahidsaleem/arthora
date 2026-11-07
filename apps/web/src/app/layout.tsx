@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Arthora — AI Investment Research',
   description:
-    'AI-powered mutual fund and stock research platform for Indian investors. Research 40,000+ mutual funds, build AI goal portfolios, and analyze NSE/BSE stocks.',
+    'AI-powered mutual fund and stock research platform for Indian investors. Research 40,000+ mutual funds, build AI goal portfolios, and analyze NSE stocks.',
   keywords: [
     'Mutual Funds India',
     'AI Portfolio Builder',

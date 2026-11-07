@@ -37,7 +37,7 @@ export default function LandingPage() {
       price: '0',
       priceCurrency: 'INR',
     },
-    description: 'AI-guided investment research platform for Indian mutual funds and NSE/BSE stocks with Monte Carlo projections.',
+    description: 'AI-guided investment research platform for Indian mutual funds and NSE stocks with Monte Carlo projections.',
   };
 
   return (
@@ -51,20 +51,20 @@ export default function LandingPage() {
         <div className="marquee-container animate-marquee whitespace-nowrap flex items-center gap-8">
           <div className="marquee-content flex items-center gap-8">
             <span>★ 40,000+ AMFI MUTUAL FUNDS</span>
-            <span>★ NSE & BSE LIVE QUOTES</span>
+            <span>★ LIVE NSE QUOTES (MAY BE DELAYED)</span>
             <span>★ 10,000 MONTE CARLO ITERATIONS</span>
             <span>★ ZERO COMMISSIONS & FEES</span>
             <span>★ INSTITUTIONAL QUANT METRICS</span>
-            <span>★ SEBI-REGISTERED SCHEMES</span>
+            <span>★ AMFI-LISTED SCHEMES</span>
             <span>★ POWERED BY GEMINI AI</span>
           </div>
           <div className="marquee-content flex items-center gap-8" aria-hidden="true">
             <span>★ 40,000+ AMFI MUTUAL FUNDS</span>
-            <span>★ NSE & BSE LIVE QUOTES</span>
+            <span>★ LIVE NSE QUOTES (MAY BE DELAYED)</span>
             <span>★ 10,000 MONTE CARLO ITERATIONS</span>
             <span>★ ZERO COMMISSIONS & FEES</span>
             <span>★ INSTITUTIONAL QUANT METRICS</span>
-            <span>★ SEBI-REGISTERED SCHEMES</span>
+            <span>★ AMFI-LISTED SCHEMES</span>
             <span>★ POWERED BY GEMINI AI</span>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neo-lilac text-black border-2 border-black font-mono font-black text-xs uppercase shadow-neo-sm rotate-[1.5deg] hover:rotate-0 transition-transform">
               <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>SEBI Mutual Fund Data</span>
+              <span>AMFI Mutual Fund Data</span>
             </div>
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neo-mint text-black border-2 border-black font-mono font-black text-xs uppercase shadow-neo-sm rotate-[-1deg] hover:rotate-0 transition-transform">
@@ -130,7 +130,7 @@ export default function LandingPage() {
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-black tracking-tight max-w-5xl mx-auto leading-[1.08] mb-6 uppercase">
-            Your AI Investment Advisor For{' '}
+            Your AI Investment Research & Portfolio Builder For{' '}
             <span className="inline-block bg-neo-mint text-black px-4 py-1 rounded-xl border-[3px] border-black shadow-neo-lg rotate-[-1.5deg] hover:rotate-0 transition-transform">
               India
             </span>
@@ -138,7 +138,7 @@ export default function LandingPage() {
 
           {/* Subtitle */}
           <p className="text-base sm:text-xl text-[#525866] max-w-2xl mx-auto leading-relaxed mb-10 font-bold">
-            Research 40,000+ mutual funds, build AI goal portfolios, and analyze NSE & BSE stocks with institutional quant metrics — completely free.
+            Research 40,000+ mutual funds, build AI goal portfolios, and analyze NSE stocks with institutional quant metrics — completely free.
           </p>
 
           {/* CTA Group */}
@@ -174,6 +174,11 @@ export default function LandingPage() {
 
           {/* Floating UI Showcase */}
           <div className="relative max-w-4xl mx-auto">
+            <div className="flex justify-end mb-2 pr-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/90 border border-black text-[10px] font-mono font-bold text-[#525866] shadow-[1px_1px_0px_0px_#000]">
+                ★ Illustrative example • Simulated metrics
+              </span>
+            </div>
             <div className="p-4 md:p-6 rounded-3xl bg-neo-lilac border-[3px] border-black shadow-neo-xl grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
               {/* Card 1 */}
               <div className="p-4 rounded-2xl bg-white border-2 border-black shadow-neo-sm hover:shadow-neo transition-all text-[#222A2A]">
@@ -226,7 +231,7 @@ export default function LandingPage() {
               Everything You Need To Invest With Confidence
             </h2>
             <p className="text-[#525866] text-base font-bold">
-              Built specifically for Indian retail investors who want professional-grade research without paying expensive advisor fees.
+              Built specifically for Indian retail investors who want professional-grade research without paying expensive advisory fees or distributor commissions.
             </p>
           </div>
 
@@ -273,11 +278,11 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-black text-black uppercase mb-3 tracking-tight">Stock Analysis & Momentum</h3>
                 <p className="text-sm text-[#525866] leading-relaxed font-bold">
-                  NSE & BSE listed stocks with live quotes, P/E ratios, moving averages (SMA 20/50/200), RSI momentum, MACD, and peer valuation comparisons.
+                  NSE-listed stocks with live quotes (may be delayed), P/E ratios, moving averages (SMA 20/50/200), RSI momentum, MACD, and peer valuation comparisons.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t-2 border-black flex items-center justify-between">
-                <span className="text-xs font-mono font-black uppercase text-black">NSE & BSE Feed</span>
+                <span className="text-xs font-mono font-black uppercase text-black">NSE Live Feed</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </div>
             </div>
@@ -293,8 +298,6 @@ export default function LandingPage() {
             <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-black shadow-neo-sm">AMFI INDIA</span>
             <span>•</span>
             <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-black shadow-neo-sm">NSE INDIA</span>
-            <span>•</span>
-            <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-black shadow-neo-sm">BSE INDIA</span>
             <span>•</span>
             <span className="px-2.5 py-1 rounded-lg bg-white border-2 border-black shadow-neo-sm">SEBI DIRECT</span>
           </div>

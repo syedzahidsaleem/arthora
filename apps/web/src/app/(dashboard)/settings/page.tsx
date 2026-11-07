@@ -207,28 +207,17 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setDefaultExchange('NSE')}
+                aria-pressed={defaultExchange === 'NSE'}
                 className={cn(
-                  'flex-1 py-2.5 px-3 rounded-lg border-2 border-black font-black uppercase text-center transition-all',
-                  defaultExchange === 'NSE'
-                    ? 'bg-neo-aqua text-black shadow-neo'
-                    : 'bg-neo-cream text-black/70 hover:text-black',
+                  'flex-1 py-2.5 px-3 rounded-lg border-2 border-black font-black uppercase text-center transition-all bg-neo-aqua text-black shadow-neo',
                 )}
               >
-                NSE India
-              </button>
-              <button
-                type="button"
-                onClick={() => setDefaultExchange('BSE')}
-                className={cn(
-                  'flex-1 py-2.5 px-3 rounded-lg border-2 border-black font-black uppercase text-center transition-all',
-                  defaultExchange === 'BSE'
-                    ? 'bg-neo-aqua text-black shadow-neo'
-                    : 'bg-neo-cream text-black/70 hover:text-black',
-                )}
-              >
-                BSE India
+                NSE India (Active)
               </button>
             </div>
+            <p className="text-[11px] font-mono text-[#525866]">
+              Live quotes (may be delayed) and historical technicals are resolved directly via National Stock Exchange (NSE).
+            </p>
           </div>
         </div>
       </section>
