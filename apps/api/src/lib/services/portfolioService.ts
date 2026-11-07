@@ -28,8 +28,8 @@ export async function createPortfolio(
     isActive: true,
     aiSuggestion: {
       status: 'pending',
-      model: 'gemini-3.6-flash',
-      aiModel: 'gemini-3.6-flash',
+      model: 'pending',
+      aiModel: 'pending',
       allocation: [],
       projectedValue: 0,
       rebalancing: 'quarterly',

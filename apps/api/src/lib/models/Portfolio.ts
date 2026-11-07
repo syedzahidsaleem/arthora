@@ -32,7 +32,7 @@ const AssetAllocationSchema = new Schema(
 
 const AISuggestionSchema = new Schema(
   {
-    model: { type: String, default: 'gemini-3.6-flash' },
+    model: { type: String, default: 'pending' },
     allocation: { type: [AssetAllocationSchema], default: [] },
     projectedValue: { type: Number, default: 0 },
     rebalancing: {
@@ -42,7 +42,7 @@ const AISuggestionSchema = new Schema(
     },
     explanation: { type: String, default: '' },
     generatedAt: { type: Date, default: Date.now },
-    aiModel: { type: String, default: 'gemini-3.6-flash' },
+    aiModel: { type: String, default: 'pending' },
     disclaimer: {
       type: String,
       default: 'Educational and research preview only. Not SEBI registered investment advice.',

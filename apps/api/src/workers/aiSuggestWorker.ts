@@ -75,8 +75,8 @@ export function createAiSuggestWorker(): Worker {
 
         portfolio.aiSuggestion = {
           status: 'completed',
-          model: suggestion.model || 'gemini-1.5-flash',
-          aiModel: suggestion.model || 'gemini-1.5-flash',
+          model: suggestion.aiModel || suggestion.model || 'gemini-3.6-flash',
+          aiModel: suggestion.aiModel || suggestion.model || 'gemini-3.6-flash',
           allocation: (suggestion.allocation || []) as unknown as NonNullable<typeof portfolio.aiSuggestion>['allocation'],
           projectedValue: suggestion.projectedValue,
           rebalancing: suggestion.rebalancing,
