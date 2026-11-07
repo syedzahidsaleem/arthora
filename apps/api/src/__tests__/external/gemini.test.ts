@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as gemini from '../../lib/external/gemini';
 import { FundMetadata } from '../../lib/models/FundMetadata';
+import { StockMetadata } from '../../lib/models/StockMetadata';
 import * as mfapi from '../../lib/external/mfapi';
 import * as yfinance from '../../lib/external/yfinance';
+import { AppError } from '../../lib/errors/AppError';
 
 process.env.GEMINI_API_KEY = 'mock_gemini_api_key_12345';
 process.env.GEMINI_MODEL = 'gemini-3.6-flash';
@@ -342,6 +344,68 @@ describe('Google Gemini AI Integration', () => {
         ),
       );
       expect(validationCalls.length).toBeGreaterThan(0);
+      warnSpy.mockRestore();
+    });
+
+    it('upstream timeout is UNVERIFIABLE and does not cascade through candidate models', async () => {
+      // Simulate MongoDB cold/empty
+      vi.mocked(FundMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue(null),
+      } as never);
+      vi.mocked(StockMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue(null),
+      } as never);
+
+      // Simulate upstream timeout (504)
+      vi.mocked(mfapi.fetchSchemeDetail).mockRejectedValue(
+        new AppError('Request to mfapi.in timed out after 4000ms', 504, 'GATEWAY_TIMEOUT'),
+      );
+      vi.mocked(yfinance.fetchStockQuote).mockResolvedValue({
+        symbol: 'RELIANCE',
+        currentPrice: 2500,
+        previousClose: 2480,
+        open: 2490,
+        dayHigh: 2510,
+        dayLow: 2475,
+        volume: 1000000,
+        marketCap: 1700000000000,
+        fiftyTwoWeekHigh: 2600,
+        fiftyTwoWeekLow: 2000,
+        beta: 1.1,
+        currency: 'INR',
+      });
+
+      mockGenerateContent.mockResolvedValueOnce({
+        response: {
+          text: () => JSON.stringify(validSuggestion),
+        },
+      });
+
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const result = await gemini.generatePortfolioSuggestion({
+        riskLevel: 'medium',
+        timePeriodYears: 5,
+        monthlyInvestment: 10000,
+        lumpSum: 0,
+      });
+
+      // Does NOT cascade to second model
+      expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+      // Accepts model's schema-valid suggestion
+      expect(result.model).toBe('gemini-3.6-flash');
+      expect(result.aiModel).toBe('gemini-3.6-flash');
+
+      // Logs stage 'verification_unavailable'
+      const unavailCalls = warnSpy.mock.calls.filter((call) =>
+        call.some(
+          (arg) =>
+            typeof arg === 'object' &&
+            arg !== null &&
+            (arg as { stage?: string }).stage === 'verification_unavailable',
+        ),
+      );
+      expect(unavailCalls.length).toBeGreaterThan(0);
       warnSpy.mockRestore();
     });
   });

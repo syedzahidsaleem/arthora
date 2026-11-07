@@ -4,6 +4,7 @@ import { FundMetadata } from '../../lib/models/FundMetadata';
 import { StockMetadata } from '../../lib/models/StockMetadata';
 import * as mfapi from '../../lib/external/mfapi';
 import * as yfinance from '../../lib/external/yfinance';
+import { AppError } from '../../lib/errors/AppError';
 import type { AllocationItem } from '../../lib/validators/aiResponse';
 
 vi.mock('../../lib/models/FundMetadata', () => ({
@@ -56,7 +57,7 @@ describe('allocationVerifier', () => {
   };
 
   describe('mutual_fund verification', () => {
-    it('passes when schemeCode and matching ISIN exist in FundMetadata', async () => {
+    it('passes and returns VERIFIED when schemeCode and matching ISIN exist in FundMetadata', async () => {
       vi.mocked(FundMetadata.findOne).mockReturnValue({
         lean: vi.fn().mockResolvedValue({
           schemeCode: 120716,
@@ -67,7 +68,23 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([validMfItem]);
       expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
       expect(result.failure).toBeUndefined();
+    });
+
+    it('local hit never calls upstream mfapi', async () => {
+      vi.mocked(FundMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue({
+          schemeCode: 120716,
+          isin: 'INF789F01XS6',
+          schemeName: 'UTI Nifty 50 Index Fund',
+        }),
+      } as never);
+
+      const result = await verifyAllocation([validMfItem]);
+      expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
+      expect(mfapi.fetchSchemeDetail).not.toHaveBeenCalled();
     });
 
     it('falls back to mfapi when not in DB and succeeds if found with matching ISIN', async () => {
@@ -89,14 +106,18 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([validMfItem]);
       expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
+      expect(mfapi.fetchSchemeDetail).toHaveBeenCalledWith(120716);
     });
 
-    it('fails when schemeCode is hallucinated (neither in DB nor mfapi)', async () => {
+    it('rejects hallucinated code when mfapi returns 404 (REJECTED)', async () => {
       vi.mocked(FundMetadata.findOne).mockReturnValue({
         lean: vi.fn().mockResolvedValue(null),
       } as never);
 
-      vi.mocked(mfapi.fetchSchemeDetail).mockRejectedValue(new Error('Not found'));
+      vi.mocked(mfapi.fetchSchemeDetail).mockRejectedValue(
+        new AppError('Mutual fund scheme not found', 404, 'NOT_FOUND'),
+      );
 
       const hallucinatedItem: AllocationItem = {
         ...validMfItem,
@@ -105,8 +126,26 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([hallucinatedItem]);
       expect(result.isValid).toBe(false);
+      expect(result.overallStatus).toBe('REJECTED');
       expect(result.failure?.code).toBe(999999);
       expect(result.failure?.reason).toContain('does not exist in AMFI fund data');
+    });
+
+    it('marks as UNVERIFIABLE when mfapi times out or hits network error without rejecting', async () => {
+      vi.mocked(FundMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue(null),
+      } as never);
+
+      vi.mocked(mfapi.fetchSchemeDetail).mockRejectedValue(
+        new AppError('Request to mfapi.in timed out after 15s', 504, 'GATEWAY_TIMEOUT'),
+      );
+
+      const result = await verifyAllocation([validMfItem]);
+      expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('UNVERIFIABLE');
+      expect(result.unverifiedAssets?.length).toBe(1);
+      expect(result.unverifiedAssets?.[0]?.code).toBe(120716);
+      expect(result.unverifiedAssets?.[0]?.status).toBe('UNVERIFIABLE');
     });
 
     it('fails when schemeCode exists but provided ISIN conflicts with stored ISIN', async () => {
@@ -124,6 +163,7 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([conflictingItem]);
       expect(result.isValid).toBe(false);
+      expect(result.overallStatus).toBe('REJECTED');
       expect(result.failure?.code).toBe(120716);
       expect(result.failure?.reason).toContain('ISIN conflict');
     });
@@ -136,12 +176,13 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([invalidItem]);
       expect(result.isValid).toBe(false);
+      expect(result.overallStatus).toBe('REJECTED');
       expect(result.failure?.reason).toContain('Invalid or missing numeric schemeCode');
     });
   });
 
   describe('stock verification', () => {
-    it('passes when symbol resolves in StockMetadata', async () => {
+    it('passes and returns VERIFIED when symbol resolves in StockMetadata', async () => {
       vi.mocked(StockMetadata.findOne).mockReturnValue({
         lean: vi.fn().mockResolvedValue({
           symbol: 'RELIANCE',
@@ -151,6 +192,21 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([validStockItem]);
       expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
+    });
+
+    it('local hit never calls upstream stock quote service', async () => {
+      vi.mocked(StockMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue({
+          symbol: 'RELIANCE',
+          companyName: 'Reliance Industries Ltd',
+        }),
+      } as never);
+
+      const result = await verifyAllocation([validStockItem]);
+      expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
+      expect(yfinance.fetchStockQuote).not.toHaveBeenCalled();
     });
 
     it('falls back to stock quote when not in DB and succeeds', async () => {
@@ -175,14 +231,18 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([validStockItem]);
       expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('VERIFIED');
+      expect(yfinance.fetchStockQuote).toHaveBeenCalledWith('RELIANCE');
     });
 
-    it('fails when stock ticker cannot be resolved via DB or quote service', async () => {
+    it('rejects when stock ticker returns 404 (REJECTED)', async () => {
       vi.mocked(StockMetadata.findOne).mockReturnValue({
         lean: vi.fn().mockResolvedValue(null),
       } as never);
 
-      vi.mocked(yfinance.fetchStockQuote).mockRejectedValue(new Error('Symbol not found'));
+      vi.mocked(yfinance.fetchStockQuote).mockRejectedValue(
+        new AppError('Stock symbol FAKECOMPANY not found on NSE', 404, 'NOT_FOUND'),
+      );
 
       const hallucinatedStock: AllocationItem = {
         ...validStockItem,
@@ -191,8 +251,24 @@ describe('allocationVerifier', () => {
 
       const result = await verifyAllocation([hallucinatedStock]);
       expect(result.isValid).toBe(false);
+      expect(result.overallStatus).toBe('REJECTED');
       expect(result.failure?.code).toBe('FAKECOMPANY');
-      expect(result.failure?.reason).toContain('failed to resolve via stock service');
+      expect(result.failure?.reason).toContain('not found on NSE');
+    });
+
+    it('marks as UNVERIFIABLE when stock service times out or hits 502', async () => {
+      vi.mocked(StockMetadata.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue(null),
+      } as never);
+
+      vi.mocked(yfinance.fetchStockQuote).mockRejectedValue(
+        new AppError('Yahoo Finance quote error for RELIANCE: 502 Bad Gateway', 502, 'EXTERNAL_API_ERROR'),
+      );
+
+      const result = await verifyAllocation([validStockItem]);
+      expect(result.isValid).toBe(true);
+      expect(result.overallStatus).toBe('UNVERIFIABLE');
+      expect(result.unverifiedAssets?.length).toBe(1);
     });
   });
 });

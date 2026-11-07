@@ -264,7 +264,7 @@ export async function generatePortfolioSuggestion(
 
     // Strict existence check for mutual funds & stocks (no silent rewriting)
     const verification = await verifyAllocation(validation.data.allocation);
-    if (!verification.isValid) {
+    if (!verification.isValid || verification.overallStatus === 'REJECTED') {
       console.warn('⚠️ [Gemini] Allocation validation failed: asset does not exist or ISIN conflicts:', {
         model: modelName,
         status: 422,
@@ -275,6 +275,25 @@ export async function generatePortfolioSuggestion(
         elapsedMs: Date.now() - startTime,
       });
       continue;
+    }
+
+    if (verification.overallStatus === 'UNVERIFIABLE') {
+      console.warn('⚠️ [Gemini] Upstream verification unavailable; accepting schema-valid portfolio without burning model chain:', {
+        model: modelName,
+        status: 200,
+        stage: 'verification_unavailable',
+        unverifiedAssets: verification.unverifiedAssets?.map((a) => ({
+          assetType: a.assetType,
+          code: a.code,
+          reason: a.reason,
+        })),
+        elapsedMs: Date.now() - startTime,
+      });
+      return {
+        ...validation.data,
+        model: modelName,
+        aiModel: modelName,
+      };
     }
 
     // Success! Stamp active model and return exact suggestion without modifying codes
