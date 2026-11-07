@@ -18,7 +18,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "test": "pnpm -r run test",
-    "verify": "pnpm --filter @arthora/shared build && pnpm -r run lint && pnpm -r run type-check && pnpm -r run test && pnpm --filter @arthora/web build",
     "clean": "pnpm -r run clean"
   },
   "devDependencies": {
