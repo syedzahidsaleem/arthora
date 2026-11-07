@@ -13,7 +13,6 @@ import { StockTechnicalChart } from './StockTechnicalChart';
 import { StockHoldingPattern } from './StockHoldingPattern';
 import { StockPeerComparison } from './StockPeerComparison';
 import { PageSkeleton } from '../common/PageSkeleton';
-import { DisclaimerBanner } from '../common/DisclaimerBanner';
 import { cn } from '@/lib/utils';
 
 interface StockDetailViewProps {
@@ -132,8 +131,6 @@ export function StockDetailView({ symbol: initialSymbol }: StockDetailViewProps)
           </div>
         )}
       </div>
-
-      <DisclaimerBanner inline />
     </div>
   );
 }

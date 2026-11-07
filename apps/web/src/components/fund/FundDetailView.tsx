@@ -22,7 +22,6 @@ import { FundHoldingsTable } from '@/components/fund/FundHoldingsTable';
 import { FundPeerComparison } from '@/components/fund/FundPeerComparison';
 import { SIPCalculator } from '@/components/fund/SIPCalculator';
 import { MarketCapBar } from '@/components/fund/MarketCapBar';
-import { DisclaimerBanner } from '@/components/common/DisclaimerBanner';
 import { PageSkeleton } from '@/components/common/PageSkeleton';
 import { cn } from '@/lib/utils';
 
@@ -195,8 +194,6 @@ export function FundDetailView({ schemeCode: initialSchemeCode }: FundDetailView
           <SIPCalculator initialCAGR={metrics?.cagr3Y || metrics?.cagr5Y || 14.0} />
         )}
       </div>
-
-      <DisclaimerBanner inline />
     </div>
   );
 }

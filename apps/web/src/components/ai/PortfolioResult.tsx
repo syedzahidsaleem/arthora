@@ -7,7 +7,6 @@ import { ProjectedValueChart } from './ProjectedValueChart';
 import { AllocationPieChart } from './AllocationPieChart';
 import { AllocationCard } from './AllocationCard';
 import { AIExplanationCard } from './AIExplanationCard';
-import { DisclaimerBanner } from '../common/DisclaimerBanner';
 import { formatDate, formatINR } from '@arthora/shared';
 import type { IPortfolio } from '@arthora/shared';
 
@@ -158,9 +157,6 @@ export function PortfolioResult({ portfolio, onReset }: PortfolioResultProps) {
           model={suggestion.model || suggestion.aiModel}
         />
       )}
-
-      {/* Inline Regulatory Disclaimer */}
-      <DisclaimerBanner inline />
     </div>
   );
 }
