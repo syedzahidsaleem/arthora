@@ -19,20 +19,22 @@ export function useAuth() {
   const logout = useAuthStore((state) => state.logout);
   const initialize = useAuthStore((state) => state.initialize);
 
+  // Initialize session once on mount without re-running on every auth state change
   useEffect(() => {
-    // Initialize session verification on mount
-    initialize();
+    void initialize();
+  }, [initialize]);
 
-    // Listen to external Firebase Auth changes (e.g. sign-out in another tab)
+  // Listen to external Firebase Auth changes (e.g. sign-out in another tab)
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (!firebaseUser && isAuthenticated && user?.authProvider === 'google') {
-        // If Google user signed out of Firebase, synchronize local store
-        logout();
+      const state = useAuthStore.getState();
+      if (!firebaseUser && state.isAuthenticated && state.user?.authProvider === 'google') {
+        void state.logout();
       }
     });
 
     return () => unsubscribe();
-  }, [initialize, isAuthenticated, user?.authProvider, logout]);
+  }, []);
 
   return {
     user,

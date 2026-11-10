@@ -10,7 +10,47 @@ import { API_ENDPOINTS } from '../lib/api/endpoints';
 import { fetchWithColdStartRetry } from '../lib/api/client';
 import { getApiBaseUrl } from '../lib/api/config';
 
-const API_BASE_URL = getApiBaseUrl();
+const AUTH_REQUEST_TIMEOUT_MS = 8000;
+
+let activeRefreshPromise: Promise<boolean> | null = null;
+let activeInitPromise: Promise<void> | null = null;
+
+function parseJwtExp(token: string): number | null {
+  try {
+    const part = token.split('.')[1];
+    if (!part) return null;
+    const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
+    const json = JSON.parse(
+      decodeURIComponent(
+        window
+          .atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      ),
+    ) as { exp?: number };
+    return typeof json.exp === 'number' ? json.exp : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit,
+  timeoutMs = AUTH_REQUEST_TIMEOUT_MS,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 export interface AuthState {
   user: IUser | null;
@@ -18,6 +58,7 @@ export interface AuthState {
   refreshToken: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  lastAuthError: 'expired' | 'network' | null;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithGoogleToken: (idToken: string) => Promise<void>;
@@ -26,6 +67,7 @@ export interface AuthState {
   setUser: (user: IUser | null) => void;
   updateUser: (user: Partial<IUser>) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  refreshSession: () => Promise<boolean>;
   initialize: () => Promise<void>;
 }
 
@@ -37,6 +79,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isLoading: false,
       isAuthenticated: false,
+      lastAuthError: null,
 
       setUser: (user) => {
         set({ user, isAuthenticated: !!user && !!get().accessToken });
@@ -50,74 +93,185 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setTokens: (accessToken, refreshToken) => {
-        set({ accessToken, refreshToken, isAuthenticated: !!accessToken });
+        set({
+          accessToken,
+          refreshToken,
+          isAuthenticated: !!accessToken,
+          lastAuthError: null,
+        });
       },
 
-      initialize: async () => {
-        const { accessToken, refreshToken } = get();
-        if (!accessToken) {
-          set({ isLoading: false, isAuthenticated: false, user: null });
-          return;
+      refreshSession: async () => {
+        if (activeRefreshPromise) {
+          return activeRefreshPromise;
         }
 
-        set({ isLoading: true });
-        try {
-          // Verify current access token by fetching /me
-          const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.ME}`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-
-          if (response.ok) {
-            const result: ApiResponse<IUser> = await response.json();
-            if (result.success && result.data) {
-              set({ user: result.data, isAuthenticated: true, isLoading: false });
-              return;
-            }
+        const runRefresh = async (): Promise<boolean> => {
+          const { refreshToken } = get();
+          if (!refreshToken) {
+            set({
+              user: null,
+              accessToken: null,
+              refreshToken: null,
+              isAuthenticated: false,
+              lastAuthError: 'expired',
+            });
+            return false;
           }
 
-          // If /me failed, try refreshing using refreshToken
-          if (refreshToken) {
-            const refreshRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`, {
+          try {
+            const baseUrl = getApiBaseUrl();
+            const refreshRes = await fetchWithTimeout(`${baseUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ refreshToken }),
             });
 
-            if (refreshRes.ok) {
-              const refreshData = await refreshRes.json();
-              if (refreshData.success && refreshData.data) {
-                const { accessToken: newAccess, refreshToken: newRefresh } = refreshData.data;
-                set({ accessToken: newAccess, refreshToken: newRefresh });
+            if (refreshRes.status === 401 || refreshRes.status === 403) {
+              set({
+                user: null,
+                accessToken: null,
+                refreshToken: null,
+                isAuthenticated: false,
+                lastAuthError: 'expired',
+              });
+              return false;
+            }
 
-                // Retry fetching /me with new access token
-                const meRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.ME}`, {
-                  headers: { Authorization: `Bearer ${newAccess}` },
+            if (!refreshRes.ok) {
+              set({ lastAuthError: 'network' });
+              return false;
+            }
+
+            const refreshData = await refreshRes.json();
+            if (refreshData.success && refreshData.data?.accessToken) {
+              set({
+                accessToken: refreshData.data.accessToken,
+                refreshToken: refreshData.data.refreshToken ?? refreshToken,
+                isAuthenticated: true,
+                lastAuthError: null,
+              });
+              return true;
+            }
+
+            set({
+              user: null,
+              accessToken: null,
+              refreshToken: null,
+              isAuthenticated: false,
+              lastAuthError: 'expired',
+            });
+            return false;
+          } catch {
+            set({ lastAuthError: 'network' });
+            return false;
+          }
+        };
+
+        activeRefreshPromise = runRefresh().finally(() => {
+          activeRefreshPromise = null;
+        });
+
+        return activeRefreshPromise;
+      },
+
+      initialize: async () => {
+        if (activeInitPromise) {
+          return activeInitPromise;
+        }
+
+        const runInit = async () => {
+          const { accessToken } = get();
+          if (!accessToken) {
+            set({ isLoading: false, isAuthenticated: false, user: null, lastAuthError: null });
+            return;
+          }
+
+          set({ isLoading: true });
+          const baseUrl = getApiBaseUrl();
+          const exp = typeof window !== 'undefined' ? parseJwtExp(accessToken) : null;
+          const nowSeconds = Math.floor(Date.now() / 1000);
+
+          try {
+            // If access token is already expired or nearly expired, refresh via single-flight lock first
+            if (exp !== null && exp - nowSeconds <= 60) {
+              const refreshed = await get().refreshSession();
+              if (!refreshed) {
+                set({ isLoading: false });
+                return;
+              }
+            }
+
+            const activeToken = get().accessToken;
+            if (!activeToken) {
+              set({ isLoading: false });
+              return;
+            }
+
+            const response = await fetchWithTimeout(`${baseUrl}${API_ENDPOINTS.AUTH.ME}`, {
+              headers: {
+                Authorization: `Bearer ${activeToken}`,
+              },
+            });
+
+            if (response.ok) {
+              const result: ApiResponse<IUser> = await response.json();
+              if (result.success && result.data) {
+                set({
+                  user: result.data,
+                  isAuthenticated: true,
+                  isLoading: false,
+                  lastAuthError: null,
                 });
-                if (meRes.ok) {
-                  const meData: ApiResponse<IUser> = await meRes.json();
-                  if (meData.success && meData.data) {
-                    set({ user: meData.data, isAuthenticated: true, isLoading: false });
-                    return;
+                return;
+              }
+            }
+
+            if (response.status === 401) {
+              const refreshed = await get().refreshSession();
+              if (refreshed) {
+                const newToken = get().accessToken;
+                if (newToken) {
+                  const meRes = await fetchWithTimeout(`${baseUrl}${API_ENDPOINTS.AUTH.ME}`, {
+                    headers: { Authorization: `Bearer ${newToken}` },
+                  });
+                  if (meRes.ok) {
+                    const meData: ApiResponse<IUser> = await meRes.json();
+                    if (meData.success && meData.data) {
+                      set({
+                        user: meData.data,
+                        isAuthenticated: true,
+                        isLoading: false,
+                        lastAuthError: null,
+                      });
+                      return;
+                    }
                   }
                 }
               }
+              set({ isLoading: false });
+              return;
             }
-          }
 
-          // Invalidation fallback
-          set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false, isLoading: false });
-        } catch (error) {
-          console.error('Failed to initialize session:', error);
-          set({ isLoading: false });
-        }
+            set({ isLoading: false });
+          } catch (error) {
+            console.warn('⚠️ [AuthStore] Session initialization deferred due to network issue:', error);
+            set({ isLoading: false, lastAuthError: 'network' });
+          }
+        };
+
+        activeInitPromise = runInit().finally(() => {
+          activeInitPromise = null;
+        });
+
+        return activeInitPromise;
       },
 
       login: async (email: string, password: string) => {
-        set({ isLoading: true });
+        set({ isLoading: true, lastAuthError: null });
         try {
-          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+          const baseUrl = getApiBaseUrl();
+          const response = await fetchWithColdStartRetry(`${baseUrl}${API_ENDPOINTS.AUTH.LOGIN}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
@@ -135,6 +289,7 @@ export const useAuthStore = create<AuthState>()(
             refreshToken,
             isAuthenticated: true,
             isLoading: false,
+            lastAuthError: null,
           });
         } catch (error) {
           set({ isLoading: false });
@@ -143,9 +298,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       loginWithGoogleToken: async (idToken: string) => {
-        set({ isLoading: true });
+        set({ isLoading: true, lastAuthError: null });
         try {
-          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.GOOGLE}`, {
+          const baseUrl = getApiBaseUrl();
+          const response = await fetchWithColdStartRetry(`${baseUrl}${API_ENDPOINTS.AUTH.GOOGLE}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idToken }),
@@ -163,6 +319,7 @@ export const useAuthStore = create<AuthState>()(
             refreshToken,
             isAuthenticated: true,
             isLoading: false,
+            lastAuthError: null,
           });
         } catch (error) {
           set({ isLoading: false });
@@ -182,9 +339,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       register: async (name: string, email: string, password: string) => {
-        set({ isLoading: true });
+        set({ isLoading: true, lastAuthError: null });
         try {
-          const response = await fetchWithColdStartRetry(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
+          const baseUrl = getApiBaseUrl();
+          const response = await fetchWithColdStartRetry(`${baseUrl}${API_ENDPOINTS.AUTH.REGISTER}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),
@@ -202,6 +360,7 @@ export const useAuthStore = create<AuthState>()(
             refreshToken,
             isAuthenticated: true,
             isLoading: false,
+            lastAuthError: null,
           });
         } catch (error) {
           set({ isLoading: false });
@@ -211,28 +370,35 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         const { accessToken, refreshToken } = get();
+        // Immediately clear local state so UI redirects promptly even if backend is unreachable
+        set({
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
+          isLoading: false,
+          lastAuthError: null,
+        });
+
         try {
           if (accessToken) {
-            await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.LOGOUT}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
+            const baseUrl = getApiBaseUrl();
+            await fetchWithTimeout(
+              `${baseUrl}${API_ENDPOINTS.AUTH.LOGOUT}`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ refreshToken }),
               },
-              body: JSON.stringify({ refreshToken }),
-            });
+              2500,
+            );
           }
           await firebaseSignOut(auth);
         } catch (error) {
-          console.error('Logout error:', error);
-        } finally {
-          set({
-            user: null,
-            accessToken: null,
-            refreshToken: null,
-            isAuthenticated: false,
-            isLoading: false,
-          });
+          console.warn('Logout network cleanup skipped:', error);
         }
       },
     }),
