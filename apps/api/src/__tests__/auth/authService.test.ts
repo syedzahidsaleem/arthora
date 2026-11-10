@@ -278,6 +278,57 @@ describe('AuthService', () => {
     });
   });
 
+  describe('refreshAccessToken (replay protection)', () => {
+    it('rejects reuse of the previous refresh token even within the same second', async () => {
+      const sessionStore = new Map<string, string>();
+      vi.mocked(redisService.set).mockImplementation(async (key: string, value: unknown) => {
+        sessionStore.set(key, String(value));
+        return 'OK';
+      });
+      vi.mocked(redisService.get).mockImplementation(async (key: string) => {
+        return (sessionStore.get(key) ?? null) as never;
+      });
+      vi.mocked(redisService.del).mockImplementation(async (key: string | string[]) => {
+        const list = Array.isArray(key) ? key : [key];
+        let count = 0;
+        for (const k of list) {
+          if (sessionStore.delete(k)) count++;
+        }
+        return count;
+      });
+
+      const mockUser = {
+        _id: { toString: () => 'user_777' },
+        firebaseUid: 'fb_777',
+        passwordHash: 'hashed_pw',
+        isActive: true,
+        email: 'user777@example.com',
+        save: vi.fn().mockResolvedValue(true),
+        toObject: () => ({
+          _id: 'user_777',
+          firebaseUid: 'fb_777',
+          email: 'user777@example.com',
+        }),
+      };
+
+      vi.mocked(User.findOne).mockReturnValue({
+        select: vi.fn().mockResolvedValue(mockUser),
+      } as never);
+      vi.mocked(User.findById).mockResolvedValue(mockUser as never);
+      vi.mocked(argon2.verify).mockResolvedValue(true as never);
+
+      const loginResult = await authService.loginWithEmail('user777@example.com', 'CorrectPassword123');
+      const refreshResult = await authService.refreshAccessToken(loginResult.refreshToken);
+
+      expect(refreshResult.refreshToken).not.toBe(loginResult.refreshToken);
+
+      await expect(authService.refreshAccessToken(loginResult.refreshToken)).rejects.toMatchObject({
+        statusCode: 401,
+        code: 'SESSION_REVOKED',
+      });
+    });
+  });
+
   describe('logout', () => {
     it('deletes session from Redis', async () => {
       vi.mocked(redisService.del).mockResolvedValue(1 as never);
