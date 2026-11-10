@@ -1,8 +1,110 @@
 import 'dotenv/config';
 import Redis, { RedisOptions } from 'ioredis';
+import {
+  isHardQuotaOrAuthError,
+  isRedisDegraded,
+  isRedisQuotaExceeded,
+  markRedisCircuitDegraded,
+  resetRedisCircuitState,
+} from './redisState';
+
+const REDIS_COMMAND_TIMEOUT_MS = 1500;
+const REDIS_DEGRADED_COOLDOWN_MS = 60_000;
+const FALLBACK_MAX_KEYS = 5000;
+
+interface FallbackEntry {
+  value: string;
+  expiresAt: number | null;
+}
+
+/**
+ * In-memory TTL key-value fallback used when external Redis is unavailable or quota-limited.
+ */
+class FallbackMemoryStore {
+  private entries = new Map<string, FallbackEntry>();
+
+  private pruneIfExpired(key: string): FallbackEntry | null {
+    const entry = this.entries.get(key);
+    if (!entry) return null;
+    if (entry.expiresAt !== null && Date.now() > entry.expiresAt) {
+      this.entries.delete(key);
+      return null;
+    }
+    return entry;
+  }
+
+  private evictIfNeeded(): void {
+    if (this.entries.size < FALLBACK_MAX_KEYS) return;
+    const now = Date.now();
+    for (const [k, v] of this.entries) {
+      if (v.expiresAt !== null && now > v.expiresAt) {
+        this.entries.delete(k);
+      }
+    }
+    if (this.entries.size >= FALLBACK_MAX_KEYS) {
+      const oldestKey = this.entries.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.entries.delete(oldestKey);
+      }
+    }
+  }
+
+  get(key: string): string | null {
+    return this.pruneIfExpired(key)?.value ?? null;
+  }
+
+  set(key: string, value: string, ttlSeconds?: number): 'OK' {
+    this.evictIfNeeded();
+    const expiresAt = ttlSeconds && ttlSeconds > 0 ? Date.now() + ttlSeconds * 1000 : null;
+    this.entries.set(key, { value, expiresAt });
+    return 'OK';
+  }
+
+  del(keys: string | string[]): number {
+    const list = Array.isArray(keys) ? keys : [keys];
+    let removed = 0;
+    for (const key of list) {
+      if (this.entries.delete(key)) removed++;
+    }
+    return removed;
+  }
+
+  exists(key: string): boolean {
+    return this.pruneIfExpired(key) !== null;
+  }
+
+  incr(key: string): number {
+    const existing = this.pruneIfExpired(key);
+    const current = existing ? parseInt(existing.value, 10) || 0 : 0;
+    const next = current + 1;
+    this.entries.set(key, {
+      value: String(next),
+      expiresAt: existing?.expiresAt ?? null,
+    });
+    return next;
+  }
+
+  expire(key: string, ttlSeconds: number): boolean {
+    const existing = this.pruneIfExpired(key);
+    if (!existing) return false;
+    existing.expiresAt = ttlSeconds > 0 ? Date.now() + ttlSeconds * 1000 : null;
+    return true;
+  }
+
+  keys(pattern: string): string[] {
+    const regex = new RegExp('^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$');
+    const matched: string[] = [];
+    for (const key of this.entries.keys()) {
+      if (this.pruneIfExpired(key) && regex.test(key)) {
+        matched.push(key);
+      }
+    }
+    return matched;
+  }
+}
 
 class InMemoryRedisMock {
-  private storage = new Map<string, string>();
+  private store = new FallbackMemoryStore();
   public status = 'ready';
 
   on(_event: string, _callback: (...args: unknown[]) => void) { return this; }
@@ -14,35 +116,28 @@ class InMemoryRedisMock {
   }
 
   async get(key: string): Promise<string | null> {
-    return this.storage.has(key) ? this.storage.get(key)! : null;
+    return this.store.get(key);
   }
 
-  async set(key: string, value: string, ..._args: unknown[]): Promise<'OK'> {
-    this.storage.set(key, value);
-    return 'OK';
+  async set(key: string, value: string, mode?: string, ttl?: number): Promise<'OK'> {
+    const ttlSeconds = mode === 'EX' && typeof ttl === 'number' ? ttl : undefined;
+    return this.store.set(key, value, ttlSeconds);
   }
 
   async del(...keys: string[]): Promise<number> {
-    let count = 0;
-    for (const k of keys) {
-      if (this.storage.delete(k)) count++;
-    }
-    return count;
+    return this.store.del(keys);
   }
 
   async exists(key: string): Promise<number> {
-    return this.storage.has(key) ? 1 : 0;
+    return this.store.exists(key) ? 1 : 0;
   }
 
   async incr(key: string): Promise<number> {
-    const current = parseInt(this.storage.get(key) || '0', 10);
-    const next = current + 1;
-    this.storage.set(key, String(next));
-    return next;
+    return this.store.incr(key);
   }
 
-  async expire(_key: string, _ttl: number): Promise<number> {
-    return 1;
+  async expire(key: string, ttl: number): Promise<number> {
+    return this.store.expire(key, ttl) ? 1 : 0;
   }
 
   async ttl(_key: string): Promise<number> {
@@ -50,21 +145,24 @@ class InMemoryRedisMock {
   }
 
   async keys(pattern: string): Promise<string[]> {
-    const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
-    return Array.from(this.storage.keys()).filter((k) => regex.test(k));
+    return this.store.keys(pattern);
   }
 
   pipeline() {
-    let count = 1;
+    const ops: Array<() => number> = [];
+    const store = this.store;
     return {
-      incr: (k: string) => {
-        const val = parseInt(this.storage.get(k) || '0', 10) + 1;
-        this.storage.set(k, String(val));
-        count = val;
+      incr(k: string) {
+        ops.push(() => store.incr(k));
         return this;
       },
-      ttl: (_k: string) => this,
-      exec: async () => [[null, count], [null, 60]],
+      ttl(_k: string) {
+        ops.push(() => 60);
+        return this;
+      },
+      async exec() {
+        return ops.map((fn) => [null, fn()]);
+      },
     };
   }
 
@@ -75,10 +173,19 @@ class InMemoryRedisMock {
   disconnect(): void {}
 }
 
+function withCommandTimeout<T>(promise: Promise<T>, timeoutMs = REDIS_COMMAND_TIMEOUT_MS): Promise<T> {
+  let timer: NodeJS.Timeout;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Redis command timed out after ${timeoutMs}ms`)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 class RedisConnection {
   private static instance: RedisConnection;
   private client: Redis | null = null;
-  private isShutdownRegistered: boolean = false;
+  private isShutdownRegistered = false;
+  public readonly fallbackStore = new FallbackMemoryStore();
 
   private constructor() {
     this.initClient();
@@ -89,6 +196,16 @@ class RedisConnection {
       RedisConnection.instance = new RedisConnection();
     }
     return RedisConnection.instance;
+  }
+
+  public isUsable(): boolean {
+    if (!this.client) return false;
+    if (isRedisDegraded()) return false;
+    return this.client.status === 'ready';
+  }
+
+  public markDegraded(error?: unknown): void {
+    markRedisCircuitDegraded(error, REDIS_DEGRADED_COOLDOWN_MS);
   }
 
   private initClient(): void {
@@ -102,16 +219,21 @@ class RedisConnection {
     const options: RedisOptions = {
       maxRetriesPerRequest: null,
       enableReadyCheck: true,
+      connectTimeout: 5000,
       retryStrategy: (times: number) => {
-        const delay = Math.min(times * 200, 3000);
-        console.warn(`🔁 [Redis] Reconnecting attempt #${times} in ${delay}ms...`);
+        if (isRedisQuotaExceeded()) {
+          return REDIS_DEGRADED_COOLDOWN_MS;
+        }
+        const delay = Math.min(times * 500, 15_000);
+        if (times <= 3) {
+          console.warn(`🔁 [Redis] Reconnecting attempt #${times} in ${delay}ms...`);
+        }
         return delay;
       },
       reconnectOnError: (err) => {
-        const targetError = 'READONLY';
-        if (err.message.includes(targetError)) {
-          // Reconnect when a slave becomes a master
-          return true;
+        if (isHardQuotaOrAuthError(err.message)) {
+          this.markDegraded(err);
+          return false;
         }
         return false;
       },
@@ -125,16 +247,18 @@ class RedisConnection {
       });
 
       this.client.on('ready', () => {
+        resetRedisCircuitState();
         console.log('🚀 [Redis] Client ready to process commands.');
       });
 
       this.client.on('error', (err: Error) => {
-        // Non-fatal error logging: do not crash process
-        console.error('❌ [Redis] Error encountered:', err.message);
+        this.markDegraded(err);
       });
 
       this.client.on('close', () => {
-        console.warn('⚠️ [Redis] Connection closed.');
+        if (!isRedisQuotaExceeded()) {
+          console.warn('⚠️ [Redis] Connection closed.');
+        }
       });
 
       if (!this.isShutdownRegistered) {
@@ -142,7 +266,7 @@ class RedisConnection {
         this.isShutdownRegistered = true;
       }
     } catch (err) {
-      console.error('❌ [Redis] Initialization failed:', err);
+      this.markDegraded(err);
       this.client = null;
     }
   }
@@ -175,126 +299,163 @@ class RedisConnection {
 export const redisConnection = RedisConnection.getInstance();
 export const redis = redisConnection.getClient();
 
+export function isRedisUsable(): boolean {
+  return redisConnection.isUsable();
+}
+
+export function markRedisDegraded(error?: unknown): void {
+  redisConnection.markDegraded(error);
+}
+
 /**
- * Retrieves a parsed JSON or string value from Redis.
- *
- * @param key - The cache key
- * @returns Parsed value or null if not found
+ * Safely pings Redis with a short timeout so /health never hangs when Redis is unreachable.
+ */
+export async function pingRedisSafe(timeoutMs = REDIS_COMMAND_TIMEOUT_MS): Promise<boolean> {
+  if (!redisConnection.isUsable()) {
+    return false;
+  }
+  try {
+    const pong = await withCommandTimeout(redis.ping(), timeoutMs);
+    return pong === 'PONG';
+  } catch (error) {
+    redisConnection.markDegraded(error);
+    return false;
+  }
+}
+
+/**
+ * Retrieves a parsed JSON or string value from Redis, falling back to in-memory cache if degraded.
  */
 export async function get<T = unknown>(key: string): Promise<T | null> {
-  try {
-    const raw = await redis.get(key);
+  const parseRaw = (raw: string | null): T | null => {
     if (raw === null) return null;
     try {
       return JSON.parse(raw) as T;
     } catch {
       return raw as unknown as T;
     }
-  } catch (error) {
-    console.error(`❌ [Redis.get] Failed for key "${key}":`, error);
-    return null;
+  };
+
+  if (redisConnection.isUsable()) {
+    try {
+      const raw = await withCommandTimeout(redis.get(key));
+      return parseRaw(raw);
+    } catch (error) {
+      redisConnection.markDegraded(error);
+    }
   }
+
+  return parseRaw(redisConnection.fallbackStore.get(key));
 }
 
 /**
- * Sets a value in Redis with optional TTL in seconds.
- *
- * @param key - The cache key
- * @param value - Value to serialize and store
- * @param ttlSeconds - Optional time to live in seconds
+ * Sets a value in Redis (with optional TTL) or in-memory fallback when Redis is degraded.
  */
 export async function set(
   key: string,
   value: unknown,
   ttlSeconds?: number,
 ): Promise<'OK' | null> {
-  try {
-    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
-    if (ttlSeconds && ttlSeconds > 0) {
-      return await redis.set(key, stringValue, 'EX', ttlSeconds);
+  const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+  redisConnection.fallbackStore.set(key, stringValue, ttlSeconds);
+
+  if (redisConnection.isUsable()) {
+    try {
+      if (ttlSeconds && ttlSeconds > 0) {
+        return await withCommandTimeout(redis.set(key, stringValue, 'EX', ttlSeconds));
+      }
+      return await withCommandTimeout(redis.set(key, stringValue));
+    } catch (error) {
+      redisConnection.markDegraded(error);
     }
-    return await redis.set(key, stringValue);
-  } catch (error) {
-    console.error(`❌ [Redis.set] Failed for key "${key}":`, error);
-    return null;
   }
+
+  return 'OK';
 }
 
 /**
- * Deletes a key or list of keys from Redis.
- *
- * @param key - Single key or array of keys to remove
+ * Deletes a key or list of keys from Redis and in-memory fallback.
  */
 export async function del(key: string | string[]): Promise<number> {
-  try {
-    if (Array.isArray(key)) {
-      if (key.length === 0) return 0;
-      return await redis.del(...key);
+  const fallbackCount = redisConnection.fallbackStore.del(key);
+
+  if (redisConnection.isUsable()) {
+    try {
+      if (Array.isArray(key)) {
+        if (key.length === 0) return 0;
+        return await withCommandTimeout(redis.del(...key));
+      }
+      return await withCommandTimeout(redis.del(key));
+    } catch (error) {
+      redisConnection.markDegraded(error);
     }
-    return await redis.del(key);
-  } catch (error) {
-    console.error(`❌ [Redis.del] Failed for key "${key}":`, error);
-    return 0;
   }
+
+  return fallbackCount;
 }
 
 /**
- * Checks if a key exists in Redis.
- *
- * @param key - The cache key to check
+ * Checks if a key exists in Redis or in-memory fallback.
  */
 export async function exists(key: string): Promise<boolean> {
-  try {
-    const count = await redis.exists(key);
-    return count > 0;
-  } catch (error) {
-    console.error(`❌ [Redis.exists] Failed for key "${key}":`, error);
-    return false;
+  if (redisConnection.isUsable()) {
+    try {
+      const count = await withCommandTimeout(redis.exists(key));
+      return count > 0;
+    } catch (error) {
+      redisConnection.markDegraded(error);
+    }
   }
+
+  return redisConnection.fallbackStore.exists(key);
 }
 
 /**
  * Increments the integer value of a key by 1.
- *
- * @param key - The counter key
  */
 export async function incr(key: string): Promise<number> {
-  try {
-    return await redis.incr(key);
-  } catch (error) {
-    console.error(`❌ [Redis.incr] Failed for key "${key}":`, error);
-    throw error;
+  if (redisConnection.isUsable()) {
+    try {
+      return await withCommandTimeout(redis.incr(key));
+    } catch (error) {
+      redisConnection.markDegraded(error);
+    }
   }
+
+  return redisConnection.fallbackStore.incr(key);
 }
 
 /**
  * Sets an expiration timeout on a key in seconds.
- *
- * @param key - The cache key
- * @param ttlSeconds - TTL in seconds
  */
 export async function expire(key: string, ttlSeconds: number): Promise<boolean> {
-  try {
-    const res = await redis.expire(key, ttlSeconds);
-    return res === 1;
-  } catch (error) {
-    console.error(`❌ [Redis.expire] Failed for key "${key}":`, error);
-    return false;
+  redisConnection.fallbackStore.expire(key, ttlSeconds);
+
+  if (redisConnection.isUsable()) {
+    try {
+      const res = await withCommandTimeout(redis.expire(key, ttlSeconds));
+      return res === 1;
+    } catch (error) {
+      redisConnection.markDegraded(error);
+    }
   }
+
+  return true;
 }
 
 /**
  * Finds all keys matching the given glob pattern.
- *
- * @param pattern - Pattern to search (e.g., 'fund:detail:*')
  */
 export async function keys(pattern: string): Promise<string[]> {
-  try {
-    return await redis.keys(pattern);
-  } catch (error) {
-    console.error(`❌ [Redis.keys] Failed for pattern "${pattern}":`, error);
-    return [];
+  if (redisConnection.isUsable()) {
+    try {
+      return await withCommandTimeout(redis.keys(pattern));
+    } catch (error) {
+      redisConnection.markDegraded(error);
+    }
   }
+
+  return redisConnection.fallbackStore.keys(pattern);
 }
 
 export default {

@@ -6,7 +6,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import * as Sentry from '@sentry/node';
 import { connectDB } from './lib/db/connection';
-import { redis } from './lib/db/redis';
+import { pingRedisSafe } from './lib/db/redis';
 import { requestIdMiddleware } from './lib/middleware/requestId';
 import { generalLimiter } from './lib/middleware/rateLimitMiddleware';
 import { corsMiddleware } from './lib/middleware/corsMiddleware';
@@ -130,15 +130,15 @@ async function startServer(): Promise<void> {
     // Connect to MongoDB
     await connectDB();
 
-    // Verify Redis connection availability with graceful degradation
-    try {
-      const redisPing = await redis.ping();
-      console.log(`📡 [Redis] Initial ping status: ${redisPing}`);
-    } catch (redisErr) {
-      console.warn('⚠️ [Redis] Initial ping failed (proceeding in degraded mode):', redisErr);
+    // Verify Redis connection availability with bounded timeout and graceful degradation
+    const redisReady = await pingRedisSafe(2500);
+    if (redisReady) {
+      console.log('📡 [Redis] Initial ping status: PONG');
+    } else {
+      console.warn('⚠️ [Redis] Initial ping unavailable (proceeding with in-memory fallback).');
     }
 
-    if (process.env.RUN_WORKER_IN_PROCESS === 'true') {
+    if (process.env.RUN_WORKER_IN_PROCESS === 'true' && redisReady) {
       try {
         const { startWorkers } = await import('./worker');
         await startWorkers();
@@ -146,6 +146,8 @@ async function startServer(): Promise<void> {
       } catch (workerErr) {
         console.warn('⚠️ [Worker Process] Embedded background worker failed to start (API will remain online):', workerErr);
       }
+    } else if (process.env.RUN_WORKER_IN_PROCESS === 'true') {
+      console.warn('⚠️ [Worker Process] Skipping BullMQ workers while Redis is unavailable; in-process async fallbacks active.');
     }
 
     const server = app.listen(PORT, () => {

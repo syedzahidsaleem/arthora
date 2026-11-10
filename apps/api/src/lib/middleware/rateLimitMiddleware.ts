@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { redis } from '../db/redis';
+import { isRedisDegraded, markRedisCircuitDegraded } from '../db/redisState';
 import { AppError } from '../errors/AppError';
 
 export interface RateLimiterOptions {
@@ -26,7 +27,8 @@ export function createRateLimiter(options: RateLimiterOptions) {
       const keySuffix = keyGenerator(req);
       const key = `ratelimit:${keySuffix}`;
 
-      if (!redis || typeof redis.pipeline !== 'function') {
+      const clientStatus = (redis as unknown as { status?: string } | undefined)?.status;
+      if (isRedisDegraded() || !redis || typeof redis.pipeline !== 'function' || (clientStatus && clientStatus !== 'ready')) {
         return next();
       }
 
@@ -38,8 +40,20 @@ export function createRateLimiter(options: RateLimiterOptions) {
       pipeline.incr(key);
       pipeline.ttl(key);
 
-      const results = await pipeline.exec();
-      if (!results || results.length < 2) {
+      let execTimer: NodeJS.Timeout | undefined;
+      const results = await Promise.race([
+        pipeline.exec(),
+        new Promise<null>((resolve) => {
+          execTimer = setTimeout(() => resolve(null), 1500);
+        }),
+      ]).finally(() => {
+        if (execTimer) clearTimeout(execTimer);
+      });
+      if (!results) {
+        markRedisCircuitDegraded(new Error('RateLimiter pipeline timed out after 1500ms'));
+        return next();
+      }
+      if (results.length < 2) {
         return next();
       }
 
@@ -47,7 +61,7 @@ export function createRateLimiter(options: RateLimiterOptions) {
       const [ttlErr, ttlResult] = results[1] as [Error | null, number];
 
       if (incrErr) {
-        console.error('❌ [RateLimiter] Error during INCR:', incrErr);
+        markRedisCircuitDegraded(incrErr);
         return next();
       }
 
@@ -56,7 +70,15 @@ export function createRateLimiter(options: RateLimiterOptions) {
 
       // If key is newly created (TTL is -1), set its expiration window
       if (remainingTtl === -1 || currentCount === 1) {
-        await redis.expire(key, windowSeconds);
+        let expTimer: NodeJS.Timeout | undefined;
+        await Promise.race([
+          redis.expire(key, windowSeconds),
+          new Promise<void>((resolve) => {
+            expTimer = setTimeout(resolve, 1500);
+          }),
+        ]).finally(() => {
+          if (expTimer) clearTimeout(expTimer);
+        });
         remainingTtl = windowSeconds;
       }
 
@@ -82,7 +104,7 @@ export function createRateLimiter(options: RateLimiterOptions) {
 
       next();
     } catch (error) {
-      console.error('❌ [RateLimiter] Unexpected error:', error);
+      markRedisCircuitDegraded(error);
       // Fail open so Redis issues don't completely block traffic
       next();
     }

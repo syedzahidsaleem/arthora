@@ -63,6 +63,40 @@ describe('Portfolios Integration Endpoints', () => {
       expect(res.body.data.pollUrl).toBe('/api/v1/portfolios/port_doc_999/status');
       expect(aiSuggestQueue.add).toHaveBeenCalled();
     });
+
+    it('falls back cleanly and returns 202 when BullMQ enqueue fails', async () => {
+      const mockDoc = {
+        _id: { toString: () => 'port_doc_fallback' },
+        userId,
+        name: 'Emergency Corpus',
+        goal: 'Emergency reserve in 3 years',
+        timePeriod: 3,
+        riskLevel: 'low',
+        monthlyInvestment: 10000,
+        lumpSum: 50000,
+        aiSuggestion: { status: 'pending' },
+      };
+
+      vi.mocked(Portfolio.create).mockResolvedValue(mockDoc as never);
+      vi.mocked(aiSuggestQueue.add).mockRejectedValueOnce(new Error('ERR max requests limit exceeded'));
+
+      const res = await request(app)
+        .post('/api/v1/portfolios')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: 'Emergency Corpus',
+          goal: 'Emergency reserve in 3 years',
+          goalCategory: 'emergency',
+          timePeriod: 3,
+          riskLevel: 'low',
+          monthlyInvestment: 10000,
+          lumpSum: 50000,
+        });
+
+      expect(res.status).toBe(202);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.portfolioId).toBe('port_doc_fallback');
+    });
   });
 
   describe('GET /api/v1/portfolios/:id/status', () => {

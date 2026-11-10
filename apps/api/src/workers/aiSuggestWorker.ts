@@ -1,16 +1,8 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
 import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
-import { Portfolio } from '../lib/models/Portfolio';
-import {
-  hashPortfolioInput,
-  getCachedSuggestion,
-  cacheSuggestion,
-  type PortfolioInput,
-} from '../lib/services/aiCacheService';
-import { generatePortfolioSuggestion } from '../lib/external/gemini';
-import { buildFallbackSuggestion } from '../lib/services/fallbackPortfolioEngine';
-import type { PortfolioSuggestion } from '../lib/validators/aiResponse';
+import { type PortfolioInput } from '../lib/services/aiCacheService';
+import { executePortfolioSuggestionJob } from '../lib/services/aiPortfolioRunner';
 
 export const AI_SUGGEST_QUEUE = 'ai-suggest';
 export const aiSuggestQueue = new Queue(AI_SUGGEST_QUEUE, {
@@ -49,52 +41,7 @@ export function createAiSuggestWorker(): Worker {
         }),
       );
 
-      const portfolio = await Portfolio.findById(portfolioId);
-      if (!portfolio) {
-        throw new Error(`Portfolio ${portfolioId} not found`);
-      }
-
-      if (portfolio.aiSuggestion) {
-        portfolio.aiSuggestion.status = 'generating';
-      }
-      await portfolio.save();
-
-      try {
-        const inputHash = hashPortfolioInput(input);
-        let suggestion: PortfolioSuggestion | null = await getCachedSuggestion(inputHash);
-
-        if (!suggestion) {
-          try {
-            suggestion = await generatePortfolioSuggestion(input);
-          } catch (aiErr) {
-            console.warn('⚠️ [AI Worker] Gemini generation failed, falling back to deterministic engine:', aiErr);
-            suggestion = buildFallbackSuggestion(input);
-          }
-          await cacheSuggestion(inputHash, input, suggestion);
-        }
-
-        portfolio.aiSuggestion = {
-          status: 'completed',
-          model: suggestion.aiModel || suggestion.model || 'gemini-3.6-flash',
-          aiModel: suggestion.aiModel || suggestion.model || 'gemini-3.6-flash',
-          allocation: (suggestion.allocation || []) as unknown as NonNullable<typeof portfolio.aiSuggestion>['allocation'],
-          projectedValue: suggestion.projectedValue,
-          rebalancing: suggestion.rebalancing,
-          explanation: suggestion.explanation,
-          disclaimer: suggestion.disclaimer,
-          generatedAt: new Date(),
-        };
-
-        await portfolio.save();
-
-        return { portfolioId, status: 'completed' };
-      } catch (err) {
-        if (portfolio.aiSuggestion) {
-          portfolio.aiSuggestion.status = 'failed';
-        }
-        await portfolio.save();
-        throw err;
-      }
+      return executePortfolioSuggestionJob(portfolioId, input);
     },
     {
       ...SERVERLESS_WORKER_DEFAULTS,

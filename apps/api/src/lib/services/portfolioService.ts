@@ -1,12 +1,37 @@
 import { Portfolio } from '../models/Portfolio';
 import { aiSuggestQueue } from '../../workers/aiSuggestWorker';
 import { AppError } from '../errors/AppError';
+import { safeEnqueueJob } from '../utils/safeQueue';
+import { executePortfolioSuggestionJob } from './aiPortfolioRunner';
+import type { PortfolioInput } from './aiCacheService';
 import type {
   IPortfolio,
   CreatePortfolioInput,
   UpdatePortfolioInput,
   PaginatedData,
 } from '@arthora/shared';
+
+async function dispatchPortfolioSuggestion(
+  portfolioId: string,
+  userId: string,
+  input: PortfolioInput,
+  jobPrefix: string,
+): Promise<void> {
+  const queued = await safeEnqueueJob(
+    aiSuggestQueue,
+    'generate-ai-suggestion',
+    { portfolioId, userId, input },
+    { jobId: `${jobPrefix}-${portfolioId}-${Date.now()}` },
+  );
+
+  if (!queued) {
+    setImmediate(() => {
+      void executePortfolioSuggestionJob(portfolioId, input).catch((err) => {
+        console.warn(`⚠️ [PortfolioService] In-process AI generation failed for ${portfolioId}:`, err);
+      });
+    });
+  }
+}
 
 /**
  * Creates a new portfolio tracking document and enqueues background AI synthesis.
@@ -40,21 +65,17 @@ export async function createPortfolio(
 
   const portfolioId = portfolio._id.toString();
 
-  // Enqueue BullMQ AI Suggestion job
-  await aiSuggestQueue.add(
-    'generate-ai-suggestion',
+  await dispatchPortfolioSuggestion(
+    portfolioId,
+    userId,
     {
-      portfolioId,
-      userId,
-      input: {
-        goalName: input.name || input.goal,
-        timePeriodYears: input.timePeriod,
-        riskLevel: input.riskLevel,
-        monthlyInvestment: input.monthlyInvestment ?? 0,
-        lumpSum: input.lumpSum ?? 0,
-      },
+      goalName: input.name || input.goal,
+      timePeriodYears: input.timePeriod,
+      riskLevel: input.riskLevel,
+      monthlyInvestment: input.monthlyInvestment ?? 0,
+      lumpSum: input.lumpSum ?? 0,
     },
-    { jobId: `ai-${portfolioId}-${Date.now()}` },
+    'ai',
   );
 
   return {
@@ -190,20 +211,17 @@ export async function updatePortfolio(
     if (portfolio.aiSuggestion) {
       portfolio.aiSuggestion.status = 'pending';
     }
-    await aiSuggestQueue.add(
-      'generate-ai-suggestion',
+    await dispatchPortfolioSuggestion(
+      portfolio._id.toString(),
+      userId,
       {
-        portfolioId: portfolio._id.toString(),
-        userId,
-        input: {
-          goalName: portfolio.name,
-          timePeriodYears: portfolio.timePeriod,
-          riskLevel: portfolio.riskLevel,
-          monthlyInvestment: portfolio.monthlyInvestment,
-          lumpSum: portfolio.lumpSum,
-        },
+        goalName: portfolio.name,
+        timePeriodYears: portfolio.timePeriod,
+        riskLevel: portfolio.riskLevel,
+        monthlyInvestment: portfolio.monthlyInvestment ?? 0,
+        lumpSum: portfolio.lumpSum ?? 0,
       },
-      { jobId: `ai-re-${portfolioId}-${Date.now()}` },
+      'ai-re',
     );
   }
 

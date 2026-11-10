@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { redis } from '../lib/db/redis';
+import { isRedisDegraded } from '../lib/db/redisState';
 
 const router: Router = Router();
 
 let lastRedisCheck = 0;
-let cachedRedisStatus: 'connected' | 'disconnected' = 'disconnected';
+let cachedRedisStatus: 'connected' | 'degraded' | 'disconnected' = 'disconnected';
 const REDIS_CACHE_TTL_MS = 60_000; // Cache for 60 seconds
 
 /**
@@ -20,27 +21,46 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 
   const now = Date.now();
-  if (now - lastRedisCheck > REDIS_CACHE_TTL_MS || redisStatus === 'disconnected') {
-    try {
-      const pong = await redis.ping();
-      if (pong === 'PONG') {
-        redisStatus = 'connected';
-        cachedRedisStatus = 'connected';
-      } else {
-        redisStatus = 'disconnected';
-        cachedRedisStatus = 'disconnected';
+  if (isRedisDegraded()) {
+    redisStatus = 'degraded';
+    cachedRedisStatus = 'degraded';
+  } else if (now - lastRedisCheck > REDIS_CACHE_TTL_MS || redisStatus !== 'connected') {
+    const clientStatus = (redis as unknown as { status?: string } | undefined)?.status;
+    if (clientStatus && clientStatus !== 'ready') {
+      redisStatus = 'degraded';
+      cachedRedisStatus = 'degraded';
+    } else {
+      let timer: NodeJS.Timeout | undefined;
+      try {
+        const pong = await Promise.race([
+          redis.ping(),
+          new Promise<string>((resolve) => {
+            timer = setTimeout(() => resolve('TIMEOUT'), 1500);
+          }),
+        ]).finally(() => {
+          if (timer) clearTimeout(timer);
+        });
+
+        if (pong === 'PONG') {
+          redisStatus = 'connected';
+          cachedRedisStatus = 'connected';
+        } else {
+          redisStatus = 'degraded';
+          cachedRedisStatus = 'degraded';
+        }
+      } catch {
+        redisStatus = 'degraded';
+        cachedRedisStatus = 'degraded';
       }
-    } catch {
-      redisStatus = 'disconnected';
-      cachedRedisStatus = 'disconnected';
     }
     lastRedisCheck = now;
   }
 
-  const isHealthy = mongoStatus === 'connected' && redisStatus === 'connected';
+  const isMongoHealthy = mongoStatus === 'connected';
+  const status = isMongoHealthy && redisStatus === 'connected' ? 'ok' : 'degraded';
 
   const healthData = {
-    status: isHealthy ? 'ok' : 'degraded',
+    status,
     services: {
       mongodb: mongoStatus,
       redis: redisStatus,
@@ -55,7 +75,8 @@ router.get('/', async (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
   };
 
-  res.status(isHealthy ? 200 : 503).json(healthData);
+  // MongoDB is the primary backing store; Redis degrades gracefully to in-memory fallback
+  res.status(isMongoHealthy ? 200 : 503).json(healthData);
 });
 
 export default router;

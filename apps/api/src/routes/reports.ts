@@ -5,6 +5,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { Report } from '../lib/models/Report';
 import { reportQueue } from '../workers/reportWorker';
+import { safeEnqueueJob } from '../lib/utils/safeQueue';
+import { executeReportGenerationJob } from '../lib/services/reportRunner';
 import { authMiddleware } from '../lib/middleware/authMiddleware';
 import { reportLimiter } from '../lib/middleware/rateLimitMiddleware';
 import { validate } from '../lib/middleware/validationMiddleware';
@@ -40,11 +42,20 @@ router.post(
 
       const reportId = report._id.toString();
 
-      await reportQueue.add(
+      const queued = await safeEnqueueJob(
+        reportQueue,
         'generate-report',
         { reportId },
         { jobId: `report-${reportId}-${Date.now()}` },
       );
+
+      if (!queued) {
+        setImmediate(() => {
+          void executeReportGenerationJob(reportId).catch((err) => {
+            console.warn(`⚠️ [Reports] In-process report generation failed for ${reportId}:`, err);
+          });
+        });
+      }
 
       const result = {
         reportId,
