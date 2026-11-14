@@ -76,7 +76,7 @@ jobs:
   docker-build:
     name: Docker Container Verification
     runs-on: ubuntu-latest
-    needs: test
+    needs: build
     steps:
       - uses: actions/checkout@v7
 
