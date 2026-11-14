@@ -1,22 +1,22 @@
 <p align="center">
   <a href="https://arthora.vercel.app">
-    <img src=".github/assets/banner.png" alt="Arthora - Autonomous Quantitative Advisory & Multi-Asset Intelligence" width="100%">
+    <img src=".github/assets/banner.png" alt="Arthora - Autonomous Quantitative Research & Multi-Asset Intelligence" width="100%">
   </a>
 </p>
 
 <h1 align="center">Arthora</h1>
 
 <p align="center">
-  <strong>Autonomous Quantitative Advisory & Multi-Asset Intelligence for Indian Retail Investors.</strong><br>
+  <strong>Autonomous Quantitative Research & Multi-Asset Intelligence for Indian Retail Investors.</strong><br>
   Institutional quant metrics, 10,000 Monte Carlo wealth simulations, and direct mutual fund indexing powered by Google Gemini.
 </p>
 
 <p align="center">
   <a href="https://arthora.vercel.app"><img src="https://img.shields.io/badge/Demo-arthora.vercel.app-7BED9F?style=for-the-badge&logo=vercel&logoColor=black" alt="Live Demo"></a>
-  <a href="https://github.com/syedzahidsaleem/arthora/actions/workflows/ci.yml"><img src="https://github.com/syedzahidsaleem/arthora/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
+  <a href="https://github.com/syedzahidsaleem/arthora/actions/workflows/ci.yml"><img src="https://github.com/syedzahidsaleem/arthora/actions/workflows/ci.yml/badge.svg?style=for-the-badge" alt="CI Status"></a>
   <a href="https://ai.google.dev"><img src="https://img.shields.io/badge/AI%20Core-Google%20Gemini-4E80EE?style=for-the-badge&logo=google&logoColor=white" alt="AI Core"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-FFD027?style=for-the-badge&logo=open-source-initiative&logoColor=black" alt="License"></a>
-  <img src="https://img.shields.io/badge/Status-Production-1E272E?style=for-the-badge" alt="Status">
+  <img src="https://img.shields.io/badge/Status-Production-26DE81?style=for-the-badge" alt="Status">
 </p>
 
 <p align="center">
@@ -24,18 +24,18 @@
   <a href="https://arthora-api.onrender.com/api/v1/health"><strong>API Health</strong></a> •
   <a href="#how-it-works"><strong>Architecture</strong></a> •
   <a href="#product-interface"><strong>Interface Gallery</strong></a> •
-  <a href="docs/"><strong>Documentation</strong></a>
+  <a href="docs/"><strong>API reference and deployment guide</strong></a>
 </p>
 
 ---
 
 ## <img src=".github/assets/icons/split.svg" width="18" height="18" alt="Problem" /> The Problem
 
-Indian retail investing has expanded past 16 crore demat accounts, yet individual investors face structural disadvantages against institutional players:
+Indian retail investing has expanded past [16+ crore demat accounts](https://www.sebi.gov.in), yet individual investors face structural disadvantages against institutional players:
 
-| <img src=".github/assets/icons/shield-alert.svg" width="20" height="20" /><br>**Commission Opacity** | <img src=".github/assets/icons/trending-down.svg" width="20" height="20" /><br>**Risk Fragmentation** | <img src=".github/assets/icons/cpu.svg" width="20" height="20" /><br>**Generic Advisory** |
+| <img src=".github/assets/icons/shield-alert.svg" width="20" height="20" /><br>**Commission Opacity** | <img src=".github/assets/icons/trending-down.svg" width="20" height="20" /><br>**Risk Fragmentation** | <img src=".github/assets/icons/cpu.svg" width="20" height="20" /><br>**Generic Investment Advice** |
 | :--- | :--- | :--- |
-| Regular mutual fund plans quietly extract **1.0%–1.5% annually** in distributor trail commissions, costing long-term investors lakhs in compounded wealth. | Retail portals emphasize trailing returns without publishing downside volatility, Sharpe ratios, or historical drawdown percentiles against Nifty 50. | Traditional advisory uses static risk questionnaires to push cookie-cutter portfolios rather than personalized stochastic projections. |
+| Regular mutual fund plans quietly extract [1.0%–1.5% annually](https://www.amfiindia.com) in distributor trail commissions, costing long-term investors lakhs in compounded wealth. | Retail portals emphasize trailing returns without publishing downside volatility, Sharpe ratios, or historical drawdown percentiles against Nifty 50. | Traditional investment services use static risk questionnaires to push cookie-cutter portfolios rather than personalized stochastic projections. |
 
 ---
 
@@ -43,12 +43,13 @@ Indian retail investing has expanded past 16 crore demat accounts, yet individua
 
 Arthora delivers hedge-fund-grade quantitative intelligence and autonomous portfolio creation directly to Indian retail investors:
 
-- **Direct-Only Intelligence:** Automatically ingests and indexes **40,000+ AMFI mutual fund schemes**, strictly prioritizing Direct-Growth plans to eliminate distributor commissions entirely.
+- **Direct-Growth Prioritization:** Automatically ingests and indexes **40,000+ AMFI mutual fund schemes**, prioritizing Direct-Growth plans to eliminate distributor commissions.
 - **Institutional Quant Engine:** Computes rolling returns, downside risk, Sharpe ratios, and executes **10,000-iteration Monte Carlo simulations** to generate P10, P50, and P75 wealth trajectory cones.
-- **Multi-Model AI Advisor:** Portfolios are generated by **Google Gemini** with an automatic deterministic fallback; every suggested mutual fund is verified against AMFI data and every stock is verified against market quotes before it is shown, evaluating investor goals, time horizons, and risk tolerance into personalized portfolios with written investment theses.
+- **AI Portfolio Builder:** Portfolios are generated by **Google Gemini with built-in validation and fallback**, evaluating investor goals, time horizons, and risk tolerance into personalized portfolios with written investment theses.
 
 ---
 
+<a id="how-it-works"></a>
 ## <img src=".github/assets/icons/layers.svg" width="18" height="18" alt="How It Works" /> How It Works
 
 <p align="center">
@@ -59,7 +60,7 @@ Arthora delivers hedge-fund-grade quantitative intelligence and autonomous portf
   </picture>
 </p>
 
-1. **Ingestion & Sync:** Scheduled background workers synchronize daily NAV updates from AMFI feeds and real-time quotes for NSE-listed equities into MongoDB Atlas.
+1. **Ingestion & Sync:** Scheduled background workers synchronize daily NAV updates from AMFI feeds and live quotes (may be delayed) for NSE Equities into MongoDB Atlas.
 2. **Quantitative Analysis:** The math engine computes risk metrics (Sharpe ratio, Alpha, Beta, Max Drawdown) and runs 10,000 stochastic Monte Carlo simulation paths.
 3. **AI Synthesis & Verification:** Portfolios are generated by Google Gemini with an automatic deterministic fallback if the model is unavailable; every suggested fund is verified against AMFI data before it is shown, evaluating financial goals against filtered direct schemes to synthesize asset allocations with investment rationales.
 4. **Client Delivery:** Interactive responsive web terminal (Next.js 14) and mobile client (Flutter in `apps/mobile`) deliver charts, allocations, and headless PDF reports via BullMQ workers.
@@ -72,30 +73,107 @@ Arthora delivers hedge-fund-grade quantitative intelligence and autonomous portf
 | :--- | :--- | :--- |
 | **Frontend** | <img src="https://skillicons.dev/icons?i=nextjs,react,tailwind" height="20" alt="Web Stack" /> | Next.js 14 (App Router), React 18, Tailwind CSS, Recharts, Lucide, Neo-Brutalist UI |
 | **Backend** | <img src="https://skillicons.dev/icons?i=nodejs,express,ts" height="20" alt="API Stack" /> | Node.js, Express, TypeScript, Zod validation, Argon2id auth, JWT refresh rotation |
-| **AI & Quant** | <img src="https://img.shields.io/badge/Google-Gemini_Core-4E80EE?style=flat-square&logo=google&logoColor=white" height="20" alt="Gemini" /> | Google Gemini (pre-display AMFI fund & stock verification, deterministic fallback), 10,000 Monte Carlo Engine |
+| **AI & Quant** | <img src=".github/assets/icons/gemini.svg" width="20" height="20" alt="Google Gemini" /> | Google Gemini with built-in validation and fallback, 10,000 Monte Carlo Engine |
 | **Data & Cache** | <img src="https://skillicons.dev/icons?i=mongodb,redis" height="20" alt="Database Stack" /> | MongoDB Atlas (40K+ schemes), Redis (BullMQ queue management, rate limiting, caching) |
-| **Workers** | <img src="https://img.shields.io/badge/BullMQ-Async_Queue-FF4757?style=flat-square" height="20" alt="BullMQ" /> | BullMQ background workers, Puppeteer (Headless institutional PDF generation) |
+| **Workers** | <img src=".github/assets/icons/bullmq.svg" width="20" height="20" alt="BullMQ" /> | BullMQ background workers, Puppeteer (Headless institutional PDF generation) |
 | **Mobile** | <img src="https://skillicons.dev/icons?i=flutter,dart" height="20" alt="Mobile Stack" /> | Cross-platform client in `apps/mobile` (platform shells initialized via `flutter create`) |
-| **DevOps** | <img src="https://skillicons.dev/icons?i=vercel,githubactions,docker" height="20" alt="DevOps" /> | Vercel (Web hosting), Render (API & Workers), Docker, GitHub Actions CI (121 tests across 22 files) |
+| **DevOps** | <img src="https://skillicons.dev/icons?i=vercel,githubactions,docker" height="20" alt="DevOps" /> | Vercel (Web hosting), Render (API & Workers), Docker, GitHub Actions CI |
 
 ---
 
+<a id="product-interface"></a>
 ## <img src=".github/assets/icons/layout.svg" width="18" height="18" alt="Interface" /> Product Interface
 
-| Landing & Proposition | Investment Research Hub |
-| :---: | :---: |
-| [![Landing Hero](.github/assets/screenshots/01-landing-hero.png)](.github/assets/screenshots/01-landing-hero.png)<br>**Landing Hero & Neo-Brutalist Value Proposition** | [![Research Hub](.github/assets/screenshots/02-research-hub.png)](.github/assets/screenshots/02-research-hub.png)<br>**40,000+ AMFI Mutual Funds & NSE Real-Time Ticker** |
-| **Fund Research & Compound SIP Simulator** | **Monte Carlo Trajectory & AI Asset Allocation** |
-| [![Fund Detail](.github/assets/screenshots/03-fund-detail.png)](.github/assets/screenshots/03-fund-detail.png)<br>**Direct Growth NAVs, Quant Metrics & SIP Projections** | [![AI Portfolio](.github/assets/screenshots/06-ai-portfolio-result.png)](.github/assets/screenshots/06-ai-portfolio-result.png)<br>**10Y Projected Wealth Cone (P50/P75) & Curated Weights** |
+<p align="center">
+  <a href=".github/assets/screenshots/01-landing-hero.png">
+    <img src=".github/assets/screenshots/01-landing-hero.png" alt="Arthora Landing Hero & Value Proposition" width="100%">
+  </a>
+  <br>
+  <sub><strong>Landing Hero & Neo-Brutalist Value Proposition</strong> — Educational direct-fund screening and stochastic wealth projections.</sub>
+</p>
+
+<table width="100%">
+  <tr>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/02-research-hub.png">
+        <img src=".github/assets/screenshots/02-research-hub.png" alt="Investment Research Hub" width="100%">
+      </a>
+      <br>
+      <strong>Investment Research Hub</strong>
+      <br>
+      <sub>40,000+ AMFI Mutual Funds & Live NSE Quotes</sub>
+    </td>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/06-ai-portfolio-result.png">
+        <img src=".github/assets/screenshots/06-ai-portfolio-result.png" alt="Monte Carlo Wealth Trajectory & Asset Allocation" width="100%">
+      </a>
+      <br>
+      <strong>Monte Carlo Wealth Trajectory</strong>
+      <br>
+      <sub>10Y Stochastic Cones (P50/P75) & Curated Weights</sub>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/03-fund-detail.png">
+        <img src=".github/assets/screenshots/03-fund-detail.png" alt="Fund Research & Compound SIP Simulator" width="100%">
+      </a>
+      <br>
+      <strong>Fund Research & Compound SIP Simulator</strong>
+      <br>
+      <sub>Direct Growth NAVs, Quant Metrics & SIP Projections</sub>
+    </td>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/05-ai-goal-form.png">
+        <img src=".github/assets/screenshots/05-ai-goal-form.png" alt="AI Goal Builder Form" width="100%">
+      </a>
+      <br>
+      <strong>AI Goal Builder Form</strong>
+      <br>
+      <sub>Natural Language Goal Input & Risk Sliders</sub>
+    </td>
+  </tr>
+</table>
 
 <details>
-<summary><b>View Additional Product Screens (Stock Signals, AI Goal Form, Watchlist, Mobile)</b></summary>
+<summary><b>View Additional Product Screens (Stock Signals, Watchlist, Mobile Viewport)</b></summary>
+<br>
 
-| Technical Momentum & Trend Signals | AI Goal Builder Form |
-| :---: | :---: |
-| [![Stock Detail](.github/assets/screenshots/04-stock-detail.png)](.github/assets/screenshots/04-stock-detail.png)<br>**RSI, MACD & 50/200 SMA Bull/Bear Cross Indicators** | [![AI Goal Form](.github/assets/screenshots/05-ai-goal-form.png)](.github/assets/screenshots/05-ai-goal-form.png)<br>**Natural Language Goal Input & Risk Sliders** |
-| **Multi-Asset Investment Watchlist** | **Native Responsive Mobile Terminal** |
-| [![Watchlist](.github/assets/screenshots/07-watchlist.png)](.github/assets/screenshots/07-watchlist.png)<br>**Side-by-Side Fund & Stock Tracking** | [![Mobile Dashboard](.github/assets/screenshots/08-mobile-dashboard.png)](.github/assets/screenshots/08-mobile-dashboard.png)<br>**Mobile Viewport (390×844) Bottom Navigation** |
+<table width="100%">
+  <tr>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/04-stock-detail.png">
+        <img src=".github/assets/screenshots/04-stock-detail.png" alt="Technical Momentum & Trend Signals" width="100%">
+      </a>
+      <br>
+      <strong>Technical Momentum & Trend Signals</strong>
+      <br>
+      <sub>RSI, MACD & 50/200 SMA Bull/Bear Cross Indicators</sub>
+    </td>
+    <td valign="top" width="50%" align="center">
+      <a href=".github/assets/screenshots/07-watchlist.png">
+        <img src=".github/assets/screenshots/07-watchlist.png" alt="Multi-Asset Investment Watchlist" width="100%">
+      </a>
+      <br>
+      <strong>Multi-Asset Investment Watchlist</strong>
+      <br>
+      <sub>Side-by-Side Fund & Stock Tracking</sub>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <strong>Responsive web app at 390px</strong>
+</p>
+<p align="center">
+  <a href=".github/assets/screenshots/08-mobile-dashboard.png">
+    <img src=".github/assets/screenshots/08-mobile-dashboard.png" alt="Responsive Web App at 390px - Research Hub" width="240">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href=".github/assets/screenshots/09-mobile-portfolio.png">
+    <img src=".github/assets/screenshots/09-mobile-portfolio.png" alt="Responsive Web App at 390px - AI Portfolio" width="240">
+  </a>
+</p>
 
 </details>
 
@@ -105,12 +183,10 @@ Arthora delivers hedge-fund-grade quantitative intelligence and autonomous portf
 
 - [x] **AMFI Daily NAV Sync:** Automated indexing pipeline across 40,000+ Indian mutual fund schemes.
 - [x] **Institutional Quant Engine:** Rolling returns, drawdown distributions, and Sharpe ratio calculators.
-- [x] **Google Gemini Advisory:** Portfolios generated by Google Gemini with pre-display AMFI verification and automatic deterministic fallback.
+- [x] **AI Portfolio Builder:** Portfolios generated by Google Gemini with built-in validation and fallback.
 - [x] **Monte Carlo Simulation:** 10,000 stochastic iteration engine generating P10, P50, and P75 probability cones.
 - [x] **Async PDF Generation:** Headless Puppeteer and BullMQ worker compiling institutional research tearsheets.
-- [x] **Responsive Web Terminal:** Accessible Neo-Brutalist dashboard with verified WCAG AA contrast and dark mode.
-- [ ] **Account Aggregator (AA) Integration:** Direct portfolio import via RBI-regulated Account Aggregator protocols.
-- [ ] **Broker Execution APIs:** 1-click order execution through Zerodha Kite Connect and Upstox SDKs.
+- [x] **Responsive Web Terminal:** Accessible Neo-Brutalist dashboard with keyboard-accessible, dark-mode UI.
 - [ ] **Mobile Store Builds:** Pre-configured iOS and Android builds (`apps/mobile` platform shells).
 
 ---
@@ -134,23 +210,30 @@ arthora/
 
 ### Verified Local Quickstart
 
-Prerequisites: **Node.js >= 18**, **pnpm >= 8**, and **MongoDB + Redis** instances.
+Prerequisites: **Node.js >= 20**, **pnpm >= 10**, and **Docker** (or hosted MongoDB & Redis).
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/zahidsaleem/arthora.git
+git clone https://github.com/syedzahidsaleem/arthora.git
 cd arthora
 
-# 2. Install workspace dependencies
+# 2. Start local datastores (or connect to hosted MongoDB & Redis)
+docker compose up -d mongodb redis
+
+# 3. Configure local environment variables
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
+
+# 4. Install workspace dependencies
 pnpm install
 
-# 3. Build shared type contracts
+# 5. Build shared type contracts
 pnpm --filter @arthora/shared build
 
-# 4. Start API and Web services concurrently
+# 6. Start API and Web services concurrently
 pnpm dev
 
-# 5. Run full workspace verification (types, lint, 121 tests across 22 files, web export)
+# 7. Run full workspace verification (types, lint, tests, web export)
 pnpm run verify
 ```
 
@@ -187,9 +270,11 @@ curl -s "https://arthora-api.onrender.com/api/v1/funds/118834"
 ### Acknowledgements
 
 - [AMFI India](https://www.amfiindia.com) for official mutual fund NAV data feeds.
+- [mfapi.in](https://www.mfapi.in) for historical mutual fund NAV API feeds.
+- [Yahoo Finance](https://finance.yahoo.com) for live NSE equity quote feeds.
 - [Google AI Studio](https://ai.google.dev) for Google Gemini API access.
 - [Lucide Icons](https://lucide.dev) & [Skill Icons](https://skillicons.dev) for interface iconography.
 
 <p align="center">
-  <sub>Built with precision for India's next generation of informed investors.</sub>
+  <sub>Built by <a href="https://github.com/syedzahidsaleem">Syed Zahid Saleem</a> • Built with precision for India's next generation of informed investors.</sub>
 </p>
