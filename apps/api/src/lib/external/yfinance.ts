@@ -3,6 +3,39 @@ import { SMA, RSI, MACD } from 'technicalindicators';
 import { AppError } from '../errors/AppError';
 import * as redisService from '../db/redis';
 
+interface YahooFinanceClient {
+  quote: (ticker: string) => Promise<unknown>;
+  quoteSummary: (ticker: string, opts: { modules: string[] }) => Promise<unknown>;
+  historical: (
+    ticker: string,
+    opts: { period1: Date; period2: Date; interval: '1d' | '1wk' | '1mo' },
+  ) => Promise<unknown>;
+}
+
+let cachedYahooClient: YahooFinanceClient | null = null;
+
+/**
+ * Resolves yahoo-finance2 client cleanly across v3/v4 constructor exports and plain test mocks.
+ */
+function getYahooClient(): YahooFinanceClient {
+  if (cachedYahooClient) {
+    return cachedYahooClient;
+  }
+
+  const rawExport = yahooFinance as unknown as
+    | (new (opts?: { suppressNotices?: string[] }) => YahooFinanceClient)
+    | YahooFinanceClient;
+
+  if (typeof rawExport === 'function') {
+    cachedYahooClient = new rawExport({
+      suppressNotices: ['yahooSurvey', 'ripHistorical'],
+    });
+    return cachedYahooClient;
+  }
+
+  return rawExport;
+}
+
 /**
  * Checks if current time is within Indian Stock Market trading hours (IST Monday-Friday 9:15 AM - 3:30 PM).
  */
@@ -91,7 +124,7 @@ export async function fetchStockQuote(nseSymbol: string): Promise<StockQuoteResu
   }
 
   try {
-    const quote = (await yahooFinance.quote(yahooTicker)) as Record<string, unknown> | null;
+    const quote = (await getYahooClient().quote(yahooTicker)) as Record<string, unknown> | null;
     if (!quote || quote.regularMarketPrice === undefined) {
       throw new AppError(`Stock symbol ${cleanSymbol} not found on NSE`, 404, 'NOT_FOUND');
     }
@@ -152,7 +185,7 @@ export async function fetchStockFundamentals(
   }
 
   try {
-    const summary = (await yahooFinance.quoteSummary(yahooTicker, {
+    const summary = (await getYahooClient().quoteSummary(yahooTicker, {
       modules: ['financialData', 'defaultKeyStatistics', 'summaryDetail'],
     })) as Record<string, unknown> | null;
 
@@ -218,7 +251,7 @@ export async function fetchStockPriceHistory(
   }
 
   try {
-    const historical = (await yahooFinance.historical(yahooTicker, {
+    const historical = (await getYahooClient().historical(yahooTicker, {
       period1,
       period2,
       interval,
@@ -229,15 +262,18 @@ export async function fetchStockPriceHistory(
     }
 
     const result: StockPriceHistoryPoint[] = historical
-      .map((item: Record<string, unknown>) => ({
-        date: new Date(item.date as string | number | Date),
-        open: Number(item.open) || 0,
-        high: Number(item.high) || 0,
-        low: Number(item.low) || 0,
-        close: Number(item.close) || 0,
-        volume: Number(item.volume) || 0,
-        adjustedClose: item.adjclose !== undefined ? Number(item.adjclose) : undefined,
-      }))
+      .map((item: Record<string, unknown>) => {
+        const rawAdj = item.adjClose ?? item.adjclose;
+        return {
+          date: new Date(item.date as string | number | Date),
+          open: Number(item.open) || 0,
+          high: Number(item.high) || 0,
+          low: Number(item.low) || 0,
+          close: Number(item.close) || 0,
+          volume: Number(item.volume) || 0,
+          adjustedClose: rawAdj !== undefined ? Number(rawAdj) : undefined,
+        };
+      })
       .filter((item) => !isNaN(item.close) && !isNaN(item.date.getTime()))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
 

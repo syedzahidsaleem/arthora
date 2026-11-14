@@ -56,6 +56,10 @@ describe('Funds Integration Endpoints', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data.items.length).toBe(1);
       expect(res.body.data.pagination.total).toBe(1);
+      // Ensure regex query does not ask MongoDB for $meta textScore projection
+      expect(FundMetadata.find).toHaveBeenCalledWith(
+        expect.objectContaining({ isActive: true, schemeName: expect.any(RegExp) }),
+      );
     });
 
     it('returns cached results on subsequent call', async () => {
@@ -111,6 +115,24 @@ describe('Funds Integration Endpoints', () => {
       expect(res.status).toBe(202);
       expect(res.body.data.status).toBe('calculating');
       expect(metricCalcQueue.add).toHaveBeenCalledWith('calc-fund-metrics', { schemeCode: 119598 }, expect.anything());
+    });
+
+    it('falls back gracefully and returns 202 even when Redis/BullMQ enqueue fails', async () => {
+      vi.mocked(redisService.get).mockResolvedValue(null as never);
+      vi.mocked(FundMetrics.findOne).mockReturnValue({
+        lean: vi.fn().mockResolvedValue(null),
+      } as never);
+      vi.mocked(FundNAVHistory.find).mockReturnValue({
+        sort: vi.fn().mockReturnValue({
+          lean: vi.fn().mockResolvedValue([]),
+        }),
+      } as never);
+      vi.mocked(metricCalcQueue.add).mockRejectedValueOnce(new Error('ERR max requests limit exceeded'));
+
+      const res = await request(app).get('/api/v1/funds/119598/metrics');
+      expect(res.status).toBe(202);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.status).toBe('calculating');
     });
   });
 });

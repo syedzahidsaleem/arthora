@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_ENDPOINTS } from '../../lib/api/endpoints';
-import { getApiBaseUrl } from '../../lib/api/config';
+import { RefreshCw, LogIn, WifiOff } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-
+import { getApiBaseUrl } from '../../lib/api/config';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -34,13 +33,17 @@ function parseJwt(token: string): { exp?: number; sub?: string } | null {
 }
 
 /**
- * Route protection guard that checks authentication and proactively refreshes expiring tokens.
+ * Route protection guard that verifies authentication, coordinates single-flight refresh,
+ * and shows actionable recovery if the backend is offline or unreachable.
  */
 export function AuthGuard({ children, fallback }: AuthGuardProps) {
   const router = useRouter();
-  const { isAuthenticated, accessToken, refreshToken, setTokens, logout } = useAuthStore();
+  const { isAuthenticated, accessToken, refreshSession, logout } = useAuthStore();
   const [isVerifying, setIsVerifying] = useState(true);
+  const [isSlowWait, setIsSlowWait] = useState(false);
+  const [backendError, setBackendError] = useState<string | null>(null);
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [retryTick, setRetryTick] = useState(0);
 
   // Wait for Zustand persist to hydrate from localStorage
   useEffect(() => {
@@ -63,59 +66,94 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
     };
   }, []);
 
+  const verifySession = useCallback(
+    async (isCancelled: () => boolean) => {
+      setIsVerifying(true);
+      setIsSlowWait(false);
+      setBackendError(null);
+
+      const slowTimer = setTimeout(() => {
+        if (!isCancelled()) {
+          setIsSlowWait(true);
+        }
+      }, 2500);
+
+      try {
+        const store = useAuthStore.getState();
+        const currentToken = store.accessToken;
+        const isAuth = store.isAuthenticated;
+
+        if (!isAuth || !currentToken) {
+          if (!isCancelled()) {
+            setIsVerifying(false);
+            router.replace('/login');
+          }
+          return;
+        }
+
+        const decoded = parseJwt(currentToken);
+        const nowSeconds = Math.floor(Date.now() / 1000);
+        const isExpired = Boolean(decoded && decoded.exp && decoded.exp <= nowSeconds);
+        const needsProactiveRefresh = Boolean(
+          decoded && decoded.exp && decoded.exp - nowSeconds < 300,
+        );
+
+        // If token is healthy (> 5 min remaining), allow immediate entry
+        if (!needsProactiveRefresh) {
+          if (!isCancelled()) {
+            setIsVerifying(false);
+          }
+          return;
+        }
+
+        // Attempt single-flight refresh with bounded timeout inside authStore
+        const refreshed = await refreshSession();
+        if (isCancelled()) return;
+
+        if (refreshed) {
+          setIsVerifying(false);
+          return;
+        }
+
+        // If access token is still valid for a bit and only proactive refresh failed due to network, allow entry
+        if (!isExpired) {
+          setIsVerifying(false);
+          return;
+        }
+
+        // Token is expired and refresh failed
+        const authErr = useAuthStore.getState().lastAuthError;
+        if (authErr === 'network') {
+          const apiBase = getApiBaseUrl();
+          setBackendError(
+            `Could not reach the backend API (${apiBase}) to verify your session. Ensure the backend server is running or retry once it finishes waking up.`,
+          );
+          setIsVerifying(false);
+          return;
+        }
+
+        await logout();
+        if (!isCancelled()) {
+          setIsVerifying(false);
+          router.replace('/login');
+        }
+      } finally {
+        clearTimeout(slowTimer);
+      }
+    },
+    [logout, refreshSession, router],
+  );
+
   useEffect(() => {
     if (!hasHydrated) return;
 
-    async function checkAuth() {
-      const store = useAuthStore.getState();
-      const currentToken = store.accessToken || accessToken;
-      const isAuth = store.isAuthenticated || isAuthenticated;
-      const currentRefreshToken = store.refreshToken || refreshToken;
+    let cancelled = false;
+    void verifySession(() => cancelled);
 
-      if (!isAuth || !currentToken) {
-        setIsVerifying(false);
-        router.push('/login');
-        return;
-      }
-
-      // Check if access token is expiring within 5 minutes (300 seconds)
-      const decoded = parseJwt(currentToken);
-      const nowSeconds = Math.floor(Date.now() / 1000);
-
-      if (decoded && decoded.exp && decoded.exp - nowSeconds < 300) {
-        if (currentRefreshToken) {
-          try {
-            const baseUrl = getApiBaseUrl();
-            const refreshRes = await fetch(`${baseUrl}${API_ENDPOINTS.AUTH.REFRESH}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ refreshToken: currentRefreshToken }),
-            });
-
-            const refreshData = await refreshRes.json();
-            if (refreshRes.ok && refreshData.success && refreshData.data) {
-              setTokens(refreshData.data.accessToken, refreshData.data.refreshToken);
-              setIsVerifying(false);
-              return;
-            }
-          } catch {
-            // If proactive refresh fails, proceed with current token or redirect
-          }
-        }
-      }
-
-      // If token is already fully expired and could not refresh
-      if (decoded && decoded.exp && decoded.exp <= nowSeconds) {
-        logout();
-        router.push('/login');
-        return;
-      }
-
-      setIsVerifying(false);
-    }
-
-    checkAuth();
-  }, [hasHydrated, isAuthenticated, accessToken, refreshToken, setTokens, logout, router]);
+    return () => {
+      cancelled = true;
+    };
+  }, [hasHydrated, isAuthenticated, accessToken, retryTick, verifySession]);
 
   if (isVerifying) {
     if (fallback) {
@@ -123,15 +161,68 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
     }
 
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-surface-1">
-        <div className="flex flex-col items-center space-y-4">
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#FBF7EE] p-6">
+        <div className="flex flex-col items-center space-y-4 text-center max-w-sm">
           <div className="relative flex h-14 w-14 items-center justify-center">
-            <div className="absolute h-full w-full animate-ping rounded-full bg-brand-primary/20" />
-            <div className="h-10 w-10 animate-spin rounded-full border-3 border-brand-primary border-t-transparent shadow-lg shadow-brand-primary/30" />
+            <div className="h-11 w-11 animate-spin rounded-full border-4 border-black/15 border-t-black" />
           </div>
-          <div className="text-center">
-            <p className="text-sm font-semibold text-content-primary">Arthora</p>
-            <p className="text-xs text-content-secondary mt-1">Verifying secure session...</p>
+          <div>
+            <p className="text-base font-black uppercase tracking-tight text-black">Arthora</p>
+            <p className="text-xs font-mono font-bold text-[#525866] mt-1">
+              {isSlowWait
+                ? 'Backend server is waking up, please wait a moment...'
+                : 'Verifying secure session...'}
+            </p>
+          </div>
+          {isSlowWait && (
+            <button
+              type="button"
+              onClick={() => {
+                void logout();
+                router.replace('/login');
+              }}
+              className="text-xs font-mono font-bold underline text-[#525866] hover:text-black"
+            >
+              Return to Sign In
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (backendError) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#FBF7EE] p-6">
+        <div className="w-full max-w-md rounded-2xl bg-white border-2 border-black shadow-neo p-6 space-y-4 text-[#222A2A]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-neo-yellow border-2 border-black text-xs font-mono font-black uppercase">
+            <WifiOff className="w-4 h-4 stroke-[2.5]" />
+            <span>Backend Unreachable</span>
+          </div>
+          <h2 className="text-xl font-black uppercase tracking-tight text-black">
+            Unable to verify session
+          </h2>
+          <p className="text-xs font-mono text-[#525866] leading-relaxed">{backendError}</p>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setRetryTick((t) => t + 1)}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-neo-mint text-black border-2 border-black shadow-neo-sm font-black text-xs uppercase hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-neo transition-all"
+            >
+              <RefreshCw className="w-4 h-4 stroke-[2.5]" />
+              <span>Retry</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                void logout();
+                router.replace('/login');
+              }}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border-2 border-black shadow-neo-sm font-bold text-xs uppercase hover:bg-neo-yellow transition-all"
+            >
+              <LogIn className="w-4 h-4 stroke-[2.5]" />
+              <span>Sign In</span>
+            </button>
           </div>
         </div>
       </div>

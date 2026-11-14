@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Request, Response, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
 import jwt from 'jsonwebtoken';
@@ -263,6 +264,7 @@ export function generateRefreshToken(userId: string): string {
     {
       sub: userId,
       type: 'refresh',
+      jti: randomUUID(),
     },
     secret,
     {

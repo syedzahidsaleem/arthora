@@ -1,39 +1,39 @@
 import type { ApiResponse } from '@arthora/shared';
 import { useAuthStore } from '../../store/authStore';
-import { API_ENDPOINTS } from './endpoints';
 import { getApiBaseUrl } from './config';
 
 const API_BASE_URL = getApiBaseUrl();
+const REQUEST_TIMEOUT_MS = 15_000;
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
   skipAuth?: boolean;
 }
 
-let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
-
-function subscribeTokenRefresh(cb: (token: string) => void) {
-  refreshSubscribers.push(cb);
-}
-
-function onRefreshed(token: string) {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-}
-
 /**
- * Automatically retries requests when the backend is waking from a cold start.
- * Supports up to 15 retries (approx 60-70 seconds) to handle Render free-tier wake-up latency.
+ * Automatically retries requests when a remote server is waking from a cold start (502/503/504)
+ * while failing fast on localhost or unreachable local connections.
  */
 export async function fetchWithColdStartRetry(
   url: string,
   fetchOptions: RequestInit,
-  retries = 15,
-  delayMs = 2500,
+  retries = 12,
+  delayMs = 2000,
 ): Promise<Response> {
+  const isLocalTarget = url.includes('localhost') || url.includes('127.0.0.1');
+  const maxNetworkRetries = isLocalTarget ? 1 : Math.min(retries, 3);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const controller = new AbortController();
+  const signal = fetchOptions.signal ?? controller.signal;
+
+  if (!fetchOptions.signal) {
+    timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  }
+
   try {
-    const res = await fetch(url, fetchOptions);
+    const res = await fetch(url, { ...fetchOptions, signal });
+    if (timer) clearTimeout(timer);
+
     if ((res.status === 502 || res.status === 503 || res.status === 504) && retries > 0) {
       console.warn(`[Arthora API] Server waking up (${res.status}), retrying in ${delayMs}ms...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -41,10 +41,16 @@ export async function fetchWithColdStartRetry(
     }
     return res;
   } catch (err) {
-    if (retries > 0) {
+    if (timer) clearTimeout(timer);
+    if (maxNetworkRetries > 0 && retries > 0) {
       console.warn(`[Arthora API] Connection pending, retrying in ${delayMs}ms...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
-      return fetchWithColdStartRetry(url, fetchOptions, retries - 1, Math.min(delayMs * 1.3, 4000));
+      return fetchWithColdStartRetry(
+        url,
+        fetchOptions,
+        Math.min(retries - 1, maxNetworkRetries - 1),
+        Math.min(delayMs * 1.3, 3000),
+      );
     }
     throw err;
   }
@@ -61,7 +67,7 @@ export function prewarmServer(): void {
 }
 
 /**
- * Core HTTP client with automatic authentication, header injection, and token refresh.
+ * Core HTTP client with automatic authentication, header injection, and single-flight token refresh.
  */
 async function request<T>(endpoint: string, options: RequestOptions = {}, isRetry = false): Promise<T> {
   const { params, skipAuth = false, headers = {}, ...fetchOptions } = options;
@@ -95,62 +101,32 @@ async function request<T>(endpoint: string, options: RequestOptions = {}, isRetr
     headers: reqHeaders,
   });
 
-  // Handle 401 Unauthorized - Attempt Token Refresh
+  // Handle 401 Unauthorized - Attempt shared single-flight token refresh
   if (response.status === 401 && !isRetry && !skipAuth) {
-    if (!isRefreshing) {
-      isRefreshing = true;
-      const refreshToken = useAuthStore.getState().refreshToken;
+    const refreshed = await useAuthStore.getState().refreshSession();
+    const newToken = useAuthStore.getState().accessToken;
 
-      if (!refreshToken) {
-        isRefreshing = false;
-        useAuthStore.getState().logout();
-        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-          window.location.href = '/login';
-        }
-        throw new Error('Session expired. Please log in again.');
-      }
-
-      try {
-        const refreshResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken }),
-        });
-
-        const refreshData = await refreshResponse.json();
-
-        if (refreshResponse.ok && refreshData.success && refreshData.data) {
-          const { accessToken: newAccess, refreshToken: newRefresh } = refreshData.data;
-          useAuthStore.getState().setTokens(newAccess, newRefresh);
-          isRefreshing = false;
-          onRefreshed(newAccess);
-        } else {
-          throw new Error('Refresh token invalid');
-        }
-      } catch {
-        isRefreshing = false;
-        refreshSubscribers = [];
-        useAuthStore.getState().logout();
-        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-          window.location.href = '/login';
-        }
-        throw new Error('Authentication expired. Please log in again.');
-      }
-    }
-
-    // Wait for the in-flight refresh to complete, then retry
-    return new Promise<T>((resolve, reject) => {
-      subscribeTokenRefresh((newToken: string) => {
-        const retryOptions = {
+    if (refreshed && newToken) {
+      return request<T>(
+        endpoint,
+        {
           ...options,
           headers: {
             ...headers,
             Authorization: `Bearer ${newToken}`,
           },
-        };
-        request<T>(endpoint, retryOptions, true).then(resolve).catch(reject);
-      });
-    });
+        },
+        true,
+      );
+    }
+
+    if (useAuthStore.getState().lastAuthError === 'expired') {
+      void useAuthStore.getState().logout();
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+        window.location.href = '/login';
+      }
+    }
+    throw new Error('Authentication expired. Please log in again.');
   }
 
   // Handle 204 No Content
@@ -158,33 +134,26 @@ async function request<T>(endpoint: string, options: RequestOptions = {}, isRetr
     return undefined as unknown as T;
   }
 
-  let json: ApiResponse<T>;
+  let data: ApiResponse<T>;
   try {
-    const text = await response.text();
-    json = text ? JSON.parse(text) : ({ success: response.ok, timestamp: new Date().toISOString() } as ApiResponse<T>);
+    data = await response.json();
   } catch {
-    json = {
-      success: false,
-      error: {
-        code: 'NETWORK_ERROR',
-        message:
-          response.status >= 500
-            ? 'Server is currently waking up from cold start. Please retry in a few moments.'
-            : `Request failed with status ${response.status}`,
-      },
-      timestamp: new Date().toISOString(),
-    };
+    throw new Error(`HTTP Error ${response.status}: Unable to parse server response`);
   }
 
-  if (!response.ok || !json.success) {
-    const errorMsg = json.error?.message || json.message || `Request failed with status ${response.status}`;
-    const error = new Error(errorMsg);
-    (error as Error & { code?: string; status?: number }).code = json.error?.code;
-    (error as Error & { code?: string; status?: number }).status = response.status;
-    throw error;
+  if (!response.ok || !data.success) {
+    const errorMsg =
+      data.error?.message ||
+      data.message ||
+      `Request failed with status ${response.status}`;
+    const err = new Error(errorMsg) as Error & { code?: string; status?: number; details?: unknown };
+    err.code = data.error?.code;
+    err.status = response.status;
+    err.details = data.error?.details;
+    throw err;
   }
 
-  return json.data as T;
+  return data.data as T;
 }
 
 export const api = {
@@ -202,6 +171,13 @@ export const api = {
     request<T>(endpoint, {
       ...options,
       method: 'PATCH',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }),
+
+  put: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
+    request<T>(endpoint, {
+      ...options,
+      method: 'PUT',
       body: body !== undefined ? JSON.stringify(body) : undefined,
     }),
 

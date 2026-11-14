@@ -8,6 +8,8 @@ import { AppError } from '../errors/AppError';
 import * as redisService from '../db/redis';
 import { fetchNAVHistory, fetchLatestNAV, fetchSchemeDetail } from '../external/mfapi';
 import { metricCalcQueue } from '../../workers/metricCalcWorker';
+import { safeEnqueueJob } from '../utils/safeQueue';
+import { computeAndSaveFundMetrics } from './fundMetricsRunner';
 import type { IFundMetadata, PaginatedData } from '@arthora/shared';
 
 export interface FundSearchFilters {
@@ -45,8 +47,13 @@ export async function searchFunds(
   const filterQuery: Record<string, unknown> = { isActive: true };
 
   if (query && query.trim().length > 0) {
-    const safeRegex = new RegExp(query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    filterQuery.schemeName = safeRegex;
+    const trimmed = query.trim();
+    const safeRegex = new RegExp(trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    if (/^\d+$/.test(trimmed)) {
+      filterQuery.$or = [{ schemeCode: Number(trimmed) }, { schemeName: safeRegex }];
+    } else {
+      filterQuery.schemeName = safeRegex;
+    }
   }
 
   if (filters.category && filters.category !== 'all') {
@@ -54,16 +61,13 @@ export async function searchFunds(
   }
 
   if (filters.fundHouse) {
-    filterQuery.fundHouse = { $regex: new RegExp(filters.fundHouse, 'i') };
+    filterQuery.fundHouse = { $regex: new RegExp(filters.fundHouse.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') };
   }
 
   const sortOptions = { schemeName: 1 as const };
 
   const [items, total] = await Promise.all([
-    FundMetadata.find(
-      filterQuery,
-      query && query.trim().length > 0 ? { score: { $meta: 'textScore' } } : {},
-    )
+    FundMetadata.find(filterQuery)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .sort(sortOptions as any)
       .skip(skip)
@@ -169,12 +173,20 @@ export async function getFundMetrics(schemeCode: number) {
 
   const metrics = await FundMetrics.findOne({ schemeCode }).lean();
   if (!metrics) {
-    // Queue asynchronous calculation
-    await metricCalcQueue.add(
+    const queued = await safeEnqueueJob(
+      metricCalcQueue,
       'calc-fund-metrics',
       { schemeCode },
       { jobId: `calc-${schemeCode}-${Date.now()}` },
     );
+
+    if (!queued) {
+      setImmediate(() => {
+        void computeAndSaveFundMetrics(schemeCode).catch((err) => {
+          console.warn(`⚠️ [FundService] In-process metric calculation failed for ${schemeCode}:`, err);
+        });
+      });
+    }
 
     return {
       isPending: true,
