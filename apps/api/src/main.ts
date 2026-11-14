@@ -138,7 +138,12 @@ async function startServer(): Promise<void> {
       console.warn('⚠️ [Redis] Initial ping unavailable (proceeding with in-memory fallback).');
     }
 
-    if (process.env.RUN_WORKER_IN_PROCESS === 'true' && redisReady) {
+    const shouldStartWorkers =
+      process.env.RUN_WORKER_IN_PROCESS === 'true' &&
+      process.env.USE_IN_PROCESS_QUEUE !== 'true' &&
+      redisReady;
+
+    if (shouldStartWorkers) {
       try {
         const { startWorkers } = await import('./worker');
         await startWorkers();
@@ -146,6 +151,8 @@ async function startServer(): Promise<void> {
       } catch (workerErr) {
         console.warn('⚠️ [Worker Process] Embedded background worker failed to start (API will remain online):', workerErr);
       }
+    } else if (process.env.USE_IN_PROCESS_QUEUE === 'true' || process.env.RUN_WORKER_IN_PROCESS === 'false') {
+      console.log('ℹ️ [Worker Process] Background worker polling disabled; in-process async queue active (conserving Redis commands & bandwidth).');
     } else if (process.env.RUN_WORKER_IN_PROCESS === 'true') {
       console.warn('⚠️ [Worker Process] Skipping BullMQ workers while Redis is unavailable; in-process async fallbacks active.');
     }

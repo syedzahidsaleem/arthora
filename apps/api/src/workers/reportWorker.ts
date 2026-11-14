@@ -1,6 +1,10 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
-import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
+import {
+  SERVERLESS_WORKER_DEFAULTS,
+  registerQueueCircuitBreaker,
+  registerWorkerCircuitBreaker,
+} from '../lib/constants/workerOptions';
 import { executeReportGenerationJob } from '../lib/services/reportRunner';
 
 export const REPORT_QUEUE = 'report-gen';
@@ -13,9 +17,7 @@ export const reportQueue = new Queue(REPORT_QUEUE, {
     removeOnFail: 500,
   },
 });
-reportQueue.on('error', (err) => {
-  console.warn(`⚠️ [BullMQ:${REPORT_QUEUE}] Queue connection warning:`, err.message);
-});
+registerQueueCircuitBreaker(reportQueue, REPORT_QUEUE);
 
 /**
  * BullMQ Worker generating PDF analysis reports via Chromium & Puppeteer.
@@ -43,5 +45,6 @@ export function createReportWorker(): Worker {
     },
   );
 
+  registerWorkerCircuitBreaker(worker, REPORT_QUEUE);
   return worker;
 }

@@ -1,6 +1,10 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
-import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
+import {
+  SERVERLESS_WORKER_DEFAULTS,
+  registerQueueCircuitBreaker,
+  registerWorkerCircuitBreaker,
+} from '../lib/constants/workerOptions';
 import { StockPriceHistory } from '../lib/models/StockPriceHistory';
 import { StockMetrics } from '../lib/models/StockMetrics';
 import {
@@ -19,9 +23,7 @@ export const stockSyncQueue = new Queue(STOCK_SYNC_QUEUE, {
     removeOnFail: 500,
   },
 });
-stockSyncQueue.on('error', (err) => {
-  console.warn(`⚠️ [BullMQ:${STOCK_SYNC_QUEUE}] Queue connection warning:`, err.message);
-});
+registerQueueCircuitBreaker(stockSyncQueue, STOCK_SYNC_QUEUE);
 
 /**
  * Benchmark Indian Stock Universe: NIFTY 50 and NIFTY NEXT 50 symbols.
@@ -200,5 +202,6 @@ export function createStockSyncWorker(): Worker {
     },
   );
 
+  registerWorkerCircuitBreaker(worker, STOCK_SYNC_QUEUE);
   return worker;
 }

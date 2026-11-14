@@ -1,6 +1,10 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
-import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
+import {
+  SERVERLESS_WORKER_DEFAULTS,
+  registerQueueCircuitBreaker,
+  registerWorkerCircuitBreaker,
+} from '../lib/constants/workerOptions';
 import { computeAndSaveFundMetrics } from '../lib/services/fundMetricsRunner';
 
 export const METRIC_CALC_QUEUE = 'metric-calc';
@@ -13,9 +17,7 @@ export const metricCalcQueue = new Queue(METRIC_CALC_QUEUE, {
     removeOnFail: 500,
   },
 });
-metricCalcQueue.on('error', (err) => {
-  console.warn(`⚠️ [BullMQ:${METRIC_CALC_QUEUE}] Queue connection warning:`, err.message);
-});
+registerQueueCircuitBreaker(metricCalcQueue, METRIC_CALC_QUEUE);
 
 /**
  * BullMQ Worker computing risk and return analytics for mutual fund schemes.
@@ -46,5 +48,6 @@ export function createMetricCalcWorker(): Worker {
     },
   );
 
+  registerWorkerCircuitBreaker(worker, METRIC_CALC_QUEUE);
   return worker;
 }

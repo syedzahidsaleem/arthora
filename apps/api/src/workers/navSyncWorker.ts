@@ -1,6 +1,10 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
-import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
+import {
+  SERVERLESS_WORKER_DEFAULTS,
+  registerQueueCircuitBreaker,
+  registerWorkerCircuitBreaker,
+} from '../lib/constants/workerOptions';
 import { FundMetadata } from '../lib/models/FundMetadata';
 import { FundNAVHistory } from '../lib/models/FundNAVHistory';
 import { fetchAllSchemes, fetchNAVHistory } from '../lib/external/mfapi';
@@ -18,9 +22,7 @@ export const navSyncQueue = new Queue(NAV_SYNC_QUEUE, {
     removeOnFail: 500,
   },
 });
-navSyncQueue.on('error', (err) => {
-  console.warn(`⚠️ [BullMQ:${NAV_SYNC_QUEUE}] Queue connection warning:`, err.message);
-});
+registerQueueCircuitBreaker(navSyncQueue, NAV_SYNC_QUEUE);
 
 /**
  * BullMQ Worker handling mutual fund scheme metadata and historical NAV synchronization.
@@ -145,5 +147,6 @@ export function createNavSyncWorker(): Worker {
     );
   });
 
+  registerWorkerCircuitBreaker(worker, NAV_SYNC_QUEUE);
   return worker;
 }

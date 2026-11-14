@@ -1,6 +1,10 @@
 import { Worker, Queue, Job } from 'bullmq';
 import { redis } from '../lib/db/redis';
-import { SERVERLESS_WORKER_DEFAULTS } from '../lib/constants/workerOptions';
+import {
+  SERVERLESS_WORKER_DEFAULTS,
+  registerQueueCircuitBreaker,
+  registerWorkerCircuitBreaker,
+} from '../lib/constants/workerOptions';
 import { type PortfolioInput } from '../lib/services/aiCacheService';
 import { executePortfolioSuggestionJob } from '../lib/services/aiPortfolioRunner';
 
@@ -14,9 +18,7 @@ export const aiSuggestQueue = new Queue(AI_SUGGEST_QUEUE, {
     removeOnFail: 500,
   },
 });
-aiSuggestQueue.on('error', (err) => {
-  console.warn(`⚠️ [BullMQ:${AI_SUGGEST_QUEUE}] Queue connection warning:`, err.message);
-});
+registerQueueCircuitBreaker(aiSuggestQueue, AI_SUGGEST_QUEUE);
 
 /**
  * BullMQ Worker processing async portfolio generation via Gemini AI or Fallback Rules Engine.
@@ -49,5 +51,6 @@ export function createAiSuggestWorker(): Worker {
     },
   );
 
+  registerWorkerCircuitBreaker(worker, AI_SUGGEST_QUEUE);
   return worker;
 }

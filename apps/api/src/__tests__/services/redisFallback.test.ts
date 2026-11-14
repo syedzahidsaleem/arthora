@@ -55,4 +55,30 @@ describe('Redis Degradation & In-Memory Fallback', () => {
     expect(queued).toBe(false);
     expect(mockQueue.add).not.toHaveBeenCalled();
   });
+
+  it('detects Upstash fixed plan limits and marks quota exceeded with extended cooldown', async () => {
+    const upstashErr = new Error(
+      'ERR This database has reached current Fixed plan limits. Please upgrade manually or enable auto upgrade on Upstash Console',
+    );
+    redisService.markRedisDegraded(upstashErr);
+
+    expect(isRedisDegraded()).toBe(true);
+    const { isRedisQuotaExceeded } = await import('../../lib/db/redisState');
+    expect(isRedisQuotaExceeded()).toBe(true);
+  });
+
+  it('bypasses BullMQ enqueue immediately when USE_IN_PROCESS_QUEUE is set', async () => {
+    const originalEnv = process.env.USE_IN_PROCESS_QUEUE;
+    process.env.USE_IN_PROCESS_QUEUE = 'true';
+
+    try {
+      const mockQueue = { add: vi.fn().mockResolvedValue({ id: 'job-1' }) };
+      const queued = await safeEnqueueJob(mockQueue, 'test-job', { schemeCode: '118834' });
+
+      expect(queued).toBe(false);
+      expect(mockQueue.add).not.toHaveBeenCalled();
+    } finally {
+      process.env.USE_IN_PROCESS_QUEUE = originalEnv;
+    }
+  });
 });

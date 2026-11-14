@@ -10,6 +10,7 @@ import {
 
 const REDIS_COMMAND_TIMEOUT_MS = 1500;
 const REDIS_DEGRADED_COOLDOWN_MS = 60_000;
+const REDIS_QUOTA_COOLDOWN_MS = 30 * 60_000; // 30 minutes to prevent socket and bandwidth spam
 const FALLBACK_MAX_KEYS = 5000;
 
 interface FallbackEntry {
@@ -222,9 +223,18 @@ class RedisConnection {
       connectTimeout: 5000,
       retryStrategy: (times: number) => {
         if (isRedisQuotaExceeded()) {
-          return REDIS_DEGRADED_COOLDOWN_MS;
+          if (times === 1) {
+            console.warn('🛑 [Redis] Plan/Quota limit active. Halting reconnect attempts for 30 minutes.');
+          }
+          return REDIS_QUOTA_COOLDOWN_MS;
         }
-        const delay = Math.min(times * 500, 15_000);
+        if (times > 5) {
+          if (times % 10 === 0) {
+            console.warn(`🔁 [Redis] Still disconnected after ${times} attempts. Backing off 2 minutes...`);
+          }
+          return 120_000;
+        }
+        const delay = Math.min(times * 1000, 15_000);
         if (times <= 3) {
           console.warn(`🔁 [Redis] Reconnecting attempt #${times} in ${delay}ms...`);
         }

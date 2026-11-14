@@ -11,6 +11,8 @@ services:
       - key: NODE_ENV
         value: production
       - key: RUN_WORKER_IN_PROCESS
+        value: "false"
+      - key: USE_IN_PROCESS_QUEUE
         value: "true"
       - key: GEMINI_MODEL
         value: gemini-3.6-flash
