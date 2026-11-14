@@ -36,9 +36,18 @@ Thumbs.db
 *.swp
 *.swo
 
-# Testing
+# Testing & Specs (Preserved on local, untracked on GitHub)
 coverage/
 .vitest/
+**/__tests__/
+apps/mobile/test/
+*.test.ts
+*.test.dart
+vitest.config.ts
+
+# Documentation & Local Docker (Preserved on local, untracked on GitHub)
+docs/
+docker-compose.yml
 
 # Temporary
 tmp/

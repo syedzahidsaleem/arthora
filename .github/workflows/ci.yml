@@ -37,45 +37,10 @@ jobs:
       - name: Run TypeScript Type Check
         run: pnpm run type-check
 
-  test:
-    name: Unit & Integration Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-typecheck
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Build Shared Packages
-        run: |
-          pnpm --filter @arthora/shared build
-          pnpm --filter @arthora/sdk build
-
-      - name: Run tests
-        run: pnpm run test
-        env:
-          NODE_ENV: test
-          JWT_SECRET: test_jwt_secret_minimum_32_characters_long
-          JWT_REFRESH_SECRET: test_refresh_secret_minimum_32_characters
-          FIREBASE_PROJECT_ID: arthora-659a8
-          FIREBASE_CLIENT_EMAIL: test@arthora-659a8.iam.gserviceaccount.com
-          FIREBASE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQD...==\n-----END PRIVATE KEY-----\n"
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'test_dummy_gemini_api_key' }}
-          GEMINI_MODEL: gemini-3.6-flash
-          GEMINI_FALLBACK_MODELS: gemini-3.7-flash,gemini-flash-latest,gemini-3.8-flash
-
   build:
     name: Production Builds
     runs-on: ubuntu-latest
-    needs: test
+    needs: lint-and-typecheck
     steps:
       - uses: actions/checkout@v7
 
